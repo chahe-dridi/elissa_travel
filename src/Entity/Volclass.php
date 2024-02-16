@@ -28,14 +28,8 @@ class Volclass
     private ?int $ticket_number = null;
 
 
-    #[ORM\ManyToMany(targetEntity: Vol::class, mappedBy: 'classvol')]
-    private Collection $no;
-
-  
-    public function __construct()
-    {
-        $this->no = new ArrayCollection();
-    }
+    
+    
 
     public function getId(): ?int
     {
@@ -91,32 +85,6 @@ class Volclass
     }
 
 
-    /**
-     * @return Collection<int, Vol>
-     */
-    public function getNo(): Collection
-    {
-        return $this->no;
-    }
-
-    public function addNo(Vol $no): static
-    {
-        if (!$this->no->contains($no)) {
-            $this->no->add($no);
-            $no->addClassvol($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNo(Vol $no): static
-    {
-        if ($this->no->removeElement($no)) {
-            $no->removeClassvol($this);
-        }
-
-        return $this;
-    }
-
+   
    
 }

@@ -37,13 +37,10 @@ class Vol
     #[ORM\ManyToOne]
     private ?airport $airport_arrive = null;
 
-    #[ORM\ManyToMany(targetEntity: volclass::class, inversedBy: 'no')]
-    private Collection $classvol;
+    #[ORM\ManyToOne]
+    private ?volclass $volclass = null;
 
-    public function __construct()
-    {
-        $this->classvol = new ArrayCollection();
-    }
+   
 
     public function getId(): ?int
     {
@@ -134,27 +131,17 @@ class Vol
         return $this;
     }
 
-    /**
-     * @return Collection<int, volclass>
-     */
-    public function getClassvol(): Collection
+    public function getVolclass(): ?volclass
     {
-        return $this->classvol;
+        return $this->volclass;
     }
 
-    public function addClassvol(volclass $classvol): static
+    public function setVolclass(?volclass $volclass): static
     {
-        if (!$this->classvol->contains($classvol)) {
-            $this->classvol->add($classvol);
-        }
+        $this->volclass = $volclass;
 
         return $this;
     }
 
-    public function removeClassvol(volclass $classvol): static
-    {
-        $this->classvol->removeElement($classvol);
-
-        return $this;
-    }
+    
 }
