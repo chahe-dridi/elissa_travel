@@ -1,0 +1,55 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+   
+        <div class="col-lg-8 d-flex align-items-strech">
+        
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Compagnie_aerienne</th>
+                <th>Heure_depart</th>
+                <th>Heure_arrive</th>
+                <th>Escale</th>
+                <th>Disponible</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vol in vols %}
+            <tr>
+                <td>{{ vol.id }}</td>
+                <td>{{ vol.compagnieAerienne }}</td>
+                <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
+                <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_vol_show', {'id': vol.id}) }}">show</a>
+                    <a href="{{ path('app_vol_edit', {'id': vol.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vol_new') }}">Create new</a>
+
+
+
+
+
+    
+</div>
+</div>
+</div>
+{% endblock %}

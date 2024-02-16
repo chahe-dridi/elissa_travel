@@ -32,13 +32,13 @@ class Vol
     private ?bool $disponible = null;
 
     #[ORM\ManyToOne]
-    private ?airport $airport_depart = null;
+    private ?Airport $airport_depart = null;
 
     #[ORM\ManyToOne]
-    private ?airport $airport_arrive = null;
+    private ?Airport $airport_arrive = null;
 
     #[ORM\ManyToOne]
-    private ?volclass $volclass = null;
+    private ?Volclass $volclass = null;
 
    
 
@@ -107,36 +107,36 @@ class Vol
         return $this;
     }
 
-    public function getAirportDepart(): ?airport
+    public function getAirportDepart(): ?Airport
     {
         return $this->airport_depart;
     }
 
-    public function setAirportDepart(?airport $airport_depart): static
+    public function setAirportDepart(?Airport $airport_depart): static
     {
         $this->airport_depart = $airport_depart;
 
         return $this;
     }
 
-    public function getAirportArrive(): ?airport
+    public function getAirportArrive(): ?Airport
     {
         return $this->airport_arrive;
     }
 
-    public function setAirportArrive(?airport $airport_arrive): static
+    public function setAirportArrive(?Airport $airport_arrive): static
     {
         $this->airport_arrive = $airport_arrive;
 
         return $this;
     }
 
-    public function getVolclass(): ?volclass
+    public function getVolclass(): ?Volclass
     {
         return $this->volclass;
     }
 
-    public function setVolclass(?volclass $volclass): static
+    public function setVolclass(?Volclass $volclass): static
     {
         $this->volclass = $volclass;
 
