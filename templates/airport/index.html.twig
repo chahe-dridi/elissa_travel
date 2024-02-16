@@ -1,0 +1,60 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+   
+        <div class="col-lg-8 d-flex align-items-strech">
+            
+        <a href="{{ path('app_airport_new') }}">Create new</a>
+
+       
+ 
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for airport in airports %}
+            <tr>
+                <td>{{ airport.id }}</td>
+                <td>{{ airport.code }}</td>
+                <td>{{ airport.name }}</td>
+                <td>{{ airport.city }}</td>
+                <td>{{ airport.country }}</td>
+                <td>
+                    <a href="{{ path('app_airport_show', {'id': airport.id}) }}">show</a>
+                    <a href="{{ path('app_airport_edit', {'id': airport.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+</div>
+</div>
+</div>
+
+{% endblock %}
