@@ -31,11 +31,25 @@ class Vol
     #[ORM\Column]
     private ?bool $disponible = null;
 
+    /*
     #[ORM\ManyToOne]
     private ?Airport $airport_depart = null;
 
     #[ORM\ManyToOne]
     private ?Airport $airport_arrive = null;
+*/
+
+    #[ORM\ManyToOne(cascade: ["remove"])]
+    #[ORM\JoinColumn(name: "airport_depart", referencedColumnName: "id", onDelete: "CASCADE")]
+    private ?Airport $airport_depart = null;
+
+    #[ORM\ManyToOne(cascade: ["remove"])]
+    #[ORM\JoinColumn(name: "airport_arrive", referencedColumnName: "id", onDelete: "CASCADE")]
+    private ?Airport $airport_arrive = null;
+
+
+
+
 
     #[ORM\ManyToOne]
     private ?Volclass $volclass = null;

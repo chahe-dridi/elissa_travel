@@ -21,6 +21,31 @@ class VolRepository extends ServiceEntityRepository
         parent::__construct($registry, Vol::class);
     }
 
+    public function findByDepartureAndArrivalAirport(?int $departureAirportId, ?int $arrivalAirportId): array
+    {
+        $qb = $this->createQueryBuilder('v');
+
+        if ($departureAirportId) {
+            $qb->andWhere('v.airport_depart = :departureAirportId')
+                ->setParameter('departureAirportId', $departureAirportId);
+        }
+
+        if ($arrivalAirportId) {
+            $qb->andWhere('v.airport_arrive = :arrivalAirportId')
+                ->setParameter('arrivalAirportId', $arrivalAirportId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
+
+
+
+
+
+
 //    /**
 //     * @return Vol[] Returns an array of Vol objects
 //     */

@@ -15,12 +15,37 @@ use Symfony\Component\Routing\Annotation\Route;
 class VolController extends AbstractController
 {
     #[Route('/', name: 'app_vol_index', methods: ['GET'])]
-    public function index(VolRepository $volRepository): Response
+    public function index(VolRepository $volRepository, Request $request): Response
     {
+        $departureAirportId = $request->query->get('departureAirport');
+        $arrivalAirportId = $request->query->get('arrivalAirport');
+
+        // Retrieve filtered vols based on departure and arrival airports
+        $filteredVols = $volRepository->findByDepartureAndArrivalAirport($departureAirportId, $arrivalAirportId);
+
         return $this->render('vol/index.html.twig', [
-            'vols' => $volRepository->findAll(),
+            'vols' => $filteredVols,
         ]);
     }
+
+    #[Route('/search', name: 'app_vol_search', methods: ['GET'])]
+    public function search(Request $request, VolRepository $volRepository): Response
+    {
+        $departureAirportId = (int) $request->query->get('departureAirport');
+        $arrivalAirportId = (int) $request->query->get('arrivalAirport');
+    
+        $vols = $volRepository->findByDepartureAndArrivalAirport($departureAirportId, $arrivalAirportId);
+    
+        return $this->render('vol/index.html.twig', [
+            'vols' => $vols,
+        ]);
+    }
+    
+    
+
+
+
+
 
     #[Route('/new', name: 'app_vol_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
