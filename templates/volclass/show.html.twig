@@ -1,0 +1,37 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+    <h1>Volclass</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ volclass.id }}</td>
+            </tr>
+            <tr>
+                <th>Class_name</th>
+                <td>{{ volclass.className }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ volclass.description }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ volclass.price }}</td>
+            </tr>
+            <tr>
+                <th>Ticket_number</th>
+                <td>{{ volclass.ticketNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_volclass_index') }}">back to list</a>
+
+    <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}">edit</a>
+
+    {{ include('volclass/_delete_form.html.twig') }}
+{% endblock %}

@@ -40,8 +40,7 @@ class AirportController extends AbstractController
 
 
 
-    
-
+     
     #[Route('/search', name: 'app_airport_search', methods: ['GET'])]
     public function search(AirportRepository $airportRepository, Request $request): Response
     {

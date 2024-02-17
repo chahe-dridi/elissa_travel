@@ -85,6 +85,10 @@ class Volclass
     }
 
 
-   
+    public function __toString(): string
+    {
+        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
+        return $this->id;
+    }
    
 }
