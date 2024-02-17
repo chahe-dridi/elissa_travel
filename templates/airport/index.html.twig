@@ -1,60 +1,61 @@
 {% extends 'nav_admin.html.twig' %}
 
 {% block body %}
-
 <div class="container-fluid">
-    <!--  Row 1 -->
+    <!-- Row 1 -->
     <div class="row">
-   
-        <div class="col-lg-8 d-flex align-items-strech">
-            
-        <a href="{{ path('app_airport_new') }}">Create new</a>
+        <div class="col-lg-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if airports|length > 0 %}
+                        {% for airport in airports %}
+                        <tr>
+                            <td>{{ airport.id }}</td>
+                            <td>{{ airport.code }}</td>
+                            <td>{{ airport.name }}</td>
+                            <td>{{ airport.city }}</td>
+                            <td>{{ airport.country }}</td>
+                            <td>
+                                <a href="{{ path('app_airport_show', {'id': airport.id}) }}" class="btn btn-sm btn-info">Show</a>
+                                <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No records found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <!-- Search form -->
+            <form action="{{ path('app_airport_search') }}" method="GET" style="margin-bottom: 20px;">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Airport Code">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
 
-       
- 
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Code</th>
-                <th>Name</th>
-                <th>City</th>
-                <th>Country</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for airport in airports %}
-            <tr>
-                <td>{{ airport.id }}</td>
-                <td>{{ airport.code }}</td>
-                <td>{{ airport.name }}</td>
-                <td>{{ airport.city }}</td>
-                <td>{{ airport.country }}</td>
-                <td>
-                    <a href="{{ path('app_airport_show', {'id': airport.id}) }}">show</a>
-                    <a href="{{ path('app_airport_edit', {'id': airport.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-
-
-
-
-
-
-
-
-</div>
-</div>
+            <!-- Add New Airport link styled like search button -->
+            <div style="text-align: right;">
+                <a href="{{ path('app_airport_new') }}" class="btn btn-outline-secondary">Add New Airport</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

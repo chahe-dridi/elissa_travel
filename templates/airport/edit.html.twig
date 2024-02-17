@@ -2,6 +2,7 @@
 
 
 {% block body %}
+
 <div class="container-fluid">
     <!--  Row 1 -->
     <div class="row">
@@ -10,8 +11,11 @@
             
     {{ include('airport/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_airport_index') }}">back to list</a>
-
+    
+    <div style="text-align: right;">
+        <a href="{{ path('app_airport_index') }}" class="btn btn-outline-secondary">back to list</a>
+    </div>
+    
     {{ include('airport/_delete_form.html.twig') }}
 
 

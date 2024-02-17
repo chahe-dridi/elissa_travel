@@ -15,10 +15,41 @@ use Symfony\Component\Routing\Annotation\Route;
 class AirportController extends AbstractController
 {
     #[Route('/', name: 'app_airport_index', methods: ['GET'])]
-    public function index(AirportRepository $airportRepository): Response
+    public function index(AirportRepository $airportRepository, Request $request): Response
     {
+        $searchQuery = $request->query->get('code');
+
+        if ($searchQuery) {
+            $airport = $airportRepository->findByAirportCode($searchQuery);
+            if ($airport) {
+                return $this->render('airport/index.html.twig', [
+                    'airports' => [$airport], // Display only the matching airport
+                ]);
+            } else {
+                return $this->render('airport/index.html.twig', [
+                    'airports' => [], // No matching airport found
+                ]);
+            }
+        }
+
+        // If no search query provided, show all airports
         return $this->render('airport/index.html.twig', [
             'airports' => $airportRepository->findAll(),
+        ]);
+    }
+
+
+
+    
+
+    #[Route('/search', name: 'app_airport_search', methods: ['GET'])]
+    public function search(AirportRepository $airportRepository, Request $request): Response
+    {
+        $searchQuery = $request->query->get('search');
+        $airports = $airportRepository->findBySearchQuery($searchQuery);
+
+        return $this->render('airport/index.html.twig', [
+            'airports' => $airports,
         ]);
     }
 
@@ -78,4 +109,13 @@ class AirportController extends AbstractController
 
         return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+ 
+
+
+
+
+
 }

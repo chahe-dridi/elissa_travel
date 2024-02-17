@@ -2,49 +2,46 @@
 
 
 {% block body %}
-    <h1>Airport</h1>
-    
-    <div class="container-fluid">
-        <!--  Row 1 -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Airport</h1>
         <div class="row">
+            <div class="col-lg-8">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Id</th>
+                            <td>{{ airport.id }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Code</th>
+                            <td>{{ airport.code }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Name</th>
+                            <td>{{ airport.name }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">City</th>
+                            <td>{{ airport.city }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Country</th>
+                            <td>{{ airport.country }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a href="{{ path('app_airport_index') }}" style="margin-right: 10px;" class="btn btn-secondary">Back to List</a>
+                <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" style="margin-right: 10px;" class="btn btn-primary">Edit</a>
+                {{ include('airport/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-            <div class="col-lg-8 d-flex align-items-strech">
-
-    <table class="table">
-        <div class="col-lg-8 d-flex align-items-strech">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ airport.id }}</td>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <td>{{ airport.code }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ airport.name }}</td>
-            </tr>
-            <tr>
-                <th>City</th>
-                <td>{{ airport.city }}</td>
-            </tr>
-            <tr>
-                <th>Country</th>
-                <td>{{ airport.country }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_airport_index') }}">back to list</a>
-
-    <a href="{{ path('app_airport_edit', {'id': airport.id}) }}">edit</a>
-
-    {{ include('airport/_delete_form.html.twig') }}
-
-   
-</div>
-</div>
-</div>
 
 {% endblock %}
