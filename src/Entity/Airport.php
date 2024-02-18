@@ -25,6 +25,9 @@ class Airport
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
     
      
 
@@ -85,6 +88,18 @@ class Airport
     {
         // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
         return $this->name;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     
