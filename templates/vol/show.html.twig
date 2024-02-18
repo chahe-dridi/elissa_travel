@@ -1,0 +1,64 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+   
+        <div class="col-lg-8 d-flex align-items-strech">
+        
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ vol.id }}</td>
+            </tr>
+            <tr>
+                <th>airport_depart</th>
+                <td>{{ vol.airport_depart }}</td>
+            </tr>
+            <tr>
+                <th>airport_arrive</th>
+                <td>{{ vol.airport_arrive }}</td>
+            </tr>
+            <tr>
+                <th>Compagnie_aerienne</th>
+                <td>{{ vol.compagnieAerienne }}</td>
+            </tr>
+            <tr>
+                <th>Heure_depart</th>
+                <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Heure_arrive</th>
+                <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Escale</th>
+                <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Disponible</th>
+                <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vol_index') }}">back to list</a>
+
+    <a href="{{ path('app_vol_edit', {'id': vol.id}) }}">edit</a>
+
+    {{ include('vol/_delete_form.html.twig') }}
+
+
+
+
+
+
+
+
+    
+</div>
+</div>
+</div>
+{% endblock %}

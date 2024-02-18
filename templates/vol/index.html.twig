@@ -1,0 +1,87 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row">
+        <div class="col-lg-8">
+            <table class="table"  ">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Compagnie aérienne</th>
+                        <th>Heure départ</th>
+                        <th>Heure arrivée</th>
+                        <th>Escale</th>
+                        <th>Disponible</th>
+                        <th>Departure Airport</th>
+                        <th>Arrival Airport</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if vols|length > 0 %}
+                        {% for vol in vols %}
+                            <tr>
+                                <td>{{ vol.id }}</td>
+                                <td>{{ vol.compagnieAerienne }}</td>
+                                <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
+                                <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+                                <td>{{ vol.getAirportDepart().getName() }}</td>
+                                <td>{{ vol.getAirportArrive().getName() }}</td>
+                                <td>
+                                    <a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-info btn-sm">Show</a>
+                                    <a href="{{ path('app_vol_edit', {'id': vol.id}) }}" class="btn btn-primary btn-sm">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9">No records found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <!-- Search form -->
+            <form action="{{ path('app_vol_search') }}" method="GET" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label for="departureAirport">Departure Airport:</label>
+                    <select name="departureAirport" class="form-control" id="departureAirport">
+                        <option value="">Select Departure Airport</option>
+                        {% set seenDepartAirports = [] %}
+                        {% for vol in vols %}
+                            {% if vol.getAirportDepart().getId() not in seenDepartAirports %}
+                                {% set seenDepartAirports = seenDepartAirports|merge([vol.getAirportDepart().getId()]) %}
+                                <option value="{{ vol.getAirportDepart().getId() }}">{{ vol.getAirportDepart().getId() }} - {{ vol.getAirportDepart().getName() }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="arrivalAirport">Arrival Airport:</label>
+                    <select name="arrivalAirport" class="form-control" id="arrivalAirport">
+                        <option value="">Select Arrival Airport</option>
+                        {% set seenArriveAirports = [] %}
+                        {% for vol in vols %}
+                            {% if vol.getAirportArrive().getId() not in seenArriveAirports %}
+                                {% set seenArriveAirports = seenArriveAirports|merge([vol.getAirportArrive().getId()]) %}
+                                <option value="{{ vol.getAirportArrive().getId() }}">{{ vol.getAirportArrive().getId() }} - {{ vol.getAirportArrive().getName() }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            
+            <!-- Add New Vol link styled like search button -->
+            <div style="text-align: right;">
+                <a href="{{ path('app_vol_new') }}" class="btn btn-outline-secondary">Add New Vol</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

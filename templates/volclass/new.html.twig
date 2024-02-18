@@ -1,0 +1,10 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+    <h1>Create new Volclass</h1>
+
+    {{ include('volclass/_form.html.twig') }}
+
+    <a href="{{ path('app_volclass_index') }}">back to list</a>
+{% endblock %}
