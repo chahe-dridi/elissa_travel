@@ -16,6 +16,7 @@ class AirportType extends AbstractType
             ->add('name')
             ->add('city')
             ->add('country')
+            ->add('user')
         ;
     }
 
@@ -25,8 +26,4 @@ class AirportType extends AbstractType
             'data_class' => Airport::class,
         ]);
     }
-
-
-
-    
 }

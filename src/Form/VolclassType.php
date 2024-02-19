@@ -16,6 +16,7 @@ class VolclassType extends AbstractType
             ->add('description')
             ->add('price')
             ->add('ticket_number')
+            ->add('user')
         ;
     }
 

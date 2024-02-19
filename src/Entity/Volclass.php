@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\VolclassRepository;
+
 use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,7 +29,17 @@ class Volclass
     #[ORM\Column]
     private ?int $ticket_number = null;
 
+    #[ORM\ManyToOne]
+    private ?User $user = null;
 
+   
+    #[ORM\OneToMany(mappedBy: 'volclass', targetEntity: Vol::class, cascade: ["remove"])]
+    private $vols;
+
+    public function __construct()
+    {
+        $this->vols = new ArrayCollection();
+    }
     
     
 
@@ -89,6 +101,18 @@ class Volclass
     {
         // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
         return $this->id;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
    
 }

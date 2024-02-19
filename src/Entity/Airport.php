@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use App\Repository\AirportRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,7 +27,20 @@ class Airport
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'airport_depart', targetEntity: Vol::class, cascade: ["remove"])]
+    private $departingFlights;
+
+    #[ORM\OneToMany(mappedBy: 'airport_arrive', targetEntity: Vol::class, cascade: ["remove"])]
+    private $arrivingFlights;
+
+    public function __construct()
+    {
+        $this->departingFlights = new ArrayCollection();
+        $this->arrivingFlights = new ArrayCollection();
+    }
      
 
     public function getId(): ?int
@@ -85,6 +100,18 @@ class Airport
     {
         // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
         return $this->name;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     

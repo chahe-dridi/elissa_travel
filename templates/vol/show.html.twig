@@ -1,64 +1,50 @@
 {% extends 'nav_admin.html.twig' %}
 
 {% block body %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
 <div class="container-fluid">
-    <!--  Row 1 -->
-    <div class="row">
+    <h1 style="text-align: center; margin-bottom: 20px;"> </h1>
    
-        <div class="col-lg-8 d-flex align-items-strech">
-        
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ vol.id }}</td>
-            </tr>
-            <tr>
-                <th>airport_depart</th>
-                <td>{{ vol.airport_depart }}</td>
-            </tr>
-            <tr>
-                <th>airport_arrive</th>
-                <td>{{ vol.airport_arrive }}</td>
-            </tr>
-            <tr>
-                <th>Compagnie_aerienne</th>
-                <td>{{ vol.compagnieAerienne }}</td>
-            </tr>
-            <tr>
-                <th>Heure_depart</th>
-                <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Heure_arrive</th>
-                <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Escale</th>
-                <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Disponible</th>
-                <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_vol_index') }}">back to list</a>
-
-    <a href="{{ path('app_vol_edit', {'id': vol.id}) }}">edit</a>
-
-    {{ include('vol/_delete_form.html.twig') }}
-
-
-
-
-
-
-
-
-    
+    <div class="row">
+        <div class="col-lg-8 d-flex align-items-stretch">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th style="width: 30%;">Id</th>
+                        <td>{{ vol.id }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th style="width: 30%;">Compagnie Aérienne</th>
+                        <td>{{ vol.compagnieAerienne }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%;">Heure Départ</th>
+                        <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%;">Heure Arrivée</th>
+                        <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%;">Escale</th>
+                        <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%;">Disponible</th>
+                        <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="{{ path('app_vol_index') }}" style="margin-right: 10px;" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_vol_edit', {'id': vol.id}) }}" style="margin-right: 10px;" class="btn btn-primary">Edit</a>
+            {{ include('vol/_delete_form.html.twig') }}
+        </div>
+    </div>
 </div>
-</div>
-</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 {% endblock %}

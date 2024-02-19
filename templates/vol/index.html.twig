@@ -1,21 +1,42 @@
 {% extends 'nav_admin.html.twig' %}
 
 {% block body %}
-<div class="container-fluid">
+
+
+<div style="padding-bottom: 5%;"></div>
+
     <!-- Row 1 -->
     <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between align-items-center"> <!-- Added classes -->
+            <div class="button-group"> <!-- Added class attribute -->
+                <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+                <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+                <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+            </div>
+            <!-- Add New Vol link styled like search button -->
+            <div>
+                <a href="{{ path('app_vol_new') }}" class="btn btn-outline-secondary">Add New Flight</a>
+            </div>
+        </div>
+    </div>
+
+    <h1></h1>
+    <h1></h1>
+
+     
         <div class="col-lg-8">
-            <table class="table"  ">
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Id Flight</th>
+                        <th>Admin </th>                         
                         <th>Compagnie aérienne</th>
-                        <th>Heure départ</th>
-                        <th>Heure arrivée</th>
-                        <th>Escale</th>
-                        <th>Disponible</th>
                         <th>Departure Airport</th>
                         <th>Arrival Airport</th>
+                        <th>Heure depart</th>
+                        <th>Heure arrivee</th>
+                        <th>Layover</th>
+                        <th>Availability </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -24,13 +45,14 @@
                         {% for vol in vols %}
                             <tr>
                                 <td>{{ vol.id }}</td>
+                                <td>{{ vol.user.prenom }} {{ vol.user.nom }}</td>
                                 <td>{{ vol.compagnieAerienne }}</td>
+                                <td>{{ vol.getAirportDepart().getName() }}</td>
+                                <td>{{ vol.getAirportArrive().getName() }}</td>
                                 <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
                                 <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
                                 <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
                                 <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
-                                <td>{{ vol.getAirportDepart().getName() }}</td>
-                                <td>{{ vol.getAirportArrive().getName() }}</td>
                                 <td>
                                     <a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-info btn-sm">Show</a>
                                     <a href="{{ path('app_vol_edit', {'id': vol.id}) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -39,17 +61,18 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="9">No records found</td>
+                            <td colspan="10">No records found</td>
                         </tr>
                     {% endif %}
                 </tbody>
             </table>
         </div>
-        <div class="col-lg-4">
+
+        <div class="col-lg-4 offset-lg-8"> <!-- Adjust column size and add offset -->
             <!-- Search form -->
             <form action="{{ path('app_vol_search') }}" method="GET" style="margin-bottom: 20px;">
                 <div class="form-group">
-                    <label for="departureAirport">Departure Airport:</label>
+                    <label for="departureAirport" class="small-label">Dept.:</label> <!-- Abbreviated label -->
                     <select name="departureAirport" class="form-control" id="departureAirport">
                         <option value="">Select Departure Airport</option>
                         {% set seenDepartAirports = [] %}
@@ -61,8 +84,9 @@
                         {% endfor %}
                     </select>
                 </div>
+        
                 <div class="form-group">
-                    <label for="arrivalAirport">Arrival Airport:</label>
+                    <label for="arrivalAirport" class="small-label">Arr.:</label> <!-- Abbreviated label -->
                     <select name="arrivalAirport" class="form-control" id="arrivalAirport">
                         <option value="">Select Arrival Airport</option>
                         {% set seenArriveAirports = [] %}
@@ -76,12 +100,12 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
-            
-            <!-- Add New Vol link styled like search button -->
-            <div style="text-align: right;">
-                <a href="{{ path('app_vol_new') }}" class="btn btn-outline-secondary">Add New Vol</a>
-            </div>
         </div>
-    </div>
-</div>
+        
+        
+        
+        
+    
+ 
+
 {% endblock %}

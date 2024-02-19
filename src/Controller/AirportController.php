@@ -108,13 +108,4 @@ class AirportController extends AbstractController
 
         return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
     }
-
-
-
- 
-
-
-
-
-
 }

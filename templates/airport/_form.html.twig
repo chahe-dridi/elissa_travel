@@ -1,24 +1,40 @@
 {{ form_start(form) }}
     
+    <!-- Code field -->
     <div class="form-group row">
         <div class="col-sm-2">{{ form_label(form.code, 'Code', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">{{ form_widget(form.code, {'attr': {'class': 'form-control'}}) }}</div>
     </div>
+    
+    <!-- Name field -->
     <div class="form-group row">
         <div class="col-sm-2">{{ form_label(form.name, 'Name', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}</div>
     </div>
+    
+    <!-- City field -->
     <div class="form-group row">
         <div class="col-sm-2">{{ form_label(form.city, 'City', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">{{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}</div>
     </div>
+    
+    <!-- Country field -->
     <div class="form-group row">
         <div class="col-sm-2">{{ form_label(form.country, 'Country', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">{{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}</div>
     </div>
+    
+    <!-- User selection field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.user, 'User', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- Submit button -->
     <div class="form-group row">
         <div class="col-sm-10 offset-sm-2">
             <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
         </div>
     </div>
+    
 {{ form_end(form) }}

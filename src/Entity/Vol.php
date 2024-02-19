@@ -39,20 +39,28 @@ class Vol
     private ?Airport $airport_arrive = null;
 */
 
-    #[ORM\ManyToOne(cascade: ["remove"])]
+    /*#[ORM\ManyToOne(cascade: ["remove"])]
     #[ORM\JoinColumn(name: "airport_depart", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Airport $airport_depart = null;
 
     #[ORM\ManyToOne(cascade: ["remove"])]
     #[ORM\JoinColumn(name: "airport_arrive", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Airport $airport_arrive = null;
+*/
 
+    
+    #[ORM\ManyToOne]
+    private ?Airport $airport_depart = null;
 
-
+    #[ORM\ManyToOne]
+    private ?Airport $airport_arrive = null;
 
 
     #[ORM\ManyToOne]
     private ?Volclass $volclass = null;
+
+    #[ORM\ManyToOne]
+    private ?User $user = null;
 
    
 
@@ -121,24 +129,24 @@ class Vol
         return $this;
     }
 
-    public function getAirportDepart(): ?Airport
+    public function getairportDepart(): ?Airport
     {
         return $this->airport_depart;
     }
 
-    public function setAirportDepart(?Airport $airport_depart): static
+    public function setairportDepart(?Airport $airport_depart): static
     {
         $this->airport_depart = $airport_depart;
 
         return $this;
     }
 
-    public function getAirportArrive(): ?Airport
+    public function getairportarrive(): ?Airport
     {
         return $this->airport_arrive;
     }
 
-    public function setAirportArrive(?Airport $airport_arrive): static
+    public function setairportarrive(?Airport $airport_arrive): static
     {
         $this->airport_arrive = $airport_arrive;
 
@@ -153,6 +161,18 @@ class Vol
     public function setVolclass(?Volclass $volclass): static
     {
         $this->volclass = $volclass;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

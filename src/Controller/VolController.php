@@ -40,12 +40,6 @@ class VolController extends AbstractController
             'vols' => $vols,
         ]);
     }
-    
-    
-
-
-
-
 
     #[Route('/new', name: 'app_vol_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
