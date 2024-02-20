@@ -24,7 +24,7 @@
         }
 
         .form-back-link,
-        .form-submit-button {
+        .form-delete-button {
             display: inline-block;
             padding: 10px 20px;
             margin-top: 20px;
@@ -45,30 +45,28 @@
             background-color: #0056b3;
         }
 
-        .form-submit-button {
-            background-color: #28a745;
+        .form-delete-button {
+            background-color: #dc3545;
         }
 
-        .form-submit-button:hover {
-            background-color: #218838;
+        .form-delete-button:hover {
+            background-color: #c82333;
         }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <!-- Row 1 -->
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="form-container">
-                    <h1 class="form-title">Create new Hotel</h1>
+        <h1>Edit Chambre</h1>
 
-                    {{ include('hotel/_form.html.twig') }}
+        <div class="form-container">
+            <h1 class="form-title">Edit Chambre</h1>
 
-                    <a class="form-back-link" href="{{ path('app_hotel_index') }}">Back to List</a>
-                    <button type="submit" class="form-submit-button">Save</button>
-                </div>
-            </div>
+            {{ include('chambre/_form.html.twig', {'button_label': 'Update'}) }}
+
+            <a class="form-back-link" href="{{ path('app_chambre_index') }}">Back to List</a>
         </div>
+
+        {{ include('chambre/_delete_form.html.twig') }}
     </div>
 {% endblock %}

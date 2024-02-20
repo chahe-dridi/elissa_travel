@@ -8,7 +8,7 @@
         }
 
         .form-container {
-            max-width: 800px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ccc;
@@ -52,23 +52,38 @@
         .form-submit-button:hover {
             background-color: #218838;
         }
+
+        .flash-message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .flash-message-error {
+            background-color: #dc3545;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <!-- Row 1 -->
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="form-container">
-                    <h1 class="form-title">Create new Hotel</h1>
+        <title>New Chambre</title>
 
-                    {{ include('hotel/_form.html.twig') }}
+        <div class="form-container">
+            <h1 class="form-title">Create new Chambre</h1>
 
-                    <a class="form-back-link" href="{{ path('app_hotel_index') }}">Back to List</a>
-                    <button type="submit" class="form-submit-button">Save</button>
+            {% for flashError in app.flashes('error') %}
+                <div class="flash-message flash-message-error">
+                    {{ flashError }}
                 </div>
-            </div>
+            {% endfor %}
+
+            {{ include('chambre/_form.html.twig') }}
+
+            <a class="form-back-link" href="{{ path('app_chambre_index') }}">Back to list</a>
+            <button type="submit" class="form-submit-button">Save</button>
         </div>
     </div>
 {% endblock %}

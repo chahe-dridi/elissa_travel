@@ -17,8 +17,7 @@ class HotelType extends AbstractType
             ->add('telHotel')
             ->add('email')
             ->add('discHotel')
-            ->add('dateArr')
-            ->add('dateDepart')
+           
             ->add('etatHotel')
             ->add('nbChambre')
             ->add('User')

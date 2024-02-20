@@ -1,0 +1,39 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<title>Chambre</title>
+
+
+    <h1>Chambre</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chambre.id }}</td>
+            </tr>
+            <tr>
+                <th>TypeChambre</th>
+                <td>{{ chambre.typeChambre }}</td>
+            </tr>
+            <tr>
+                <th>VueHotel</th>
+                <td>{{ chambre.vueHotel }}</td>
+            </tr>
+            <tr>
+                <th>TypeLogHotel</th>
+                <td>{{ chambre.typeLogHotel }}</td>
+            </tr>
+            <tr>
+                <th>PrixHotel</th>
+                <td>{{ chambre.prixHotel }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chambre_index') }}">back to list</a>
+
+    <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
+
+    {{ include('chambre/_delete_form.html.twig') }}
+{% endblock %}

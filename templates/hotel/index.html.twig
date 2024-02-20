@@ -1,18 +1,17 @@
 {% extends 'nav_admin.html.twig' %}
 
 {% block css %}
-
-  <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
-<style>
-.container-fluid{
-margin-top:64px;
-}
-</style>
-{% endblock %} 
+    <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+    <style>
+        .container-fluid {
+            margin-top: 64px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid"  style="margin-top: 10px; align-items:center;">
-<div class="col-lg-4" >
+    <div class="container-fluid" style="margin-top: 10px; align-items:center;">
+        <div class="col-lg-4">
             <form action="" method="GET">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search by Hotel Name">
@@ -25,52 +24,51 @@ margin-top:64px;
                 <a href="{{ path('app_hotel_new') }}" class="btn btn-outline-secondary" style="margin-top: 10px;">Add New Hotel</a>
             </div>
         </div>
-    <div class="row">
-        <div class="col-lg-8">
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Id</th>
-                        <th>NomHotel</th>
-                        <th>Lieu</th>
-                        <th>TelHotel</th>
-                        <th>Email</th>
-                        <th>DiscHotel</th>
-                        <th>DateArr</th>
-                        <th>DateDepart</th>
-                        <th>EtatHotel</th>
-                        <th>NbChambre</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for hotel in hotels %}
-                    <tr>
-                        <td>{{ hotel.id }}</td>
-                        <td>{{ hotel.nomHotel }}</td>
-                        <td>{{ hotel.lieu }}</td>
-                        <td>{{ hotel.telHotel }}</td>
-                        <td>{{ hotel.email }}</td>
-                        <td>{{ hotel.discHotel }}</td>
-                        <td>{{ hotel.dateArr ? hotel.dateArr|date('Y-m-d') : '' }}</td>
-                        <td>{{ hotel.dateDepart ? hotel.dateDepart|date('Y-m-d') : '' }}</td>
-                        <td>{{ hotel.etatHotel }}</td>
-                        <td>{{ hotel.nbChambre }}</td>
-                        <td>
-                            <a href="{{ path('app_hotel_show', {'id': hotel.id}) }}" class="btn btn-sm btn-info" style="margin-bottom: 10px;">Show</a>
-                            <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}" class="btn btn-sm btn-primary" style="margin-bottom: 10px;">Edit</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="11">No records found</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-lg-8">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>NomHotel</th>
+                            <th>Lieu</th>
+                            <th>TelHotel</th>
+                            <th>Email</th>
+                            <th>DiscHotel</th>
+                            <th>DateArr</th>
+                            <th>DateDepart</th>
+                            <th>EtatHotel</th>
+                            <th>NbChambre</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hotel in hotels %}
+                            <tr>
+                                <td>{{ hotel.id }}</td>
+                                <td>{{ hotel.nomHotel }}</td>
+                                <td>{{ hotel.lieu }}</td>
+                                <td>{{ hotel.telHotel }}</td>
+                                <td>{{ hotel.email }}</td>
+                                <td>{{ hotel.discHotel }}</td>
+                                <td>{{ hotel.dateArr ? hotel.dateArr|date('Y-m-d') : '' }}</td>
+                                <td>{{ hotel.dateDepart ? hotel.dateDepart|date('Y-m-d') : '' }}</td>
+                                <td>{{ hotel.etatHotel }}</td>
+                                <td>{{ hotel.nbChambre }}</td>
+                                <td>
+                                    <a href="{{ path('app_hotel_show', {'id': hotel.id}) }}" class="btn btn-sm btn-info" style="margin-bottom: 10px;">Show</a>
+                                    <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}" class="btn btn-sm btn-primary" style="margin-bottom: 10px;">Edit</a>
+                                    <a href="{{ path('app_chambre_index', {'id': hotel.id}) }}" class="btn btn-sm btn-success" style="margin-bottom: 10px;">Chambre</a> <!-- Lien pour ajouter une nouvelle chambre -->
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="11">No records found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
     </div>
-</div>
-</div>
 {% endblock %}
