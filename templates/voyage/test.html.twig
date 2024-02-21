@@ -1,0 +1,106 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <!-- Row 1 -->
+   
+<section class="probootstrap-cover overflow-hidden relative" style="background-color: white"  >
+    <div class="overlay"></div>
+  <div class="container">
+  <div class="row align-items-center">
+        <div class="col-md probootstrap-animate">
+            <h1>Create new trip</h1></div>
+  
+  
+  
+
+
+
+
+
+  <form action="#" class="probootstrap-form">
+  <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Destination</label>
+  <label for="id_label_single" style="width: 60%;">
+  <input type="text" id="d_label_single" class="form-control" placeholder>
+  </label>
+  </div></div>
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Departure city</label>
+  <label for="id_label_single" style="width: 60%;">
+  <input type="text" id="d_label_single" class="form-control" placeholder>
+  </label>
+  </div>
+  </div>
+
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="probootstrap-date-month">Month</label>
+  <div class="probootstrap-date-wrap">
+  <span class="icon ion-calendar"></span>
+  <input type="date" id="probootstrap-date-month" class="form-control" placeholder>
+  </div>
+  </div>
+  </div>
+
+<div class="col-md">
+  <div class="form-group">
+  <label for="probootstrap-date">Year</label>
+  <div class="probootstrap-date">
+  <span class="icon ion-calendar"></span>
+  <input type="date" id="probootstrap-date" class="form-control" placeholder>
+  </div>
+  </div>
+  </div>
+  </div>
+<div class="row mb-5">
+<a href="{{ path('app_programme_new') }}" class="btn btn-dark">Plan a trip</a>
+</div>
+
+
+
+   <!-- {{ include('voyage/_form.html.twig') }}-->
+<div class="row mb-5">
+<div class="col-md">
+            <a href="{{ path('app_voyage_index') }}" class="btn btn-secondary">Back to List</a></div>
+<div class="col-md">
+ 
+<button class="btn btn-secondary ">{{ button_label|default('Save') }}</button>-->
+
+</div>
+        </div>
+    </div>
+</div>
+
+{{ form_widget(form.country, {'attr': {'class': 'form-select'}}) }}
+
+<div class="row mb-3">
+<div class="col-md">
+<div class="form-group">
+<label for="id_label_single">Month</label>
+<label for="id_label_single" style="width: 100%;">
+<select class="js-example-basic-single js-states form-control" id="id_label_single" style="width: 100%;">
+<option value="January">January</option>
+<option value="February">February</option>
+<option value="March ">March </option>
+<option value="April">April</option>
+<option value="May">May</option>
+<option value="June ">June </option>
+<option value="July">July</option>
+<option value="August">August</option>
+<option value="September">September</option>
+<option value="October ">October </option>
+<option value="November">November</option>
+<option value="December">December</option>
+</select>
+</label>
+</div>
+</div>
+
+{% endblock %}

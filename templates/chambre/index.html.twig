@@ -1,0 +1,47 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block css %}
+ <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+<style>
+.container-fluid{
+margin-top:64px;
+}
+</style>
+{% endblock %} 
+{% block body %}
+    <h1>Chambre index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>TypeChambre</th>
+                <th>VueHotel</th>
+                <th>TypeLogHotel</th>
+                <th>PrixHotel</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for chambre in chambres %}
+            <tr>
+                <td>{{ chambre.id }}</td>
+                <td>{{ chambre.typeChambre }}</td>
+                <td>{{ chambre.vueHotel }}</td>
+                <td>{{ chambre.typeLogHotel }}</td>
+                <td>{{ chambre.prixHotel }}</td>
+                <td>
+                    <a href="{{ path('app_chambre_show', {'id': chambre.id}) }}">show</a>
+                    <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chambre_new') }}">Create new</a>
+{% endblock %}

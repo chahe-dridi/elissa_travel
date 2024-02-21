@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit Voyage</title>
+
+{% block body %}
+    <h1>Edit Voyage</h1>
+
+    {{ include('voyage/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_voyage_index') }}">back to list</a>
+
+    {{ include('voyage/_delete_form.html.twig') }}
+{% endblock %}

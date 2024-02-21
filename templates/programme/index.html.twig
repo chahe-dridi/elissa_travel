@@ -1,0 +1,66 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+
+{% block body %}
+    <h1>Programme index</h1>
+<div class="container-fluid"  style="margin-top: 10px; align-items:center;">
+<div class="row mb-5 probootstrap-animate">
+
+<div class="col-sm" >
+            
+                <a href="{{ path('app_voyage_new') }}" class="btn btn-dark" >Save Trip</a>
+           
+        </div>
+    
+
+<div class="col-sm" >
+            <form action="" method="GET">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by  Program ">
+                    
+                    </div> 
+</div>
+         <div class="col-sm" >
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="submit">Search</button>
+                    </div>
+         </div>
+            </form>
+</div>
+</div>
+<table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Datedebut</th>
+                <th>Datefin</th>
+                <th>Prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for programme in programmes %}
+            <tr>
+                <td>{{ programme.id }}</td>
+                <td>{{ programme.description }}</td>
+                <td>{{ programme.datedebut ? programme.datedebut|date('Y-m-d') : '' }}</td>
+                <td>{{ programme.datefin ? programme.datefin|date('Y-m-d') : '' }}</td>
+                <td>{{ programme.prix }}</td>
+                <td>
+                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">show</a>
+                    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+<a href="{{ path('app_programme_new') }}">Create new</a>
+  
+{% endblock %}

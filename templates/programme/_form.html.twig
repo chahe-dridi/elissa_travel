@@ -1,0 +1,59 @@
+{{ form_start(form) }}
+
+      <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+      
+
+  
+
+
+
+         <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Description</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control border-top-0 border-left-0 border-right-0 rounded-0','placeholder':'Description '}}) }}
+            </label>
+  </div></div>
+   
+   <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Start Date</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.datedebut, {  'attr': {'class': 'form-control'  , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Start Date  ' }}) }}
+  </label>
+  </div></div>
+
+  <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">End date</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.datefin, {  'attr': {'class': 'form-control'  , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'End Date ' }}) }}
+  </label>
+  </div></div>
+
+    <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Price</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.prix, {  'attr': {'class': 'form-control' , 'type' : 'text' , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Price '}}) }}
+  </label>
+  </div></div>
+  
+
+
+    <button class="btn btn-secondary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -1,0 +1,15 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+<title>Edit Chambre</title>
+
+{% block body %}
+    <h1>Edit Chambre</h1>
+
+    {{ include('chambre/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_chambre_index') }}">back to list</a>
+
+    {{ include('chambre/_delete_form.html.twig') }}
+{% endblock %}

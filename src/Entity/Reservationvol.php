@@ -24,7 +24,7 @@ class Reservationvol
     private ?User $user = null;
 
     #[ORM\ManyToOne]
-    private ?payment $payment = null;
+    private ?Payment $Payment = null;
 
     public function getId(): ?int
     {
@@ -67,14 +67,14 @@ class Reservationvol
         return $this;
     }
 
-    public function getPayment(): ?payment
+    public function getPayment(): ?Payment
     {
-        return $this->payment;
+        return $this->Payment;
     }
 
-    public function setPayment(?payment $payment): static
+    public function setPayment(?Payment $Payment): static
     {
-        $this->payment = $payment;
+        $this->Payment = $Payment;
 
         return $this;
     }

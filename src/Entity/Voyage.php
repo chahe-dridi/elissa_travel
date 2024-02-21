@@ -16,11 +16,11 @@ class Voyage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $mois = null;
+    #[ORM\Column (length: 255)]
+    private ?string $mois = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $année = null;
+    #[ORM\Column]
+    private ?int $annee = null;
 
     #[ORM\Column(length: 255)]
     private ?string $villedepart = null;
@@ -34,6 +34,9 @@ class Voyage
     #[ORM\OneToMany(targetEntity: ReservationVoyage::class, mappedBy: 'Voyage')]
     private Collection $reservationVoyages;
 
+    #[ORM\Column(length: 255)]
+    private ?string $destination = null;
+
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -45,29 +48,28 @@ class Voyage
         return $this->id;
     }
 
-    public function getMois(): ?\DateTimeInterface
+    public function getMois(): ?string
     {
         return $this->mois;
     }
 
-    public function setMois(\DateTimeInterface $mois): static
+    public function setMois(string $mois): static
     {
         $this->mois = $mois;
 
         return $this;
     }
 
-    public function getAnnée(): ?\DateTimeInterface
-    {
-        return $this->année;
-    }
+    public function getAnnee(): ?int
+{
+    return $this->annee ;
+}
 
-    public function setAnnée(\DateTimeInterface $année): static
-    {
-        $this->année = $année;
-
-        return $this;
-    }
+public function setAnnee(int $annee): static
+{
+    $this->annee = $annee;
+    return $this;
+}
 
     public function getVilledepart(): ?string
     {
@@ -149,6 +151,18 @@ class Voyage
                 $reservationVoyage->setVoyage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDestination(): ?string
+    {
+        return $this->destination;
+    }
+
+    public function setDestination(string $destination): static
+    {
+        $this->destination = $destination;
 
         return $this;
     }

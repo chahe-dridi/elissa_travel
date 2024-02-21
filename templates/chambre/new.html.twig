@@ -1,0 +1,12 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<title>New Chambre</title>
+
+{% block body %}
+    <h1>Create new Chambre</h1>
+
+    {{ include('chambre/_form.html.twig') }}
+
+    <a href="{{ path('app_chambre_index') }}">back to list</a>
+{% endblock %}

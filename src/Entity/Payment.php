@@ -18,7 +18,7 @@ class Payment
     private ?string $type = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $payment_date = null;
+    private ?\DateTimeInterface $Payment_date = null;
 
     #[ORM\Column]
     private ?float $amount = null;
@@ -42,12 +42,12 @@ class Payment
 
     public function getPaymentDate(): ?\DateTimeInterface
     {
-        return $this->payment_date;
+        return $this->Payment_date;
     }
 
-    public function setPaymentDate(\DateTimeInterface $payment_date): static
+    public function setPaymentDate(\DateTimeInterface $Payment_date): static
     {
-        $this->payment_date = $payment_date;
+        $this->Payment_date = $Payment_date;
 
         return $this;
     }
