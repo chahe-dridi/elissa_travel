@@ -1,0 +1,39 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block css %}
+
+<style>
+    /* Vos styles personnalisés pour la page de réservation ici, 
+    vous pouvez réutiliser les styles de la page hôtel ou les adapter selon les besoins. */
+    .container-fluid {
+        margin-top: 64px;
+    }
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    /* Plus de styles si nécessaire */
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="form-container">
+                <h1 class="form-title">Create New Reservation</h1>
+
+                {{ include('reservation_hotel/_form.html.twig') }}
+
+                <a class="form-back-link" href="{{ path('app_reservation_hotel_index') }}">Back to List</a>
+                <button type="submit" class="form-submit-button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

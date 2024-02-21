@@ -31,11 +31,6 @@ class Hotel
     #[ORM\Column(length: 255)]
     private ?string $discHotel = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateArr = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateDepart = null;
 
     #[ORM\Column(length: 255)]
     private ?string $etatHotel = null;
@@ -119,30 +114,6 @@ class Hotel
     public function setDiscHotel(string $discHotel): static
     {
         $this->discHotel = $discHotel;
-
-        return $this;
-    }
-
-    public function getDateArr(): ?\DateTimeInterface
-    {
-        return $this->dateArr;
-    }
-
-    public function setDateArr(\DateTimeInterface $dateArr): static
-    {
-        $this->dateArr = $dateArr;
-
-        return $this;
-    }
-
-    public function getDateDepart(): ?\DateTimeInterface
-    {
-        return $this->dateDepart;
-    }
-
-    public function setDateDepart(\DateTimeInterface $dateDepart): static
-    {
-        $this->dateDepart = $dateDepart;
 
         return $this;
     }
