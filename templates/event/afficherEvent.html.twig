@@ -1,0 +1,136 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block title %}Hello Eventontroller!{% endblock %}
+
+{% block body %}
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Les Evenements</h1>
+            <nav>
+
+
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+
+
+                        <div class="card-body">
+
+                            {% for message in app.flashes('notice') %}
+                                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+
+
+                            {% for message in app.flashes('noticedelete') %}
+                                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+                            <h5 class="card-title"></h5>
+                            <a href="{{ path('ajouterEvent') }}">
+                                <button type="button" style="float: right;padding: 10px;" class="btn btn-outline-info">Ajouter</button>
+
+
+
+                            </a>
+
+       
+
+                            <!-- Default Table -->
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col"> NomEvent</th>
+                                    <th scope="col">AdresseEvent </th>
+                                    <th scope="col">nbrticketsdispo </th>
+                                    <th scope="col">datedebutEvent </th>
+                                    <th scope="col">datefinevent </th>
+                                    <th scope="col">prixentre </th>
+                                    <th scope="col">imageevent </th>
+                                    <th scope="col">TypeEvenement </th>
+
+
+                                    <th scope="col">Modifier</th>
+                                    <th scope="col">Supprimer</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        {% if listS | length == 0 %}
+
+                                            <p style="text-align: center">Evenements vide</p>
+
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+
+
+
+                                {% for p in listS  %}
+
+
+
+                                    <tr>
+
+                                        <td>{{p.NomEvent}}</td>
+                                      <td>{{p.AdresseEvent}}</td>
+                                      <td>{{p.nbrticketsdispo}}</td>
+                                      <td>{{p.datedebutEvent |date('Y-m-d')}}</td>
+                                      <td>{{p.datefinevent  |date('Y-m-d')}}</td>
+                                      <td>{{p.prixentre}}</td>
+                                      <td><img  style="width: 75px; height: 55px; padding: 5px;" src="{{ asset('uploads/'~p.imageevent) }}"/></td>
+
+                                      <td>{{p.TypeEvenement.nomType}}</td>
+
+                                        
+
+
+                                     <td>
+    <a href="{{ path('modifierEvenement', {'id': p.id}) }}" class="btn btn-outline-info">
+        Modifier
+    </a>
+</td>
+
+<td>
+    <a href="javascript:void(0)" onclick="if(confirm('Voulez-vous vraiment supprimer ?')){window.location='{{ path('suppressionEvent', {'id': p.id}) }}';}" class="btn btn-outline-danger">
+        Supprimer
+    </a>
+</td>
+
+ 
+
+
+
+                            </a>
+                                    </tr>
+
+                                {% endfor %}
+
+
+                                </tbody>
+                            </table>
+                            <!-- End Default Table Example -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+{% endblock %}

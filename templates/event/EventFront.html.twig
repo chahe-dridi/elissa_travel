@@ -1,0 +1,70 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block categories %}
+{% endblock %}
+
+{% block candidate %}
+{% endblock %}
+
+{% block body %}
+    <section class="min-sec">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-9">
+                    <div class="sec-heading">
+                        <br>
+                        <strong><h2>Liste des <span class="theme-cl-2">Events</span></h2></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                {% for p in listS %}
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="ser_110">
+                                    <div class="ser_110_thumb">
+                                        <a>
+                                            <img src="{{ asset('uploads/' ~ p.imageevent) }}" class="img-fluid" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="event-details">
+                                            <strong>Event Name:</strong> {{ p.NomEvent }}
+                                        </div>
+
+                                        <div class="event-details">
+                                            <strong>Adresse Event:</strong> {{ p.AdresseEvent }}
+                                        </div>
+
+                                        <div class="event-details">
+                                            <strong>Date Debut Event:</strong> {{ p.datedebutEvent|date('Y-m-d') }}
+                                        </div>
+
+                                        <div class="event-details">
+                                            <strong>TypeEvenement:</strong> {{ p.TypeEvenement.nomType }}
+                                        </div>
+                                          <div class="event-details">
+                                            <strong>Nbr Tickets Dispo:</strong> {{ p.nbrticketsdispo }}
+                                        </div>
+
+                                        <div class="event-details">
+                                            <i class="fa fa-bolt"></i> From <strong class="theme-cl">{{ p.prixentre }} DT</strong>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <a href="{{ path('Addreservation', {'id': p.id}) }}" class="btn btn-outline-info">
+                                                Addreservation
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

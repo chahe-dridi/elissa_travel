@@ -1,0 +1,38 @@
+{% extends 'nav_user.html.twig' %}
+{% block body %}
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Formulaire Ajout Reservation</h1>
+            <nav>
+            </nav>
+        </div>
+
+        <div class="container">
+            <div class="row justify-content-center align-items-center" style="height: 100vh;">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ajouter Reservation</h5>
+
+                            {{ form_start(f, {attr: {novalidate: 'novalidate'}}) }}
+                            <div class="row mb-3">
+                                <label for="inputText" class="col-sm-4 col-form-label">Event</label>
+                                <div class="col-sm-8">
+                                    {{ form_widget(f.Event, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(f.Event, {'attr': {'class': 'text-danger'}}) }}
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-8 offset-sm-4">
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </div>
+                            </div>
+                            {{ form_end(f) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

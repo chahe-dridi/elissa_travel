@@ -1,0 +1,104 @@
+{% extends 'nav_admin.html.twig' %}
+{% block body %}
+        <main id="main" class="main">
+
+            <div class="pagetitle">
+                <h1>Formualire Ajout Event</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Forms</li>
+                        <li class="breadcrumb-item active">Event</li>
+                    </ol>
+                </nav>
+            </div>
+
+
+        <div class="row">
+            <div  style="display: flex;align-items: center;justify-content: center;margin-top: 0px; padding: 10px;">
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <h5 clss="card-title">Ajouter Event</h5>
+
+                        {{ form_start(f,{attr:{novalidate:'novalidate'}}) }}
+                        <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">NomEvent</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.NomEvent,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.NomEvent,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputPassword" class="col-sm-4 col-form-label">AdresseEvent</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.AdresseEvent,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.AdresseEvent,{'attr':{'class':'text-danger'}}) }}
+
+                            </div>
+                        </div>
+                
+                         <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">Nbrtickets Dispo</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.nbrticketsdispo,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.nbrticketsdispo,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+                          <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">datedebutEvent</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.datedebutEvent,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.datedebutEvent,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+                          <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">datefinevent</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.datefinevent,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.datefinevent,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+                         <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">prixentre</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.prixentre,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.prixentre,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputNumber" class="col-sm-4 col-form-label">File Upload</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.imageevent,{'attr':{'class':'form-control'}}) }}
+
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputText" class="col-sm-4 col-form-label">TypeEvenement</label>
+                            <div class="col-sm-10">
+                                {{ form_widget(f.TypeEvenement,{'attr':{'class':'form-control'}}) }}
+                                {{ form_errors(f.TypeEvenement,{'attr':{'class':'text-danger'}}) }}
+                            </div>
+                        </div>
+
+
+
+
+                     
+                        <br/>
+                        <br/>
+                     <div class="row mb-3">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">S'enregistrer</button>
+
+                            </div>
+                        </div>
+                        {{ form_end(f) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </main>
+{% endblock %}
