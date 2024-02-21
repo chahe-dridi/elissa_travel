@@ -17,7 +17,26 @@
                     </div>
                 </div>
             </div>
+ <div class="card">
 
+
+                        <div class="card-body">
+
+                            {% for message in app.flashes('notice') %}
+                                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+
+
+                            {% for message in app.flashes('noticedelete') %}
+                                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+                           
             <div class="row justify-content-center">
                 {% for p in listS %}
                     <div class="col-lg-4 col-md-6 col-sm-12">
