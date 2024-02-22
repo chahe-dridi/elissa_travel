@@ -1,37 +1,49 @@
 {% extends 'nav_admin.html.twig' %}
 
-
 {% block body %}
-    <h1>Volclass</h1>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ volclass.id }}</td>
-            </tr>
-            <tr>
-                <th>Class_name</th>
-                <td>{{ volclass.className }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ volclass.description }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ volclass.price }}</td>
-            </tr>
-            <tr>
-                <th>Ticket_number</th>
-                <td>{{ volclass.ticketNumber }}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container">
+    <h1 style="text-align: center; margin-bottom: 20px;">Flight</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">ID:</th>
+                        <td>{{ volclass.id }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Admin:</th>
+                        <td>{{ volclass.user.nom }} {{ volclass.user.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Class Name:</th>
+                        <td>{{ volclass.className }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Description:</th>
+                        <td>{{ volclass.description }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Price:</th>
+                        <td>{{ volclass.price }} $</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Ticket Number:</th>
+                        <td>{{ volclass.ticketNumber }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}" class="btn btn-primary">Edit</a>
+                <a href="{{ path('app_volclass_index') }}" class="btn btn-secondary">Back to List</a>
+                {{ include('volclass/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 
-    <a href="{{ path('app_volclass_index') }}">back to list</a>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}">edit</a>
-
-    {{ include('volclass/_delete_form.html.twig') }}
 {% endblock %}

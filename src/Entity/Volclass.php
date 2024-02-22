@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use App\Repository\VolclassRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,23 +20,35 @@ class Volclass
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $class_name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
+    #[Assert\Type(type: 'numeric')] 
     private ?float $price = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
+    #[Assert\Type(type: 'numeric')]
     private ?int $ticket_number = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?User $user = null;
 
    
     #[ORM\OneToMany(mappedBy: 'volclass', targetEntity: Vol::class, cascade: ["remove"])]
-    private $vols;
+    #[Assert\NotBlank] 
+     private $vols;
 
     public function __construct()
     {
@@ -97,11 +111,7 @@ class Volclass
     }
 
 
-    public function __toString(): string
-    {
-        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
-        return $this->id;
-    }
+    
 
     public function getUser(): ?User
     {
@@ -114,5 +124,9 @@ class Volclass
 
         return $this;
     }
-   
+    public function __toString(): string
+    {
+        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
+        return $this->id;
+    }
 }

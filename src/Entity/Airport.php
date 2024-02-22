@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 use App\Repository\AirportRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,18 +19,27 @@ class Airport
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $country = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'airport_depart', targetEntity: Vol::class, cascade: ["remove"])]

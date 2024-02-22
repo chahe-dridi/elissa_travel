@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReservationvolRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReservationvolRepository::class)]
 class Reservationvol
@@ -13,18 +14,27 @@ class Reservationvol
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank]
     private ?float $total_price = null;
+    
+    #[ORM\ManyToOne]
+    #[Assert\NotBlank]
+    private ?Vol $vol = null;
 
     #[ORM\ManyToOne]
-    private ?vol $vol = null;
-
-    #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne]
-    private ?Payment $payment = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    private ?string $payment_method = null;
+    
+   
+    
 
     public function getId(): ?int
     {
@@ -43,12 +53,12 @@ class Reservationvol
         return $this;
     }
 
-    public function getVol(): ?vol
+    public function getVol(): ?Vol
     {
         return $this->vol;
     }
 
-    public function setVol(?vol $vol): static
+    public function setVol(?Vol $vol): static
     {
         $this->vol = $vol;
 
@@ -67,17 +77,26 @@ class Reservationvol
         return $this;
     }
 
-    public function getPayment(): ?Payment
+   
+
+   
+    
+
+    public function getPaymentMethod(): ?string
     {
-        return $this->payment;
+        return $this->payment_method;
     }
 
-    public function setPayment(?Payment $payment): static
+    public function setPaymentMethod(string $payment_method): static
     {
-        $this->payment = $payment;
+        $this->payment_method = $payment_method;
 
         return $this;
     }
 
-    
+    public function __toString(): string
+    {
+        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
+        return $this->id;
+    }
 }

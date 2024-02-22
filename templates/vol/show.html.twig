@@ -3,37 +3,37 @@
 {% block body %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-
-<div class="container-fluid">
-    <h1 style="text-align: center; margin-bottom: 20px;"> </h1>
-   
-    <div class="row">
-        <div class="col-lg-8 d-flex align-items-stretch">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th style="width: 30%;">Id</th>
+ 
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Flight</h1>
+        <div class="row">
+            <div class="col-lg-8">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Id</th>
                         <td>{{ vol.id }}</td>
                     </tr>
                     
                     <tr>
-                        <th style="width: 30%;">Compagnie Aérienne</th>
+                        <th style="width: 30%; background-color: #f0f0f0;">airline</th>
                         <td>{{ vol.compagnieAerienne }}</td>
                     </tr>
                     <tr>
-                        <th style="width: 30%;">Heure Départ</th>
+                        <th style="width: 30%; background-color: #f0f0f0;">Heure Départ</th>
                         <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
                     </tr>
                     <tr>
-                        <th style="width: 30%;">Heure Arrivée</th>
+                        <th style="width: 30%; background-color: #f0f0f0;">Heure Arrivée</th>
                         <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
                     </tr>
                     <tr>
-                        <th style="width: 30%;">Escale</th>
+                        <th style="width: 30%; background-color: #f0f0f0;">Escale</th>
                         <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
                     </tr>
+                     
                     <tr>
-                        <th style="width: 30%;">Disponible</th>
+                        <th style="width: 30%; background-color: #f0f0f0;">Disponible</th>
                         <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
                     </tr>
                 </tbody>

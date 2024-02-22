@@ -1,0 +1,59 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<div style="padding-bottom: 5%;"></div>
+<!-- Row 1 -->
+<div class="row">
+
+    <div class="col-lg-12 d-flex justify-content-between align-items-center"> <!-- Added classes -->
+        <div class="button-group"> <!-- Added class attribute -->
+            <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+            <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+            <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+            <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
+        </div>
+        <!-- Add New Airport link styled like search button -->
+        <div>
+            <a href="{{ path('app_reservation_vol_admin_new') }}" class="btn btn-outline-secondary">Add New reservation</a>
+        </div>
+    </div>
+
+
+    <h1></h1>
+    <h1></h1>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User id</th>
+                <th>Flight id</th>
+                <th>Total price</th>
+                <th>Payment method</th>
+               
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reservationvol in reservationvols %}
+            <tr>
+                <td>{{ reservationvol.id }}</td>
+                <td>{{ reservationvol.user }}</td>
+                <td>{{ reservationvol.vol }}</td>
+                <td>{{ reservationvol.totalPrice }}</td>
+                <td>{{ reservationvol.getPaymentMethod }}</td>
+                <td>
+                    <a href="{{ path('app_reservation_vol_admin_show', {'id': reservationvol.id}) }}"  class="btn btn-sm btn-info">show</a>
+                    <a href="{{ path('app_reservation_vol_admin_edit', {'id': reservationvol.id}) }}"class="btn btn-sm btn-info" >edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+ 
+{% endblock %}

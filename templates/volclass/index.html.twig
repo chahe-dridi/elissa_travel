@@ -3,15 +3,32 @@
 
 {% block body %}
 <div style="padding-bottom: 5%;"></div>
+
     <!-- Row 1 -->
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12 d-flex justify-content-between align-items-center"> <!-- Added classes -->
+            <div class="button-group"> <!-- Added class attribute -->
+                <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+                <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+                <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+                <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
+            </div>
+            <!-- Add New Vol link styled like search button -->
+            <div>
+                <a href="{{ path('app_volclass_new') }}" class="btn btn-outline-secondary">Add New flight class </a>
+            </div>
+        </div>
+    </div>
 
- 
+    <h1></h1>
+    <h1></h1>
+
+    <div class="col-lg-8">
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Admin</th>
                 <th>Class_name</th>
                 <th>Description</th>
                 <th>Price</th>
@@ -23,13 +40,14 @@
         {% for volclass in volclasses %}
             <tr>
                 <td>{{ volclass.id }}</td>
+                <td>{{ volclass.user.nom }} {{ volclass.user.prenom }}</td>
                 <td>{{ volclass.className }}</td>
                 <td>{{ volclass.description }}</td>
-                <td>{{ volclass.price }}</td>
+                <td>{{ volclass.price }} $</td>
                 <td>{{ volclass.ticketNumber }}</td>
                 <td>
-                    <a href="{{ path('app_volclass_show', {'id': volclass.id}) }}">show</a>
-                    <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}">edit</a>
+                    <a href="{{ path('app_volclass_show', {'id': volclass.id}) }}" class="btn btn-sm btn-info">show</a>
+                    <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}" class="btn btn-sm btn-info">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -40,10 +58,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_volclass_new') }}">Create new</a>  
+    
 
 
 </div>
  
-</div>
+ 
 {% endblock %}

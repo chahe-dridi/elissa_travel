@@ -22,8 +22,7 @@ class ReservationHotel
     #[ORM\Column]
     private ?float $PrixTT = null;
 
-    #[ORM\ManyToOne]
-    private ?Payment $payment = null;
+    
 
     public function getId(): ?int
     {
@@ -66,15 +65,5 @@ class ReservationHotel
         return $this;
     }
 
-    public function getPayment(): ?Payment
-    {
-        return $this->payment;
-    }
-
-    public function setPayment(?Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
-    }
+   
 }

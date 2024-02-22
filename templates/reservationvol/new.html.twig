@@ -1,0 +1,30 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Create New Reservation</h2>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Reservation Details</h5>
+                        <hr>
+                        {{ include('reservationvol/_form.html.twig') }}
+
+                        <a href="{{ path('app_reservationvol_index') }}" class="btn btn-primary mt-3">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

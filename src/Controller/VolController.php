@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+
+
 #[Route('/vol')]
 class VolController extends AbstractController
 {
@@ -41,6 +45,14 @@ class VolController extends AbstractController
         ]);
     }
 
+
+
+
+
+
+
+
+    
     #[Route('/new', name: 'app_vol_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

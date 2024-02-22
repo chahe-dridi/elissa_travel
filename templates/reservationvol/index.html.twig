@@ -1,0 +1,45 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
+   
+    <div class="overlay"></div>
+    <div class="container">
+      
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Available Flights</h2>
+                <a href="{{ path('app_reservationvol_show')}}" class="btn btn-primary">Show Reservation</a>
+            </div>
+        </div>
+       
+        <div class="row">
+       
+            {% for flight in flights %}
+            <div class="col-md-4 mb-3">
+                <div >
+                    <div class="card-body">
+                        <h5 class="card-title">Flight Information</h5>
+                        <p class="card-text">Departure Airport: {{ flight.getairportDepart().getName() }} ({{ flight.getairportDepart().getCity() }}, {{ flight.getairportDepart().getCountry() }})</p>
+                        <p class="card-text">Arrival Airport: {{ flight.getairportarrive().getName() }} ({{ flight.getairportarrive().getCity() }}, {{ flight.getairportarrive().getCountry() }})</p>
+                        <p class="card-text">Departure Time: {{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</p>
+                        <p class="card-text">Arrival Time: {{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</p>
+                        <p class="card-text">Escale: {{ flight.isEscale() ? 'Yes' : 'No' }}</p>
+                       
+                      
+                        <p class="card-text">Class: {{ flight.getVolclass().getClassName() }}</p>
+                        <p class="card-text">Price: ${{ flight.getVolclass().getPrice() }}</p>
+                       <a href="{{ path('app_reservationvol_new', {'id': flight.getId()}) }}" class="btn btn-primary">View Reservation</a>
+
+                    </div>
+                </div>
+            </div>
+
+           
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

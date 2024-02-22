@@ -22,8 +22,7 @@ class ReservationVoyage
     #[ORM\ManyToOne(inversedBy: 'reservationVoyages')]
     private ?Voyage $Voyage = null;
 
-    #[ORM\ManyToOne]
-    private ?Payment $payment = null;
+   
 
     public function getId(): ?int
     {
@@ -66,15 +65,5 @@ class ReservationVoyage
         return $this;
     }
 
-    public function getPayment(): ?Payment
-    {
-        return $this->payment;
-    }
-
-    public function setPayment(?Payment $payment): static
-    {
-        $this->payment = $payment;
-
-        return $this;
-    }
+    
 }

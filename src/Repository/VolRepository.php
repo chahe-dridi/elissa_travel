@@ -39,11 +39,35 @@ class VolRepository extends ServiceEntityRepository
     }
 
 
+    public function findByCityCountryAndDate(?string $departureCity, ?string $departureCountry, ?string $arrivalCity, ?string $arrivalCountry, ?\DateTime $date): array
+    {
+        $qb = $this->createQueryBuilder('v')
+            ->leftJoin('v.airport_depart', 'ad')
+            ->leftJoin('v.airport_arrive', 'aa');
 
+        if ($departureCity && $departureCountry) {
+            $qb->andWhere('ad.city = :departureCity')
+               ->andWhere('ad.country = :departureCountry')
+               ->setParameter('departureCity', $departureCity)
+               ->setParameter('departureCountry', $departureCountry);
+        }
 
+        if ($arrivalCity && $arrivalCountry) {
+            $qb->andWhere('aa.city = :arrivalCity')
+               ->andWhere('aa.country = :arrivalCountry')
+               ->setParameter('arrivalCity', $arrivalCity)
+               ->setParameter('arrivalCountry', $arrivalCountry);
+        }
 
+        if ($date) {
+            $qb->andWhere(':date BETWEEN v.heure_depart AND v.heure_arrive')
+               ->setParameter('date', $date);
+        }
 
+        return $qb->getQuery()->getResult();
+    }
 
+ 
 
 
 //    /**

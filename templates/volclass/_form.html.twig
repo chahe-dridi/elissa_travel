@@ -1,4 +1,49 @@
+ 
+
+
+
+
+
+
+
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    
+    <!-- Class Name field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.class_name, 'Class Name', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.class_name, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- Description field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.description, 'Description', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- Price field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.price, 'Price', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- Ticket Number field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.ticket_number, 'Ticket Number', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.ticket_number, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- User selection field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.user, 'User', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">{{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+    
+    <!-- Submit button -->
+    <div class="form-group row">
+        <div class="col-sm-10 offset-sm-2">
+            <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
+    
 {{ form_end(form) }}

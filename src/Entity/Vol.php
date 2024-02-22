@@ -8,6 +8,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+
+
+
 #[ORM\Entity(repositoryClass: VolRepository::class)]
 class Vol
 {
@@ -17,12 +25,17 @@ class Vol
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $compagnie_aerienne = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\GreaterThanOrEqual("now")]
     private ?\DateTimeInterface $heure_depart = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\GreaterThan(propertyPath: "heure_depart")]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $heure_arrive = null;
 
     #[ORM\Column]
@@ -50,19 +63,53 @@ class Vol
 
     
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?Airport $airport_depart = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
+    #[Assert\NotEqualTo(propertyPath: "airport_depart", message: "The arrival airport must be different from the departure airport.")]
     private ?Airport $airport_arrive = null;
 
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?Volclass $volclass = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?User $user = null;
+//test
 
+     #[ORM\OneToMany(mappedBy: 'vol', targetEntity: Reservationvol::class, cascade: ["remove"])]
+     private $reservations;
    
+
+     public function __construct()
+     {
+         $this->reservations = new ArrayCollection();
+     }
+
+//test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     public function getId(): ?int
     {
@@ -177,5 +224,13 @@ class Vol
         return $this;
     }
 
+  
+ 
+
+    public function __toString(): string
+    {
+        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
+        return $this->id;
+    }
      
 }
