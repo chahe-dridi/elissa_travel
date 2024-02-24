@@ -39,6 +39,29 @@ class HotelType extends AbstractType
             ])
             
             ->add('nbChambre')
+            ->add('typeChambre', ChoiceType::class, [
+                'choices' => [
+                    'Double' => 'double',
+                    'Single' => 'single',
+                ],
+                'placeholder' => 'Choose an option', // Optionnel, pour ajouter une option vide
+            ])
+            ->add('vueHotel', ChoiceType::class, [
+                'choices' => [
+                    'Vue sur mer' => 'vue_mere',
+                    'Vue sur piscine' => 'vue_picine',
+                ],
+                'placeholder' => 'Choose an option', // Optionnel, pour ajouter une option vide
+            ])
+            ->add('typeLogHotel', ChoiceType::class, [
+                'choices' => [
+                    'Demi-pension' => 'demi_pension',
+                    'Petit déjeuner' => 'petit_dejeuner',
+                    'Pension complète' => 'pension_complete',
+                ],
+                'placeholder' => 'Choose an option', // Optionnel, pour ajouter une option vide
+            ])
+            ->add('prixHotel')
         ;
     }
 

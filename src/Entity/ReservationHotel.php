@@ -19,8 +19,9 @@ class ReservationHotel
     #[ORM\ManyToOne(inversedBy: 'reservationHotels')]
     private ?Hotel $Hotel = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $PrixTT = null;
+    
      
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateArrive = null;

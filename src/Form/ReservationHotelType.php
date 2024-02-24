@@ -15,12 +15,9 @@ class ReservationHotelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('PrixTT')
+            
             ->add('dateArrive')
             ->add('dateDepart')
-            ->add('email')
-            ->add('nom')
-            ->add('preNom')
             ->add('Distination', ChoiceType::class, [
                 'choices' => [
                     'Ariana' => 'Ariana',
@@ -50,14 +47,17 @@ class ReservationHotelType extends AbstractType
                 ],
                 'placeholder' => 'Choisir une destination',
             ])
+            ->add('nom')
+            ->add('preNom')
+            ->add('email')
             ->add('ChambrE')
-            ->add('User')
+            
             ->add('Hotel', EntityType::class, [
                 'class' => Hotel::class,
                 // Supposons que 'name' est la propriété à afficher pour les hôtels
                 'choice_label' => 'NomHotel',
             ])
-            ->add('Payment')
+            
         ;
     }
 
