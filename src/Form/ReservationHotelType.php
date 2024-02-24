@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Entity\ReservationHotel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +21,35 @@ class ReservationHotelType extends AbstractType
             ->add('email')
             ->add('nom')
             ->add('preNom')
-            ->add('Distination')
+            ->add('Distination', ChoiceType::class, [
+                'choices' => [
+                    'Ariana' => 'Ariana',
+                    'Beja' => 'Beja',
+                    'Ben Arous' => 'Ben Arous',
+                    'Bizerte' => 'Bizerte',
+                    'Gabes' => 'Gabes',
+                    'Gafsa' => 'Gafsa',
+                    'Jendouba' => 'Jendouba',
+                    'Kairouan' => 'Kairouan',
+                    'Kasserine' => 'Kasserine',
+                    'Kebili' => 'Kebili',
+                    'Kef' => 'Kef',
+                    'Mahdia' => 'Mahdia',
+                    'Manouba' => 'Manouba',
+                    'Medenine' => 'Medenine',
+                    'Monastir' => 'Monastir',
+                    'Nabeul' => 'Nabeul',
+                    'Sfax' => 'Sfax',
+                    'Sidi Bouzid' => 'Sidi Bouzid',
+                    'Siliana' => 'Siliana',
+                    'Sousse' => 'Sousse',
+                    'Tataouine' => 'Tataouine',
+                    'Tozeur' => 'Tozeur',
+                    'Tunis' => 'Tunis',
+                    'Zaghouan' => 'Zaghouan',
+                ],
+                'placeholder' => 'Choisir une destination',
+            ])
             ->add('ChambrE')
             ->add('User')
             ->add('Hotel', EntityType::class, [

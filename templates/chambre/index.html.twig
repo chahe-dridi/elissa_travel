@@ -31,6 +31,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                 <th>nomHotel</th>
                 <th>TypeChambre</th>
                 <th>VueHotel</th>
                 <th>TypeLogHotel</th>
@@ -42,6 +43,9 @@
         {% for chambre in chambres %}
             <tr>
                 <td>{{ chambre.id }}</td>
+
+                <td>{{ chambre.hotel.nomHotel }}</td>
+                
                 <td>{{ chambre.typeChambre }}</td>
                 <td>{{ chambre.vueHotel }}</td>
                 <td>{{ chambre.typeLogHotel }}</td>

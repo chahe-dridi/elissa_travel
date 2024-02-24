@@ -16,18 +16,30 @@ class Hotel
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
+    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $nomHotel = null;
-
+    
+    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
+    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $lieu = null;
+    
 
+    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
+    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $telHotel = null;
 
+    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
+    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
+    
 
+    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
+    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $discHotel = null;
 
@@ -46,6 +58,9 @@ class Hotel
 
     #[ORM\ManyToOne(inversedBy: 'hotels')]
     private ?User $User = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
 
     public function __construct()
     {
@@ -210,6 +225,18 @@ class Hotel
     public function setUser(?User $User): static
     {
         $this->User = $User;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

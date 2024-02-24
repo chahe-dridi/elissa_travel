@@ -1,0 +1,67 @@
+{% extends 'nav_user.html.twig' %}
+{% block body %}
+<div class="container-fluid" style="margin-top: 10px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form action="" method="GET">
+                <div class="input-group mb-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Hotel Name">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="text-right mb-3">
+                <a href="{{ path('app_hotel_new') }}" class="btn btn-outline-secondary">Add New Hotel</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Hotel Name</th>
+                            <th>Location</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>No. of Rooms</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hotel in hotels %}
+                        <tr>
+                            <td>{{ hotel.id }}</td>
+                            <td>
+                                {% if hotel.image %}
+                                <img src="{{ asset('uploads/' ~ hotel.image) }}" alt="{{ hotel.nomHotel }}" class="img-thumbnail" style="max-height: 50px;">
+                                {% else %}
+                                No Image
+                                {% endif %}
+                            </td>
+                            <td>{{ hotel.nomHotel }}</td>
+                            <td>{{ hotel.lieu }}</td>
+                            <td>{{ hotel.telHotel }}</td>
+                            <td>{{ hotel.email }}</td>
+                            <td>{{ hotel.discHotel }}</td>
+                            <td>{{ hotel.etatHotel }}</td>
+                            <td>{{ hotel.nbChambre }}</td>
+                            <td>
+                                <a href="{{ path('app_reservation_hotel_new', {'id': hotel.id}) }}" class="btn btn-sm btn-info mr-2">SReserver</a>
+                                
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10">No records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

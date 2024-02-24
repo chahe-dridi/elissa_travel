@@ -3,7 +3,10 @@
 
 
 {% block body %}
-    
+    <div class="row">
+   
+</div>
+
 
     <table class="table">
         <thead>
@@ -35,6 +38,7 @@
                 <td>
                     <a href="{{ path('app_reservation_hotel_show', {'id': reservation_hotel.id}) }}">show</a>
                     <a href="{{ path('app_reservation_hotel_edit', {'id': reservation_hotel.id}) }}">edit</a>
+                    
                 </td>
             </tr>
         {% else %}
@@ -45,5 +49,8 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_reservation_hotel_new') }}">Create new</a>
+    <a href="{{ path('app_reservation_hotel_new') }}" class="btn btn-primary btn-lg">Réserver</a>
+    
+    
+
 {% endblock %}

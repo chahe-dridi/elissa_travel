@@ -185,5 +185,18 @@ class ReservationHotel
     }
 
 
+    private $destination;
+
+    public function getDestination(): ?string
+    {
+        return $this->destination;
+    }
+
+    public function setDestination(string $destination): self
+    {
+        $this->destination = $destination;
+
+        return $this;
+    }
 }
 

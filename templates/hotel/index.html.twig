@@ -31,6 +31,7 @@ margin-top:64px;
                 <thead class="thead-dark">
                     <tr>
                         <th>Id</th>
+                        <th>Image</th>
                         <th>NomHotel</th>
                         <th>Lieu</th>
                         <th>TelHotel</th>
@@ -45,6 +46,11 @@ margin-top:64px;
                 {% for hotel in hotels %}
                     <tr>
                         <td>{{ hotel.id }}</td>
+                        <td> {% if hotel.image %}
+                            <img src="{{ asset('uploads/' ~ hotel.image) }}" alt="{{ hotel.nomHotel }}" class="img-thumbnail" style="max-height: 50px;">
+                        {% else %}
+                            No Image
+                        {% endif %} </td>
                         <td>{{ hotel.nomHotel }}</td>
                         <td>{{ hotel.lieu }}</td>
                         <td>{{ hotel.telHotel }}</td>

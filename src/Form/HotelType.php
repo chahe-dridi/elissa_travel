@@ -3,16 +3,25 @@
 namespace App\Form;
 
 use App\Entity\Hotel;
+use App\Entity\Chambre;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class HotelType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+        ->add('image', FileType::class, [
+            'label' => 'Image du hotel',
+            'required' => false, // Allow the form to be submitted without uploading a new image
+            'mapped' => false, // This field is not mapped to the entity property
+            'help' => 'Téléchargez une image pour le restaurant (format: jpg, jpeg, png)',
+        ])
             ->add('nomHotel')
             ->add('lieu')
             ->add('telHotel')
@@ -30,7 +39,6 @@ class HotelType extends AbstractType
             ])
             
             ->add('nbChambre')
-            
         ;
     }
 

@@ -30,11 +30,21 @@ class HotelController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+
+                $hotel->setImage($newFilename);
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads',
+                    $newFilename
+                );
             $entityManager->persist($hotel);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
-        }
+        }}
 
         return $this->renderForm('hotel/new.html.twig', [
             'hotel' => $hotel,
@@ -78,4 +88,6 @@ class HotelController extends AbstractController
 
         return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 }

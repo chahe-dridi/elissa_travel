@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Hotel;
 use App\Entity\ReservationHotel;
 use App\Form\ReservationHotelType;
 use App\Repository\ReservationHotelRepository;
