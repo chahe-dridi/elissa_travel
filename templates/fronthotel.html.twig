@@ -27,14 +27,13 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Image</th>
-                                            <th><span style="color: white; font-weight: bold;">Hotel Name</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Location</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Phone</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Email</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Description</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Status</span></th>
-                                            <th><span style="color: white; font-weight: bold;">No. of Rooms</span></th>
-                                            <th><span style="color: white; font-weight: bold;">Actions</span></th>
+                                            <th>Nom Hotel</th>
+                                            <th style="width: 40%;">Description</th> <!-- Augmenter la largeur -->
+                                            <th>Location</th>
+                                            <th>Email</th>
+                                            <th>Téléphone</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -48,20 +47,19 @@
                                                 No Image
                                                 {% endif %}
                                             </td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.nomHotel }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.lieu }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.telHotel }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.email }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.discHotel }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.etatHotel }}</span></td>
-                                            <td><span style="color: white; font-weight: bold;">{{ hotel.nbChambre }}</span></td>
+                                            <td>{{ hotel.nomHotel }}</td>
+                                            <td>{{ hotel.discHotel }}</td>
+                                            <td>{{ hotel.lieu }}</td>
+                                            <td>{{ hotel.email }}</td>
+                                            <td>{{ hotel.telHotel }}</td>
+                                            <td>{{ hotel.etatHotel }}</td>
                                             <td>
-                                                <a href="{{ path('app_reservation_hotel_new', {'id': hotel.id}) }}" class="btn btn-sm btn-info mr-2">SReserver</a>
+                                                <a href="{{ path('app_reservation_hotel_new', {'id': hotel.id}) }}" class="btn btn-sm btn-info mr-2">Réserver</a>
                                             </td>
                                         </tr>
                                         {% else %}
                                         <tr>
-                                            <td colspan="10">No records found</td>
+                                            <td colspan="9">Pas d'enregistrements trouvés</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

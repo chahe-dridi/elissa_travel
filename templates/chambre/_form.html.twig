@@ -1,4 +1,12 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.typeChambre) }}
+    {{ form_row(form.vueHotel) }}
+    {{ form_row(form.typeLogHotel) }}
+    {{ form_row(form.prixHotel) }}
+    {{ form_row(form.Hotel) }}
+
+     <button class="form-submit-button" class="btn">{{ button_label|default('Save') }}</button>
+
+
 {{ form_end(form) }}
+   

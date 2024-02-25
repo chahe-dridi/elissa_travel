@@ -31,7 +31,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_chambre_index') }}">back to list</a>
+<a class="form-back-link" href="{{ path('app_chambre_index', {'id': chambre.hotel.id}) }}">Back to List</a>
 
     <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
 

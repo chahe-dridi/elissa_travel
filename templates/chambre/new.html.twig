@@ -82,8 +82,7 @@
 
             {{ include('chambre/_form.html.twig') }}
 
-            <a class="form-back-link" href="{{ path('app_chambre_index') }}">Back to list</a>
-            <button type="submit" class="form-submit-button">Save</button>
+<a class="form-back-link" href="{{ path('app_chambre_index', {'id': id}) }}">Back to List</a>
         </div>
     </div>
 {% endblock %}

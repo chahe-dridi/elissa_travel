@@ -64,7 +64,10 @@
 
             {{ include('chambre/_form.html.twig', {'button_label': 'Update'}) }}
 
-            <a class="form-back-link" href="{{ path('app_chambre_index') }}">Back to List</a>
+    
+
+<a class="form-back-link" href="{{ path('app_chambre_index', {'id': chambre.hotel.id}) }}">Back to List</a>
+
         </div>
 
         {{ include('chambre/_delete_form.html.twig') }}

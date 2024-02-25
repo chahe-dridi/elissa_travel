@@ -21,25 +21,15 @@ class Hotel
     #[ORM\Column(length: 255)]
     private ?string $nomHotel = null;
     
-    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
-    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $lieu = null;
-    
 
-    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
-    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $telHotel = null;
 
-    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
-    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
-    
 
-    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
-    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $discHotel = null;
 
@@ -61,6 +51,20 @@ class Hotel
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    // Getter method for the image property
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    // Setter method for the image property
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -225,18 +229,6 @@ class Hotel
     public function setUser(?User $User): static
     {
         $this->User = $User;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): static
-    {
-        $this->image = $image;
 
         return $this;
     }

@@ -16,14 +16,7 @@
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <div class="col-lg-12"> <!-- Utiliser une colonne pleine largeur -->
-                            <form action="" method="GET">
-                                <div class="input-group mb-3">
-                                    <input type="text" name="search" class="form-control" placeholder="Search by Hotel Name">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                                    </div>
-                                </div>
-                            </form>
+                           
                             <div class="text-right mb-3"></div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
@@ -31,45 +24,46 @@
     <h1>ReservationHotel</h1>
 
     <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ reservation_hotel.id }}</td>
-            </tr>
-            <tr>
-                <th>PrixTT</th>
-                <td>{{ reservation_hotel.PrixTT }}</td>
-            </tr>
-            <tr>
-                <th>DateArrive</th>
-                <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>DateDepart</th>
-                <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ reservation_hotel.email }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ reservation_hotel.nom }}</td>
-            </tr>
-            <tr>
-                <th>PreNom</th>
-                <td>{{ reservation_hotel.preNom }}</td>
-            </tr>
-            <tr>
-                <th>Distination</th>
-                <td>{{ reservation_hotel.Distination }}</td>
-            </tr>
-            <tr>
-                <th>ChambrE</th>
-                <td>{{ reservation_hotel.ChambrE }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <tbody>
+        <tr>
+            <th style="color: white;">Id</th>
+            <td>{{ reservation_hotel.id }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">PrixTT</th>
+            <td>{{ reservation_hotel.PrixTT }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">DateArrive</th>
+            <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">DateDepart</th>
+            <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">Email</th>
+            <td>{{ reservation_hotel.email }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">Nom</th>
+            <td>{{ reservation_hotel.nom }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">PreNom</th>
+            <td>{{ reservation_hotel.preNom }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">Distination</th>
+            <td>{{ reservation_hotel.Distination }}</td>
+        </tr>
+        <tr>
+            <th style="color: white;">ChambrE</th>
+            <td>{{ reservation_hotel.ChambrE }}</td>
+        </tr>
+    </tbody>
+</table>
+
 
     <a href="{{ path('app_reservation_hotel_index') }}">MES RESERVATIONS</a>
 

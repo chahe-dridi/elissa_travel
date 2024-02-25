@@ -40,6 +40,8 @@
             </tr>
         </thead>
         <tbody>
+        {% set idd = null %}
+
         {% for chambre in chambres %}
             <tr>
                 <td>{{ chambre.id }}</td>
@@ -53,6 +55,10 @@
                 <td>
                     <a class="btn" href="{{ path('app_chambre_show', {'id': chambre.id}) }}">Show</a>
                     <a class="btn" href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">Edit</a>
+
+
+                  {% set idd = chambre.hotel.id %}
+
                 </td>
             </tr>
         {% else %}
@@ -62,5 +68,5 @@
         {% endfor %}
         </tbody>
     </table>
-    <a class="btn" href="{{ path('app_chambre_new') }}">Create new</a>
+    <a class="btn" href="{{ path('app_chambre_new', {'id': idd}) }}">Create new</a>
 {% endblock %}

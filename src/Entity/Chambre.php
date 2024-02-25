@@ -92,4 +92,9 @@ class Chambre
 
         return $this;
     }
+    public function __toString(): string
+    {
+        // Retourner une représentation appropriée de l'objet Chambre
+        return $this->getTypeChambre() ?? ''; // Vous pouvez retourner une propriété pertinente, par exemple $this->getTypeChambre()
+    }
 }

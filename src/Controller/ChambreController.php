@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Hotel;
 
 use App\Entity\Chambre;
 use App\Form\ChambreType;
@@ -15,12 +16,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class ChambreController extends AbstractController
 {
     #[Route('/', name: 'app_chambre_index', methods: ['GET'])]
-    public function index(ChambreRepository $chambreRepository): Response
+    public function index(ChambreRepository $chambreRepository, Request $request): Response
     {
+
+        $id = $request->query->get('id');
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $hotel = $entityManager->getRepository(Hotel::class)->find($id);
+
+        $chambres = $hotel->getChambres();
+        
         return $this->render('chambre/index.html.twig', [
-            'chambres' => $chambreRepository->findAll(),
+            'chambres' => $chambres,
         ]);
     }
+    
 
     #[Route('/new', name: 'app_chambre_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -39,13 +49,18 @@ class ChambreController extends AbstractController
             }
         }
         
+        $id = $chambre->getHotel()->getId();
+
         $entityManager->persist($chambre);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_chambre_index', ['id' => $id], Response::HTTP_SEE_OTHER);
     }
 
+    $id = $request->query->get('id');
+
     return $this->renderForm('chambre/new.html.twig', [
+        'id' => $id,
         'chambre' => $chambre,
         'form' => $form,
     ]);
@@ -67,8 +82,10 @@ class ChambreController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $id = $chambre->getHotel()->getId();
 
-            return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+
+            return $this->redirectToRoute('app_chambre_index', ['id' => $id], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('chambre/edit.html.twig', [
@@ -85,6 +102,10 @@ class ChambreController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+        $id = $chambre->getHotel()->getId();
+
+
+        return $this->redirectToRoute('app_chambre_index', ['id' => $id], Response::HTTP_SEE_OTHER);
+
     }
 }
