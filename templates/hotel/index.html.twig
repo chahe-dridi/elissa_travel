@@ -13,14 +13,12 @@ margin-top:64px;
 {% block body %}
 <div class="container-fluid"  style="margin-top: 10px; align-items:center;">
 <div class="col-lg-4" >
-            <form action="" method="GET">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search by Hotel Name">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
+            <form action="{{ path('app_hotel_index') }}" method="GET" class="form-inline mb-3">
+        <div class="form-group mr-2">
+            <input type="text" name="search" value="{{ searchQuery }}" placeholder="Search by Hotel Name" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
             <div style="text-align: right;">
                 <a href="{{ path('app_hotel_new') }}" class="btn btn-outline-secondary" style="margin-top: 10px;">Add New Hotel</a>
             </div>

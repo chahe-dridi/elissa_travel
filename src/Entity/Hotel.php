@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\HotelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,28 +17,40 @@ class Hotel
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\Positive(message: "nbrTicket Evenement doit être positive.")]
-    #[Assert\NotBlank(message: "nbrTicket Evenement ne doit pas être vide.")]
+    #[Assert\NotBlank]
+    #[Assert\Type("string")]
     #[ORM\Column(length: 255)]
     private ?string $nomHotel = null;
     
+    #[Assert\NotBlank]
+    #[Assert\Type("string")]
     #[ORM\Column(length: 255)]
     private ?string $lieu = null;
-
-    #[ORM\Column(length: 255)]
+    
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 8)]
+    #[Assert\Positive]
+    #[ORM\Column(length: 8)]
     private ?string $telHotel = null;
-
+    
+    #[Assert\NotBlank]
+    #[Assert\Email]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
-
+    
+    #[Assert\NotBlank]
+    #[Assert\Type("string")]
     #[ORM\Column(length: 255)]
     private ?string $discHotel = null;
 
-
+    #[Assert\NotBlank]
+    #[Assert\Type("string")]
     #[ORM\Column(length: 255)]
     private ?string $etatHotel = null;
 
-    #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $nbChambre = null;
 
     #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'Hotel')]

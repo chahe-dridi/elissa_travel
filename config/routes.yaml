@@ -1,3 +1,6 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+telecharger_pdf:
+    path: /telecharger-pdf
+    controller: App\Controller\PdfController::downloadPdf

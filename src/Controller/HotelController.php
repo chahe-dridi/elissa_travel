@@ -15,12 +15,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class HotelController extends AbstractController
 {
     #[Route('/', name: 'app_hotel_index', methods: ['GET'])]
-    public function index(HotelRepository $hotelRepository): Response
-    {
-        return $this->render('hotel/index.html.twig', [
-            'hotels' => $hotelRepository->findAll(),
-        ]);
+    public function index(HotelRepository $hotelRepository, Request $request): Response
+{
+    $searchQuery = $request->query->get('search');
+
+    // Retrieve hotels based on search query
+    if ($searchQuery) {
+        $hotels = $hotelRepository->findByNomHotel($searchQuery);
+    } else {
+        $hotels = $hotelRepository->findAll();
     }
+
+    return $this->render('hotel/index.html.twig', [
+        'hotels' => $hotels,
+        'searchQuery' => $searchQuery,
+    ]);
+}
 
     #[Route('/new', name: 'app_hotel_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

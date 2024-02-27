@@ -19,12 +19,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReservationHotelController extends AbstractController
 {
     #[Route('/', name: 'app_reservation_hotel_index', methods: ['GET'])]
-    public function index(ReservationHotelRepository $reservationHotelRepository): Response
-    {
-        return $this->render('reservation_hotel/index.html.twig', [
-            'reservation_hotels' => $reservationHotelRepository->findAll(),
-        ]);
+    public function index(ReservationHotelRepository $reservationHotelRepository, Request $request): Response
+{
+    $searchQuery = $request->query->get('search');
+
+    // Retrieve reservation hotels based on search query
+    $reservationHotels = [];
+
+    if ($searchQuery) {
+        $reservationHotels = $reservationHotelRepository->findByNom($searchQuery);
+    } else {
+        $reservationHotels = $reservationHotelRepository->findAll();
     }
+
+    return $this->render('reservation_hotel/index.html.twig', [
+        'reservation_hotels' => $reservationHotels,
+    ]);
+}
 
     #[Route('/new', name: 'app_reservation_hotel_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -106,4 +117,32 @@ class ReservationHotelController extends AbstractController
 
         return $this->redirectToRoute('app_reservation_hotel_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/invoice', name: 'app_reservation_hotel_invoice', methods: ['GET'])]
+    public function generateInvoice(ReservationHotel $reservationHotel): Response
+{
+    // Retrieve the associated hotel entity
+    $hotel = $reservationHotel->getHotel();
+
+    // Generate PDF content
+    $pdfContent = $this->renderView('reservation_hotel/invoice.html.twig', [
+        'reservation_hotel' => $reservationHotel,
+        'hotel' => $hotel, // Pass the hotel entity to the template
+    ]);
+
+    // Generate PDF file
+    $pdf = new \Dompdf\Dompdf();
+    $pdf->loadHtml($pdfContent);
+
+    // (Optional) Set PDF options
+
+    // Render PDF
+    $pdf->render();
+
+    // Stream PDF file as response
+    return new Response($pdf->output(), 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="invoice.pdf"',
+    ]);
+}
 }

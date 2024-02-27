@@ -26,7 +26,7 @@ class reservationtype extends AbstractType
                 'class' => Chambre::class,
                 'choices' => $options['hotel']->getChambres(),
                 'choice_label' => function ($chambre) {
-                    return $chambre->getId() . " / " . $chambre->getTypeChambre() . " / " . $chambre->getVueHotel() . " / " .  $chambre->getTypeLogHotel();
+                    return $chambre->getId() . " / " . $chambre->getTypeChambre() . " / " . $chambre->getVueHotel() . " / " .  $chambre->getTypeLogHotel() . " / " .$chambre->getprixHotel();
                 },
                 'placeholder' => 'Choose a chambre',
 

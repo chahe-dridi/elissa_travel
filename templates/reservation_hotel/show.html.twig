@@ -1,73 +1,75 @@
 {% extends 'nav_user.html.twig' %}
 
-
-
 {% block body %}
 
 <section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
     <div class="overlay"></div>
     <div class="container">
        
-            <div class="col-md">
-                <h2 class="heading mb-2 display-4 font-light probootstrap-animate">Explore The World With Elissa Travel</h2>
-                <p class="lead mb-5 probootstrap-animate">Discover, Celebrate, Repeat - Your Journey, Your Events, Our Passion!</p>
+        <div class="col-md">
+            <h2 class="heading mb-2 display-4 font-light probootstrap-animate">Reservation Details</h2>
+        </div>
+        <div class="col-md probootstrap-animate">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12"> <!-- Utiliser une colonne pleine largeur -->
+                       
+                        <div class="text-right mb-3">
+                            <a href="{{ path('app_reservation_hotel_invoice', {'id': reservation_hotel.id}) }}" class="btn btn-primary">Download Invoice PDF</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Attribute</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Id</td>
+                                        <td>{{ reservation_hotel.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PrixTT</td>
+                                        <td>{{ reservation_hotel.PrixTT }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date Arrive</td>
+                                        <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date Depart</td>
+                                        <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>{{ reservation_hotel.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nom</td>
+                                        <td>{{ reservation_hotel.nom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PreNom</td>
+                                        <td>{{ reservation_hotel.preNom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distination</td>
+                                        <td>{{ reservation_hotel.Distination }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chambre</td>
+                                        <td>{{ reservation_hotel.ChambrE }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md probootstrap-animate">
-                <div class="container-fluid">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-12"> <!-- Utiliser une colonne pleine largeur -->
-                           
-                            <div class="text-right mb-3"></div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered">
-                                    <thead class="thead-dark">
-    <h1>ReservationHotel</h1>
+        </div>
+    </div>
+</section>
 
-    <table class="table">
-    <tbody>
-        <tr>
-            <th style="color: white;">Id</th>
-            <td>{{ reservation_hotel.id }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">PrixTT</th>
-            <td>{{ reservation_hotel.PrixTT }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">DateArrive</th>
-            <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">DateDepart</th>
-            <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">Email</th>
-            <td>{{ reservation_hotel.email }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">Nom</th>
-            <td>{{ reservation_hotel.nom }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">PreNom</th>
-            <td>{{ reservation_hotel.preNom }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">Distination</th>
-            <td>{{ reservation_hotel.Distination }}</td>
-        </tr>
-        <tr>
-            <th style="color: white;">ChambrE</th>
-            <td>{{ reservation_hotel.ChambrE }}</td>
-        </tr>
-    </tbody>
-</table>
-
-
-    <a href="{{ path('app_reservation_hotel_index') }}">MES RESERVATIONS</a>
-
-    <a href="{{ path('app_reservation_hotel_edit', {'id': reservation_hotel.id}) }}">edit</a>
-
-    {{ include('reservation_hotel/_delete_form.html.twig') }}
 {% endblock %}
