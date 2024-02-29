@@ -18,23 +18,30 @@ class Airport
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+/*
+    #[Assert\NotBlank(message:"code should be not empty")]
     #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+*/
+
+
+    #[ORM\Column(length: 255)]
+    /**
+     * @Assert\NotBlank(message="should not be blank")
+     */
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank (message:"code should be not empty")]
+    #[Assert\Regex('/^[a-zA-Z\s]+$/' )  ]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"code should be not empty")]
     #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"code should be not empty")]
     #[Assert\Regex('/^[a-zA-Z\s]+$/')]
     private ?string $country = null;
 
@@ -108,11 +115,7 @@ class Airport
         return $this;
     }
 
-    public function __toString(): string
-    {
-        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
-        return $this->name;
-    }
+ 
 
     public function getUser(): ?User
     {
@@ -125,6 +128,13 @@ class Airport
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        // Retourne une représentation string de l'objet, par exemple le nom de l'aéroport
+        return $this->id;
+    }
+
 
     
 }

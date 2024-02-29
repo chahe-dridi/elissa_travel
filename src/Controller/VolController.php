@@ -13,6 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
 
+//pdf
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 #[Route('/vol')]
@@ -109,4 +112,70 @@ class VolController extends AbstractController
 
         return $this->redirectToRoute('app_vol_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #[Route('/vol/pdf', name: 'app_vol_pdf', methods: ['GET'])]
+    public function generatePdf(VolRepository $volRepository): Response
+    {
+        // Fetch flight information from the repository
+        $flights = $volRepository->findAll();
+    
+        // Render the flights into a PDF using a template
+        $pdf = $this->renderView('vol/flights_pdf.html.twig', [
+            'flights' => $flights,
+        ]);
+    
+        // Create a new instance of Dompdf
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($pdf);
+    
+        // Set paper size and rendering options
+        $dompdf->setPaper('A4', 'portrait');
+    
+        // Render the PDF
+        $dompdf->render();
+    
+        // Stream the PDF response
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+            ]
+        );
+    }
+
+
+
+
+
+
+
+
 }

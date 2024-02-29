@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flights Information</title>
+    <style>
+        /* Define your PDF styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flights Information</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Escale</th>
+                <th>Class</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flights %}
+                <tr>
+                    <td>{{ flight.id }}</td>
+                    <td>{{ flight.getairportDepart().getName() }}</td>
+                    <td>{{ flight.getairportarrive().getName() }}</td>
+                    <td>{{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ flight.isEscale() ? 'Yes' : 'No' }}</td>
+                    <td>{{ flight.getVolclass().getClassName() }}</td>
+                    <td>${{ flight.getVolclass().getPrice() }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

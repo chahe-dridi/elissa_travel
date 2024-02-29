@@ -1,0 +1,38 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block title %}Reservations Chart{% endblock %}
+
+{% block body %}
+    <h1>Reservations Chart</h1>
+
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+    {% cmen_google_charts_script %}
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Country');
+            data.addColumn('number', 'Reservations');
+            data.addRows([
+                {% for country, count in dataByCountry %}
+                    ['{{ country }}', {{ count }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: 'Reservations by Country',
+                height: 400,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    {% endcmen_google_charts_script %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% cmen_google_charts_script %}
+{% endblock %}

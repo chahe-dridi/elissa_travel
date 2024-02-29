@@ -11,9 +11,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+use MercurySeries\FlashyBundle\FlashyNotifier;
+
 #[Route('/airport')]
 class AirportController extends AbstractController
 {
+   
+    private $flashy;
+
+    // Inject Flashy service into the constructor
+    public function __construct(FlashyNotifier $flashy)
+    {
+        $this->flashy = $flashy;
+    }
+
+
+ 
+
     #[Route('/', name: 'app_airport_index', methods: ['GET'])]
     public function index(AirportRepository $airportRepository, Request $request): Response
     {
@@ -58,20 +74,20 @@ class AirportController extends AbstractController
         $airport = new Airport();
         $form = $this->createForm(AirportType::class, $airport);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+    
+        if ($form->isSubmitted()) {
             $entityManager->persist($airport);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
+    
+             return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('airport/new.html.twig', [
             'airport' => $airport,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_airport_show', methods: ['GET'])]
     public function show(Airport $airport): Response
     {

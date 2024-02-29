@@ -3,13 +3,26 @@
 namespace App\Controller;
 
 use App\Entity\Reservationvol;
+
+
+ 
+
 use App\Form\Reservationvol1Type;
+
 use App\Repository\ReservationvolRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
+
+
+
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/reservation/vol/admin')]
 class ReservationVolAdminController extends AbstractController
@@ -41,6 +54,7 @@ class ReservationVolAdminController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_reservation_vol_admin_show', methods: ['GET'])]
     public function show(Reservationvol $reservationvol): Response
@@ -78,4 +92,45 @@ class ReservationVolAdminController extends AbstractController
 
         return $this->redirectToRoute('app_reservation_vol_admin_index', [], Response::HTTP_SEE_OTHER);
     }
+
+ 
+
+
+
+ 
+    #[Route('/charte', name: 'app_reservation_vol_admin_chart', methods: ['GET'])]
+    public function charte(ReservationvolRepository $reservationvolRepository): Response
+    {
+        $reservationData = $reservationvolRepository->findAll();
+        $dataByCountry = [];
+
+        foreach ($reservationData as $reservation) {
+            $country = $reservation->getVol()->getairportarrive()->getCountry();
+
+            if (!isset($dataByCountry[$country])) {
+                $dataByCountry[$country] = 0;
+            }
+
+            $dataByCountry[$country]++;
+        }
+
+        $charte = new PieChart();
+        $charte->getData()->setArrayToDataTable([
+            ['Country', 'Reservations'],
+            ...array_map(null, array_keys($dataByCountry), array_values($dataByCountry))
+        ]);
+        $charte->getOptions()->setTitle('Reservations by Country');
+        $charte->getOptions()->setHeight(400);
+
+        return $this->render('reservation_vol_admin/chart.html.twig', [
+            
+            'charte' => $charte
+        ]);
+    }
+ 
+
+ 
+
+
+
 }
