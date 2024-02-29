@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\HotelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HotelRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 class Hotel
 {
     #[ORM\Id]
@@ -17,39 +19,39 @@ class Hotel
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Type("string")]
+    #[Assert\NotBlank(message: 'Le nom de l\'hôtel ne peut pas être vide.')]
+    #[Assert\Type(type: "string", message: 'Le nom de l\'hôtel doit être une chaîne de caractères.')]
     #[ORM\Column(length: 255)]
     private ?string $nomHotel = null;
     
-    #[Assert\NotBlank]
-    #[Assert\Type("string")]
+    #[Assert\NotBlank(message: 'Le lieu ne peut pas être vide.')]
+    #[Assert\Type(type: "string", message: 'Le lieu doit être une chaîne de caractères.')]
     #[ORM\Column(length: 255)]
     private ?string $lieu = null;
     
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 8)]
-    #[Assert\Positive]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone ne peut pas être vide.')]
+    #[Assert\Length(max: 8, maxMessage: 'Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères.')]
+    #[Assert\Positive(message: 'Le numéro de téléphone doit être un nombre positif.')]
     #[ORM\Column(length: 8)]
     private ?string $telHotel = null;
     
-    #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\NotBlank(message: 'L\'adresse email ne peut pas être vide.')]
+    #[Assert\Email(message: 'L\'adresse email doit être valide.')]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
     
-    #[Assert\NotBlank]
-    #[Assert\Type("string")]
+    #[Assert\NotBlank(message: 'La description de l\'hôtel ne peut pas être vide.')]
+    #[Assert\Type(type: "string", message: 'La description de l\'hôtel doit être une chaîne de caractères.')]
     #[ORM\Column(length: 255)]
     private ?string $discHotel = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Type("string")]
+    #[Assert\NotBlank(message: 'L\'état de l\'hôtel ne peut pas être vide.')]
+    #[Assert\Type(type: "string", message: 'L\'état de l\'hôtel doit être une chaîne de caractères.')]
     #[ORM\Column(length: 255)]
     private ?string $etatHotel = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Positive]
+    #[Assert\NotBlank(message: 'Le nombre de chambres ne peut pas être vide.')]
+    #[Assert\Positive(message: 'Le nombre de chambres doit être un nombre positif.')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $nbChambre = null;
 

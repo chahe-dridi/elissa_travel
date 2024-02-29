@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\ChambreRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,13 +13,16 @@ class Chambre
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $typeChambre = null;
-
+    
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $vueHotel = null;
-
+    
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $typeLogHotel = null;
 

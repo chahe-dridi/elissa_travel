@@ -175,7 +175,7 @@ class ReservationHotel
 
     public function getChambrE(): ?string
     {
-        return $this->Distination;
+        return $this->ChambrE;
     }
 
     public function setChambrE(string $ChambrE): static
@@ -185,6 +185,22 @@ class ReservationHotel
         return $this;
     }
 
+
+    private $Chambree;
+
+    // Your other methods
+
+    public function getChambree(): ?Chambre
+    {
+        return $this->Chambree;
+    }
+
+    public function setChambree(?Chambre $Chambree): self
+    {
+        $this->Chambree = $Chambree;
+
+        return $this;
+    }
 
 }
 

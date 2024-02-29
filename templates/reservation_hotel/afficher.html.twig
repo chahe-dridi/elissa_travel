@@ -1,25 +1,8 @@
-{% extends 'nav_user.html.twig' %}
+{% extends 'nav_admin.html.twig' %}
 
 {% block body %}
 
-<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
-    <div class="overlay"></div>
-    <div class="container">
-       
-        <div class="col-md">
-            <h2 class="heading mb-2 display-4 font-light probootstrap-animate">Reservation Details</h2>
-        </div>
-        <div class="col-md probootstrap-animate">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-lg-12"> <!-- Utiliser une colonne pleine largeur -->
-                       
-                        <div class="text-right mb-3">
-                            <a href="{{ path('app_reservation_hotel_invoice', {'id': reservation_hotel.id}) }}" class="btn btn-primary">Download Invoice PDF</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered">
-                                <thead class="thead-dark">
+
                                     <tr>
                                         <th>Attribute</th>
                                         <th>Value</th>
@@ -32,7 +15,7 @@
                                     </tr>
                                     <tr>
                                         <td>PrixTT</td>
-                                        
+                                        <td>{{ reservation_hotel.PrixTT  }}</td>
                                     </tr>
                                     <tr>
                                         <td>Date Arrive</td>
@@ -62,14 +45,5 @@
                                         <td>Chambre</td>
                                         <td>{{ reservation_hotel.ChambrE }}</td>
                                     </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
+                             
 {% endblock %}

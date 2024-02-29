@@ -27,7 +27,8 @@ class ReservationHotelController extends AbstractController
     $reservationHotels = [];
 
     if ($searchQuery) {
-        $reservationHotels = $reservationHotelRepository->findByNom($searchQuery);
+        $reservationHotels = $reservationHotelRepository->findByNom
+        ($searchQuery);
     } else {
         $reservationHotels = $reservationHotelRepository->findAll();
     }
@@ -35,6 +36,26 @@ class ReservationHotelController extends AbstractController
     return $this->render('reservation_hotel/index.html.twig', [
         'reservation_hotels' => $reservationHotels,
     ]);
+}
+
+#[Route('/back', name: 'app_reservation_back', methods: ['GET'])]
+public function back(ReservationHotelRepository $reservationHotelRepository, Request $request): Response
+{
+$searchQuery = $request->query->get('search');
+
+// Retrieve reservation hotels based on search query
+$reservationHotels = [];
+
+if ($searchQuery) {
+    $reservationHotels = $reservationHotelRepository->findByNom
+    ($searchQuery);
+} else {
+    $reservationHotels = $reservationHotelRepository->findAll();
+}
+
+return $this->render('reservation_hotel/backindex.html.twig', [
+    'reservation_hotels' => $reservationHotels,
+]);
 }
 
     #[Route('/new', name: 'app_reservation_hotel_new', methods: ['GET', 'POST'])]
@@ -53,21 +74,22 @@ class ReservationHotelController extends AbstractController
         $reservationHotel->setDistination($hotel->getLieu());
         $reservationHotel->setHotel($hotel);
 
-        $chambres = $hotel->getChambres();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $chambreid = $formData->getChambre();
-            $chambreid = explode(' / ', $chambreid);
-
-            $selectedChambre = $entityManager->getRepository(Chambre::class)->find($chambreid[0]);
+            $selectedChambre = $formData->getChambree();
 
 
             if ($selectedChambre) {
                 $prixHotel = $selectedChambre->getPrixHotel();
                 $reservationHotel->setPrixTT($prixHotel);
             }
+
+            $reservationHotel->setChambrE($selectedChambre->getVueHotel());
+
+
             $entityManager->persist($reservationHotel);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_reservation_hotel_index', [], Response::HTTP_SEE_OTHER);
@@ -76,6 +98,7 @@ class ReservationHotelController extends AbstractController
         return $this->renderForm('reservation_hotel/new.html.twig', [
             'hotelname' => $hotel->getNomHotel(),
             'lieu' => $hotel->getLieu(),
+            
             'reservation_hotel' => $reservationHotel,
             'form' => $form,
         ]);
@@ -83,8 +106,16 @@ class ReservationHotelController extends AbstractController
 
     #[Route('/{id}', name: 'app_reservation_hotel_show', methods: ['GET'])]
     public function show(ReservationHotel $reservationHotel): Response
-    {
+    {   
         return $this->render('reservation_hotel/show.html.twig', [
+            'reservation_hotel' => $reservationHotel,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_reservation_afficher', methods: ['GET'])]
+    public function afficher(ReservationHotel $reservationHotel): Response
+    {
+        return $this->render('reservation_hotel/afficher.html.twig', [
             'reservation_hotel' => $reservationHotel,
         ]);
     }
@@ -107,6 +138,9 @@ class ReservationHotelController extends AbstractController
         ]);
     }
 
+
+   
+
     #[Route('/{id}', name: 'app_reservation_hotel_delete', methods: ['POST'])]
     public function delete(Request $request, ReservationHotel $reservationHotel, EntityManagerInterface $entityManager): Response
     {
@@ -117,6 +151,9 @@ class ReservationHotelController extends AbstractController
 
         return $this->redirectToRoute('app_reservation_hotel_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+   
 
     #[Route('/{id}/invoice', name: 'app_reservation_hotel_invoice', methods: ['GET'])]
     public function generateInvoice(ReservationHotel $reservationHotel): Response

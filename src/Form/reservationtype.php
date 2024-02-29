@@ -22,11 +22,11 @@ class reservationtype extends AbstractType
             ->add('nom')
             ->add('preNom')
             ->add('email')
-            ->add('chambre', EntityType::class, [
+            ->add('Chambree', EntityType::class, [
                 'class' => Chambre::class,
                 'choices' => $options['hotel']->getChambres(),
                 'choice_label' => function ($chambre) {
-                    return $chambre->getId() . " / " . $chambre->getTypeChambre() . " / " . $chambre->getVueHotel() . " / " .  $chambre->getTypeLogHotel() . " / " .$chambre->getprixHotel();
+                    return $chambre->getId() . "/" . $chambre->getTypeChambre() . " / " . $chambre->getVueHotel() . " / " .  $chambre->getTypeLogHotel() . " / " .$chambre->getprixHotel();
                 },
                 'placeholder' => 'Choose a chambre',
 
