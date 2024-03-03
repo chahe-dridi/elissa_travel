@@ -21,19 +21,38 @@ use Symfony\Component\Routing\Annotation\Route;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
 
 
-
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/reservation/vol/admin')]
 class ReservationVolAdminController extends AbstractController
 {
-    #[Route('/', name: 'app_reservation_vol_admin_index', methods: ['GET'])]
+    /*#[Route('/', name: 'app_reservation_vol_admin_index', methods: ['GET'])]
     public function index(ReservationvolRepository $reservationvolRepository): Response
     {
         return $this->render('reservation_vol_admin/index.html.twig', [
             'reservationvols' => $reservationvolRepository->findAll(),
         ]);
     }
+*/
+#[Route('/', name: 'app_reservation_vol_admin_index', methods: ['GET'])]
+public function index(ReservationvolRepository $reservationvolRepository, PaginatorInterface $paginator, Request $request): Response
+{
+    $query = $reservationvolRepository->createQueryBuilder('r')
+        ->getQuery();
+
+    $pagination = $paginator->paginate(
+        $query, // Query to paginate
+        $request->query->getInt('page', 1), // Page number
+        10 // Limit per page
+    );
+
+    return $this->render('reservation_vol_admin/index.html.twig', [
+        'reservationvols' => $pagination,
+    ]);
+}
+
+
 
     #[Route('/new', name: 'app_reservation_vol_admin_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Airport Statistics{% endblock %}
+
+{% block body %}
+  <h1>Airport Statistics</h1>
+  <ul>
+    {% for country, data in statistics %}
+      <li>{{ country }} - Number of Airports: {{ data.num_airports }}</li>
+      <ul>
+        {% for city, count in data.cities %}
+          <li>{{ city }}: {{ count }}</li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </ul>
+{% endblock %}

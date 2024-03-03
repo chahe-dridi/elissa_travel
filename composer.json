@@ -14,6 +14,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.0",
         "dompdf/dompdf": "*",
+        "knplabs/knp-paginator-bundle": "*",
         "mercuryseries/flashy": "*",
         "mercuryseries/flashy-bundle": "*",
         "phpdocumentor/reflection-docblock": "^5.3",

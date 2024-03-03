@@ -11,7 +11,11 @@
   {% block css %}
 
   <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+  <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
 
+ 
+  <!-- Include Flashy default partial -->
+  
 {% endblock %} 
 
 </head>
@@ -203,6 +207,11 @@
 
   {% block js %} 
   
+ 
+  <!-- Load Flashy default JavaScript -->
+  <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>
+
+
   <script src="{{ asset('assets_admin/libs/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('assets_admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('assets_admin/js/sidebarmenu.js') }}"></script>

@@ -11,16 +11,45 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+use Knp\Component\Pager\PaginatorInterface;
+
+
+
 #[Route('/volclass')]
 class VolclassController extends AbstractController
 {
-    #[Route('/', name: 'app_volclass_index', methods: ['GET'])]
+   /* #[Route('/', name: 'app_volclass_index', methods: ['GET'])]
     public function index(VolclassRepository $volclassRepository): Response
     {
         return $this->render('volclass/index.html.twig', [
             'volclasses' => $volclassRepository->findAll(),
         ]);
     }
+
+*/
+
+#[Route('/', name: 'app_volclass_index', methods: ['GET'])]
+public function index(VolclassRepository $volclassRepository, PaginatorInterface $paginator, Request $request): Response
+{
+    $query = $volclassRepository->createQueryBuilder('v')
+        ->getQuery();
+
+    $pagination = $paginator->paginate(
+        $query, // Query to paginate
+        $request->query->getInt('page', 1), // Page number
+        10 // Limit per page
+    );
+
+    return $this->render('volclass/index.html.twig', [
+        'volclasses' => $pagination,
+    ]);
+}
+
+
+
+
 
     #[Route('/new', name: 'app_volclass_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

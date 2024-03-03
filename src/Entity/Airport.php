@@ -55,6 +55,11 @@ class Airport
     #[ORM\OneToMany(mappedBy: 'airport_arrive', targetEntity: Vol::class, cascade: ["remove"])]
     private $arrivingFlights;
 
+
+   
+    
+
+
     public function __construct()
     {
         $this->departingFlights = new ArrayCollection();

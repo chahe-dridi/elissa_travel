@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Knp\Component\Pager\PaginatorInterface;
 
 
 use MercurySeries\FlashyBundle\FlashyNotifier;
@@ -30,7 +31,7 @@ class AirportController extends AbstractController
 
  
 
-    #[Route('/', name: 'app_airport_index', methods: ['GET'])]
+  /*  #[Route('/', name: 'app_airport_index', methods: ['GET'])]
     public function index(AirportRepository $airportRepository, Request $request): Response
     {
         $searchQuery = $request->query->get('code');
@@ -54,14 +55,33 @@ class AirportController extends AbstractController
         ]);
     }
 
+*/
+    #[Route('/', name: 'app_airport_index', methods: ['GET'])]
+    public function index(AirportRepository $airportRepository, Request $request, PaginatorInterface $paginator): Response
+    {
+        // Retrieve all airports from the repository
+        $airportsQuery = $airportRepository->findAll();
 
+        // Paginate the results
+        $airports = $paginator->paginate(
+            $airportsQuery, // Query to paginate
+            $request->query->getInt('page', 1), // Get the current page number from the request, default to 1
+            10 // Number of items per page
+        );
 
+        // Render the template with pagination
+        return $this->render('airport/index.html.twig', [
+            'airports' => $airports,
+        ]);
+    }
      
     #[Route('/search', name: 'app_airport_search', methods: ['GET'])]
     public function search(AirportRepository $airportRepository, Request $request): Response
     {
         $searchQuery = $request->query->get('search');
         $airports = $airportRepository->findBySearchQuery($searchQuery);
+
+      
 
         return $this->render('airport/index.html.twig', [
             'airports' => $airports,
@@ -74,15 +94,17 @@ class AirportController extends AbstractController
         $airport = new Airport();
         $form = $this->createForm(AirportType::class, $airport);
         $form->handleRequest($request);
-    
-        if ($form->isSubmitted()) {
+      
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($airport);
             $entityManager->flush();
-    
-             return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
+            $this->flashy->success('Airport created successfully!');
+            return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
         }
+        
     
         return $this->renderForm('airport/new.html.twig', [
+           
             'airport' => $airport,
             'form' => $form,
         ]);
@@ -124,4 +146,57 @@ class AirportController extends AbstractController
 
         return $this->redirectToRoute('app_airport_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #[Route('/stat', name: 'airport_stat')]
+    public function airportStatistics(AirportRepository $airportRepository): Response
+    {
+        // Retrieve all airports from the database
+        $airports = $airportRepository->findAll();
+    
+        // Initialize an empty array to store country and city statistics
+        $statistics = [];
+    
+        // Loop through each airport to count the number of airports in each country and city
+        foreach ($airports as $airport) {
+            $country = $airport->getCountry();
+            $city = $airport->getCity();
+    
+            // Increment country count
+            $countryName = $country;
+            $statistics[$countryName]['num_airports'] = ($statistics[$countryName]['num_airports'] ?? 0) + 1;
+    
+            // Increment city count for the country
+            $statistics[$countryName]['cities'][$city] = ($statistics[$countryName]['cities'][$city] ?? 0) + 1;
+        }
+    
+        // Render the statistics using a Twig template
+        return $this->render('airport/statistics.html.twig', [
+            'statistics' => $statistics,
+        ]);
+
+
+
+    }
+
+
+
+
+
+
+
 }
+

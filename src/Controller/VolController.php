@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+use Knp\Component\Pager\PaginatorInterface;
 
 //pdf
 use Dompdf\Dompdf;
@@ -21,7 +21,7 @@ use Dompdf\Options;
 #[Route('/vol')]
 class VolController extends AbstractController
 {
-    #[Route('/', name: 'app_vol_index', methods: ['GET'])]
+   /* #[Route('/', name: 'app_vol_index', methods: ['GET'])]
     public function index(VolRepository $volRepository, Request $request): Response
     {
         $departureAirportId = $request->query->get('departureAirport');
@@ -33,7 +33,41 @@ class VolController extends AbstractController
         return $this->render('vol/index.html.twig', [
             'vols' => $filteredVols,
         ]);
-    }
+    }*/
+
+
+
+
+
+
+#[Route('/', name: 'app_vol_index', methods: ['GET'])]
+public function index(VolRepository $volRepository, Request $request, PaginatorInterface $paginator): Response
+{
+    $departureAirportId = $request->query->get('departureAirport');
+    $arrivalAirportId = $request->query->get('arrivalAirport');
+
+    // Retrieve filtered vols based on departure and arrival airports
+    $filteredVols = $volRepository->findByDepartureAndArrivalAirport($departureAirportId, $arrivalAirportId);
+
+    // Paginate the filtered vols
+    $pagination = $paginator->paginate(
+        $filteredVols,
+        $request->query->getInt('page', 1), // Page number
+        10 // Limit per page
+    );
+
+    return $this->render('vol/index.html.twig', [
+        'vols' => $pagination,
+    ]);
+}
+
+
+
+
+
+
+
+
 
     #[Route('/search', name: 'app_vol_search', methods: ['GET'])]
     public function search(Request $request, VolRepository $volRepository): Response
@@ -175,6 +209,8 @@ class VolController extends AbstractController
 
 
 
+
+ 
 
 
 
