@@ -1,0 +1,52 @@
+{% extends 'nav_user.html.twig' %}
+{% block body %}
+
+
+
+<section class="probootstrap_section bg-light">
+<div class="container">
+<div class="row text-center mb-5 probootstrap-animate">
+<div class="col-md-12">
+<h2 class="display-4 border-bottom probootstrap-section-heading">Our Trips</h2>
+</div>
+</div>
+
+ {% for voyage in voyages %}
+<div class="row">
+<div class="col-md-6">
+<div class="media probootstrap-media d-flex align-items-stretch mb-4 probootstrap-animate">
+<div class="probootstrap-media-image" style="background-image: url('{{ asset('assets/added_image/img_1.jpg') }}')">
+</div>
+
+
+<div class="media-body">
+ 
+
+
+ <div class="text-center">
+  <div class="voyage-details">
+   <strong>Destination:</strong> {{voyage.destination  }}
+   
+   </div></div>
+
+   <div class="text-center">
+  <div class="voyage-details">
+   <strong> On </strong> {{voyage.mois}} {{voyage.annee}}
+   </div> </div>
+
+
+
+
+
+<p><a href="#">Read More</a></p>
+
+</div>
+</div>
+</div></div>
+ {% endfor %}
+
+</div>
+</section>
+
+
+  {% endblock %}

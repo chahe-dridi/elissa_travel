@@ -78,4 +78,12 @@ class ProgrammeController extends AbstractController
 
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/clientprog', name: 'app_programme_clientprog', methods: ['GET'])]
+    public function clientprog(programmeRepository $programmeRepository): Response
+    {
+        return $this->render('programme/clientprog.html.twig', [
+            'programme' => $programmeRepository->findAll(),
+        ]);
+    }
 }

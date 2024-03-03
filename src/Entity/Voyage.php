@@ -65,7 +65,7 @@ class Voyage
     return $this->annee ;
 }
 
-public function setAnnee(int $annee): static
+public function setAnnee(\DateTimeInterface $annee): static
 {
     $this->annee = $annee;
     return $this;

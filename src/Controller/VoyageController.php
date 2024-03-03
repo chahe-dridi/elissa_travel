@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 #[Route('/voyage')]
 class VoyageController extends AbstractController
 {
@@ -21,6 +22,22 @@ class VoyageController extends AbstractController
             'voyages' => $voyageRepository->findAll(),
         ]);
     }
+
+    #[Route('/clientF', name: 'app_voyage_clientF', methods: ['GET'])]
+    public function clientF(VoyageRepository $voyageRepository): Response
+    {
+        return $this->render('voyage/clientF.html.twig', [
+            'voyages' => $voyageRepository->findAll(),
+        ]);
+    }
+
+
+
+
+
+
+
+
 
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -78,4 +95,12 @@ class VoyageController extends AbstractController
 
         return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
 }
