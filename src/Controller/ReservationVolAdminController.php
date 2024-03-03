@@ -152,4 +152,47 @@ public function index(ReservationvolRepository $reservationvolRepository, Pagina
 
 
 
+
+    #[Route('/reservationvol/stat', name: 'reservationvol_stat', methods: ['GET'])]
+    public function reservationVolStatistics(ReservationvolRepository $reservationVolRepository): Response
+    {
+        // Get all reservation volumes from the repository
+        $reservationVols = $reservationVolRepository->findAll();
+        
+        // Initialize an array to store city counts
+        $citiesCount = [];
+        
+        // Calculate statistics
+        foreach ($reservationVols as $reservationVol) {
+            $city = $reservationVol->getVol()->getAirportArrive()->getCity();
+        
+            // Count reservations for each city
+            if (!isset($citiesCount[$city])) {
+                $citiesCount[$city] = 1;
+            } else {
+                $citiesCount[$city]++;
+            }
+        }
+        
+        // Sort cities by the number of reservations
+        arsort($citiesCount);
+        
+        // Get the top 10 cities with the most reservations
+        $topReservedCities = array_slice($citiesCount, 0, 10, true);
+        
+        // Prepare statistics data
+        $statistics = [
+            'Top Reserved Cities' => $topReservedCities,
+        ];
+        
+        // Render the template with statistics
+        return $this->render('reservation_vol_admin/statistics.html.twig', [
+            'statistics' => $statistics,
+        ]);
+    }
+    
+
+
+
+
 }

@@ -299,7 +299,7 @@ public function show(ReservationvolRepository $reservationvolRepository): Respon
         ]);
     }*/
 
-    #[Route('/{id}/edit', name: 'app_reservationvol_edit', methods: ['GET', 'POST'])]
+   /* #[Route('/{id}/edit', name: 'app_reservationvol_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reservationvol $reservationvol, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ReservationvolType::class, $reservationvol);
@@ -316,10 +316,65 @@ public function show(ReservationvolRepository $reservationvolRepository): Respon
             'form' => $form,
         ]);
     }
+*/
+/*
+#[Route('/{id}/edit', name: 'app_reservationvol_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Reservationvol $reservationvol, EntityManagerInterface $entityManager): Response
+{
+    // Check if the departure time is at least 48 hours in the future
+    $heureDepart = $reservationvol->getVol()->getHeureDepart();
+    if ($heureDepart <= new \DateTime('+48 hours')) {
+        $this->addFlash('error', 'Cannot edit reservation within 48 hours of departure.');
+        return $this->redirectToRoute('app_reservationvol_index');
+    }
+
+    $form = $this->createForm(ReservationvolType::class, $reservationvol);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_reservationvol_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->renderForm('reservationvol/edit.html.twig', [
+        'reservationvol' => $reservationvol,
+        'form' => $form,
+    ]);
+}
+*/
 
 
 
 
+
+
+
+
+#[Route('/{id}/edit', name: 'app_reservationvol_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Reservationvol $reservationvol, EntityManagerInterface $entityManager): Response
+{
+    // Check if the departure time is at least 48 hours in the future
+    $heureDepart = $reservationvol->getVol()->getHeureDepart();
+    if ($heureDepart <= new \DateTime('+48 hours')) {
+        $this->addFlash('error', 'Cannot edit reservation within 48 hours of departure.');
+        return $this->redirectToRoute('app_reservationvol_index');
+    }
+
+    $form = $this->createForm(ReservationvolType::class, $reservationvol);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_reservationvol_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->renderForm('reservationvol/edit.html.twig', [
+        'reservationvol' => $reservationvol,
+        'form' => $form,
+    ]);
+}
 
 
     #[Route('/{id}', name: 'app_reservationvol_delete', methods: ['POST'])]

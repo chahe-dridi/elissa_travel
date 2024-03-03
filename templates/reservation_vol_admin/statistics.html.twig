@@ -1,0 +1,73 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block title %}Reservation Volume Statistics{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <style>
+        /* Add your custom CSS styles here */
+        .container {
+            margin-top: 50px; /* Adjust margin as needed */
+        }
+
+        .card {
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 5px; /* Add border radius */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
+        }
+
+        .card-body {
+            padding: 20px; /* Add padding */
+        }
+
+        .btn {
+            margin-top: 20px; /* Add margin to button */
+        }
+    </style>
+
+    <div class="container mt-6">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-18 mb-10">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="card-title mb-4">Top Reserved Cities</h1>
+                        <canvas id="myChartCities" style="height: 300px; width: 100%; margin-bottom: 20px;"></canvas>
+                    </div>
+                </div>
+                <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary" style="color: #fff; margin-top: 20px;">Back to List</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctxCities = document.getElementById('myChartCities').getContext('2d');
+    var myChartCities = new Chart(ctxCities, {
+        type: 'bar',
+        data: {
+            labels: [{% for city, count in statistics['Top Reserved Cities'] %}
+                '{{ city }}',
+            {% endfor %}],
+            datasets: [{
+                label: 'Number of Reservations',
+                data: [{% for city, count in statistics['Top Reserved Cities'] %}{{ count }},{% endfor %}],
+                backgroundColor: 'rgba(148, 87, 235, 0.8)',  // Violet
+                borderColor: 'rgba(148, 87, 235, 1)',       // Violet
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -209,7 +209,17 @@ public function index(VolRepository $volRepository, Request $request, PaginatorI
 
 
 
+    #[Route('/vol/calendar', name: 'app_vol_calendar')]
+    public function volCalendar(VolRepository $volRepository): Response
+    {
+        // Fetch vols from the repository
+        $vols = $volRepository->findAll();
 
+        // Pass vols to the Twig template
+        return $this->render('vol/calendar.html.twig', [
+            'vols' => $vols,
+        ]);
+    }
  
 
 
