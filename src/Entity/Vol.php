@@ -38,9 +38,7 @@ class Vol
     #[Assert\NotBlank]
     private ?\DateTimeInterface $heure_arrive = null;
 
-    #[ORM\Column]
-    private ?bool $escale = null;
-
+ 
     #[ORM\Column]
     private ?bool $disponible = null;
 
@@ -152,17 +150,8 @@ class Vol
         return $this;
     }
 
-    public function isEscale(): ?bool
-    {
-        return $this->escale;
-    }
-
-    public function setEscale(bool $escale): static
-    {
-        $this->escale = $escale;
-
-        return $this;
-    }
+  
+   
 
     public function isDisponible(): ?bool
     {

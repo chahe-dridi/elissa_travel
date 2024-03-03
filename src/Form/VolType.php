@@ -15,7 +15,7 @@ class VolType extends AbstractType
             ->add('compagnie_aerienne')
             ->add('heure_depart')
             ->add('heure_arrive')
-            ->add('escale')
+           
             ->add('disponible')
             ->add('airport_depart')
             ->add('airport_arrive')

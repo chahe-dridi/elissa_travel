@@ -1,17 +1,50 @@
-{% extends 'base.html.twig' %}
+{% extends 'nav_admin.html.twig' %}
 
 {% block title %}Airport Statistics{% endblock %}
 
 {% block body %}
-  <h1>Airport Statistics</h1>
-  <ul>
-    {% for country, data in statistics %}
-      <li>{{ country }} - Number of Airports: {{ data.num_airports }}</li>
-      <ul>
-        {% for city, count in data.cities %}
-          <li>{{ city }}: {{ count }}</li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
-  </ul>
+<div class="container mt-6">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-18 mb-10">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="card-title mb-4">Airport Statistics by City</h1>
+          <canvas id="myChartCity" style="height: 300px; width: 100%; margin-bottom: 20px;"></canvas>
+        </div>
+      </div>
+      <a href="{{ path('app_airport_index') }}" class="btn btn-primary" style="color: #fff; margin-top: 20px;">Back to List</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctxCity = document.getElementById('myChartCity').getContext('2d');
+  var myChartCity = new Chart(ctxCity, {
+    type: 'bar',
+    data: {
+      labels: [{% for city, count in statistics['Airports by City'] %}
+                 '{{ city }}',
+               {% endfor %}],
+      datasets: [{
+        label: 'Number of Airports',
+        data: [{% for city, count in statistics['Airports by City'] %}{{ count }},{% endfor %}],
+        backgroundColor: 'rgba(148, 87, 235, 0.8)',  // Violet
+        borderColor: 'rgba(148, 87, 235, 1)',       // Violet
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
 {% endblock %}

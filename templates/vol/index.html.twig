@@ -95,9 +95,8 @@
             <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
             <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
             <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
-            <a href="{{ path('app_vol_pdf') }}" class="btn btn-primary">Generate PDF</a>
-       
-         
+            <a href="{{ path('app_vol_pdf') }}" class="btn btn-success btn-lg  ">PDF</a>
+
        
         </div>
         <!-- Add New Flight link styled like search button -->
@@ -138,7 +137,7 @@
                 <th>Arrival Airport</th>
                 <th>Heure depart</th>
                 <th>Heure arrivee</th>
-                <th>Layover</th>
+           
                 <th>Availability</th>
                 <th>Actions</th>
             </tr>
@@ -154,7 +153,7 @@
                         <td class="arrival-airport">{{ vol.getAirportArrive().getName() }}</td>
                         <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
                         <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>{{ vol.escale ? 'Yes' : 'No' }}</td>
+                       
                         <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
                         <td>
                             <a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-info btn-sm">Show</a>

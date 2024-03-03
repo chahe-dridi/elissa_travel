@@ -152,50 +152,37 @@ class AirportController extends AbstractController
 
 
 
-
-
-
-
-
-
-
-
-
-    #[Route('/stat', name: 'airport_stat')]
+    #[Route('/airport/stat', name: 'airport_stat', methods: ['GET'])]
     public function airportStatistics(AirportRepository $airportRepository): Response
     {
-        // Retrieve all airports from the database
+        // Get all airports from the repository
         $airports = $airportRepository->findAll();
     
-        // Initialize an empty array to store country and city statistics
-        $statistics = [];
+        // Initialize an array to store airport counts by city
+        $airportsByCity = [];
     
-        // Loop through each airport to count the number of airports in each country and city
+        // Calculate statistics
         foreach ($airports as $airport) {
-            $country = $airport->getCountry();
             $city = $airport->getCity();
     
-            // Increment country count
-            $countryName = $country;
-            $statistics[$countryName]['num_airports'] = ($statistics[$countryName]['num_airports'] ?? 0) + 1;
-    
-            // Increment city count for the country
-            $statistics[$countryName]['cities'][$city] = ($statistics[$countryName]['cities'][$city] ?? 0) + 1;
+            // Count airports by city
+            if (!isset($airportsByCity[$city])) {
+                $airportsByCity[$city] = 1;
+            } else {
+                $airportsByCity[$city]++;
+            }
         }
     
-        // Render the statistics using a Twig template
+        // Prepare statistics data
+        $statistics = [
+            'Airports by City' => $airportsByCity,
+        ];
+    
+        // Render the template with statistics
         return $this->render('airport/statistics.html.twig', [
             'statistics' => $statistics,
         ]);
-
-
-
     }
-
-
-
-
-
 
 
 }

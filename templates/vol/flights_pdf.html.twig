@@ -7,15 +7,46 @@
         /* Define your PDF styles here */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #33f;
+            text-shadow: 1px 1px 1px #ccc;
+            font-size: 28px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         th, td {
             border: 1px solid #dddddd;
             text-align: left;
-            padding: 8px;
+            padding: 12px;
+        }
+        th {
+            background-color: #f0f0f0;
+            color: #33f;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -29,7 +60,7 @@
                 <th>Arrival Airport</th>
                 <th>Departure Time</th>
                 <th>Arrival Time</th>
-                <th>Escale</th>
+         
                 <th>Class</th>
                 <th>Price</th>
             </tr>
@@ -42,12 +73,13 @@
                     <td>{{ flight.getairportarrive().getName() }}</td>
                     <td>{{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</td>
                     <td>{{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</td>
-                    <td>{{ flight.isEscale() ? 'Yes' : 'No' }}</td>
+        
                     <td>{{ flight.getVolclass().getClassName() }}</td>
                     <td>${{ flight.getVolclass().getPrice() }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+ 
 </body>
 </html>
