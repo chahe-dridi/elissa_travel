@@ -31,9 +31,10 @@ class Airport
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:"code should be not empty")]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/' )  ]
+    #[Assert\NotBlank(message: "code should not be empty")]
+    #[Assert\Regex('/^[a-zA-Z\s,.\/-]+$/')]
     private ?string $name = null;
+    
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:"code should be not empty")]

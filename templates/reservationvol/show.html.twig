@@ -55,4 +55,87 @@
     </div>
 </section>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+<div>
+    {{ knp_pagination_render(reservationvols) }} </div>
+
+
+</div>
+
+
+
+
+
+
+
+
 {% endblock %}

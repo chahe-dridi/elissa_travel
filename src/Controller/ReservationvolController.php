@@ -23,12 +23,21 @@ use Symfony\Component\Mailer\Mailer ;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
  
-
+use Knp\Component\Pager\PaginatorInterface;
 
 
 #[Route('/reservationvol')]
 class ReservationvolController extends AbstractController
 {
+  
+  
+  
+  
+  
+  
+  
+  /*
+  
     #[Route('/', name: 'app_reservationvol_index', methods: ['GET'])]
    // Controller action to fetch and display available flights
 public function index(VolRepository $volRepository): Response
@@ -41,6 +50,42 @@ public function index(VolRepository $volRepository): Response
         'flights' => $availableFlights,
     ]);
 }
+
+*/
+
+private $paginator;
+
+public function __construct(PaginatorInterface $paginator)
+{
+    $this->paginator = $paginator;
+}
+
+
+
+#[Route('/', name: 'app_reservationvol_index', methods: ['GET'])]
+public function index(VolRepository $volRepository, Request $request): Response
+{
+    // Fetch available flights
+    $query = $volRepository->createQueryBuilder('v')
+        ->where('v.disponible = :disponible')
+        ->setParameter('disponible', true)
+        ->getQuery();
+
+    // Paginate the results
+    $pagination = $this->paginator->paginate(
+        $query, // Query to paginate
+        $request->query->getInt('page', 1), // Get the current page number from the request, default to 1
+        12 // Number of items per page
+    );
+
+    // Render the template with paginated flights data
+    return $this->render('reservationvol/index.html.twig', [
+        'flights' => $pagination,
+    ]);
+}
+
+
+
  
 
  //works
@@ -274,7 +319,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 
 
 
-
+/*
 #[Route('/show', name: 'app_reservationvol_show', methods: ['GET'])]
 public function show(ReservationvolRepository $reservationvolRepository): Response
 {
@@ -284,10 +329,26 @@ public function show(ReservationvolRepository $reservationvolRepository): Respon
         'reservationvols' => $reservationvols,
     ]);
 }
+*/
 
+#[Route('/show', name: 'app_reservationvol_show', methods: ['GET'])]
+public function show(ReservationvolRepository $reservationvolRepository, PaginatorInterface $paginator, Request $request): Response
+{
+    // Fetch all reservationvols from the repository
+    $reservationvolsQuery = $reservationvolRepository->findAll();
 
+    // Paginate the results
+    $reservationvols = $paginator->paginate(
+        $reservationvolsQuery, // Query to paginate
+        $request->query->getInt('page', 1), // Get the current page number from the request, default to 1
+        10 // Number of items per page
+    );
 
-
+    // Render the template with pagination
+    return $this->render('reservationvol/show.html.twig', [
+        'reservationvols' => $reservationvols,
+    ]);
+}
 
 
 

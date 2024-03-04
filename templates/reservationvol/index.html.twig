@@ -8,46 +8,51 @@
     
     <div class="container">
         
+        <div class="form-group">
        
-            <div class="form-group">
+            <div class="row">
+                <div class="col-md-12 text-center probootstrap-animate">
+                    <h2 class="heading mb50">Available Flights</h2>
+                    <a href="{{ path('app_reservationvol_show') }}" class="btn btn-primary">Show Reservation</a>
+                </div>
+            </div> 
        
-       
-                <div class="row">
-                    <div class="col-md-12 text-center probootstrap-animate">
-                        <h2 class="heading mb50">Available Flights</h2>
-                        <a href="{{ path('app_reservationvol_show') }}" class="btn btn-primary">Show Reservation</a>
-                    </div>
-                </div> 
-       
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <input type="text" id="departureCity" class="form-control" placeholder="Departure City">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" id="arrivalCity" class="form-control" placeholder="Arrival City">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="number" id="maxPrice" class="form-control" placeholder="Max Price">
-                    </div>
+            <div style="padding-bottom: 2%;"></div>
+
+            <div class="row mb-3" >
+                <div class="col-md-4">
+                    <input type="text" id="departureCity" class="form-control" placeholder="Departure City">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="arrivalCity" class="form-control" placeholder="Arrival City">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" id="maxPrice" class="form-control" placeholder="Max Price">
                 </div>
             </div>
-       
-            <div class="row" id="flightList">
-                {% for flight in flights %}
-                    <div class="col-md-4 mb-3 probootstrap-form">
-                        <div class="card-body" style="height: 100%; background-color: #fff; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);"> <!-- Set a fixed height for the card body -->
-                            <h5 class="card-title">Flight Information</h5>
-                            <p class="card-text departure-airport" style="color: black;">Departure Airport: {{ flight.getairportDepart().getName() }} ({{ flight.getairportDepart().getCity() }}, {{ flight.getairportDepart().getCountry() }})</p>
-                            <p class="card-text arrival-airport" style="color: black;">Arrival Airport: {{ flight.getairportarrive().getName() }} ({{ flight.getairportarrive().getCity() }}, {{ flight.getairportarrive().getCountry() }})</p>
-                            <p class="card-text" style="color: black;">Departure Time: {{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</p>
-                            <p class="card-text" style="color: black;">Arrival Time: {{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</p>
-                            <p class="card-text" style="color: black;">Class: {{ flight.getVolclass().getClassName() }}</p>
-                            <p class="card-text price" style="color: black;">Price: ${{ flight.getVolclass().getPrice() }}</p>
-                            <a href="{{ path('app_reservationvol_new', {'id': flight.getId()}) }}" class="btn btn-primary">View Reservation</a>
-                        </div>
-                    </div>
-                {% endfor %}
+
+            <div class="row justify-content-center">
+                <div class="col-md-4 text-center">
+                    <input type="date" id="departureDate" class="form-control" placeholder="Departure Date">
+                </div>
             </div>
+        </div>
+       
+        <div class="row" id="flightList">
+            {% for flight in flights %}
+                <div class="col-md-4 mb-3 probootstrap-form">
+                    <div class="card-body" style="height: 100%; background-color: #fff; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);"> <!-- Set a fixed height for the card body -->
+                        <h5 class="card-title">Flight Information</h5>
+                        <p class="card-text departure-airport" style="color: black;">Departure Airport: {{ flight.getairportDepart().getName() }} ({{ flight.getairportDepart().getCity() }}, {{ flight.getairportDepart().getCountry() }})</p>
+                        <p class="card-text arrival-airport" style="color: black;">Arrival Airport: {{ flight.getairportarrive().getName() }} ({{ flight.getairportarrive().getCity() }}, {{ flight.getairportarrive().getCountry() }})</p>
+                        <p class="card-text departure-time" style="color: black;">Departure Time: {{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</p>
+                        <p class="card-text arrival-time" style="color: black;">Arrival Time: {{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</p>
+                        <p class="card-text" style="color: black;">Class: {{ flight.getVolclass().getClassName() }}</p>
+                        <p class="card-text price" style="color: black;">Price: ${{ flight.getVolclass().getPrice() }}</p>
+                        <a href="{{ path('app_reservationvol_new', {'id': flight.getId()}) }}" class="btn btn-primary">View Reservation</a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -67,26 +72,28 @@
         const departureInput = document.getElementById('departureCity');
         const arrivalInput = document.getElementById('arrivalCity');
         const maxPriceInput = document.getElementById('maxPrice');
+        const departureDateInput = document.getElementById('departureDate');
         const flightList = document.getElementById('flightList');
 
         const updateFlights = () => {
             const departureCity = departureInput.value.trim().toLowerCase();
             const arrivalCity = arrivalInput.value.trim().toLowerCase();
             const maxPrice = parseFloat(maxPriceInput.value.trim());
+            const departureDate = new Date(departureDateInput.value); // Convert input to Date object
 
             // Loop through each flight card and show/hide based on input values
             document.querySelectorAll('.probootstrap-form').forEach(function(card) {
                 const departureAirport = card.querySelector('.card-text.departure-airport').textContent.toLowerCase();
                 const arrivalAirport = card.querySelector('.card-text.arrival-airport').textContent.toLowerCase();
                 const price = parseFloat(card.querySelector('.card-text.price').textContent.replace('Price: $', ''));
-
+                const flightDepartureDate = new Date(card.querySelector('.card-text.departure-time').textContent);
 
                 const showDeparture = departureCity === '' || departureAirport.includes(departureCity);
                 const showArrival = arrivalCity === '' || arrivalAirport.includes(arrivalCity);
-             const showPrice = isNaN(maxPrice) || price <= maxPrice;
+                const showPrice = isNaN(maxPrice) || price <= maxPrice;
+                const showDate = isNaN(departureDate.getTime()) || flightDepartureDate.toDateString() === departureDate.toDateString(); // Compare dates without time
 
-
-                if (showDeparture && showArrival && showPrice) {
+                if (showDeparture && showArrival && showPrice && showDate) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -94,12 +101,59 @@
             });
         };
 
-        const inputs = [departureInput, arrivalInput, maxPriceInput];
+        const inputs = [departureInput, arrivalInput, maxPriceInput, departureDateInput];
         inputs.forEach(input => {
             input.addEventListener('input', debounce(updateFlights, 300));
         });
     });
 </script>
 
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+<div>
+    {{ knp_pagination_render(flights) }}
+</div>
 
 {% endblock %}
