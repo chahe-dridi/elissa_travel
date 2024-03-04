@@ -46,7 +46,11 @@ class VoyageType extends AbstractType
                     '2026' => '2026'],'placeholder' => 'Select year',
                     'required' => false, 
                 ])
-            
+                ->add('image', FileType::class, [
+                    'label' => 'Image du voyage',
+                    'mapped' => false, 
+                    'required' => false,
+                ])
             ->add('villedepart')
             ->add('destination')
          

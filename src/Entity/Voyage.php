@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: VoyageRepository::class)]
 class Voyage
@@ -45,8 +46,8 @@ class Voyage
 
     private ?string $destination = null;
 
-    //#[ORM\Column(length: 255)]
-    //private ?string $imagevoyage = null;
+    #[ORM\Column(type:'string', length: 255, nullable:true)]
+    private $imageName;
 
     public function __construct()
     {
@@ -178,15 +179,17 @@ public function setAnnee(int $annee): static
         return $this;
     }
 
-   // public function getImagevoyage(): ?string
-   // {
-     //   return $this->imagevoyage;
-      
+  
 
-   // public function setImagevoyage(string $imagevoyage): static
-   // {
-      //  $this->imagevoyage = $imagevoyage;
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
 
-        //return $this;
-    //
+    public function setImageName(?string $imageName): self
+    {
+        $this->imageName = $imageName;
+
+        return $this;
+    }
 }

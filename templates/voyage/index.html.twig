@@ -57,8 +57,7 @@
                 </td>
                 <td>
                     
-                    <a href="{{ path('app_programme_new', {'id': voyage.id}) }}">Plan trip</a>
-                </td>
+                   <a href="{{ path('app_programme_new', {'voyageId': voyage.id}) }}">Plan trip</a>
             </tr>
         {% else %}
             <tr>

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\voyage;
-
+use App\Repository\VoyageRepository;
 use App\Entity\Programme;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
@@ -34,32 +34,35 @@ class ProgrammeController extends AbstractController
 
 
 
-    #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{voyageId}', name: 'app_programme_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, VoyageRepository $voyageRepository, int $voyageId): Response
     {
+        $voyage = $voyageRepository->find($voyageId);
+
+        if (!$voyage) {
+            
+            return $this->redirectToRoute('app_voyage_index'); 
+        }
+
         $programme = new Programme();
-    
+        
+        $programme->setVoyage($voyage);
+
         $form = $this->createForm(ProgrammeType::class, $programme);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $voyage = $programme->getVoyage();
-            // Vérifiez si un voyage est associé au programme
-            if ($voyage) {
-                // Obtenez l'ID du voyage et affectez-le au programme
-                $id = $voyage->getId();
-                $programme->setVoyage($voyage);
-    
-                $entityManager->persist($programme);
-                $entityManager->flush();
-    
-                return $this->redirectToRoute('app_programme_index', ['id' => $id], Response::HTTP_SEE_OTHER);
-            }
+            $entityManager->persist($programme);
+            $entityManager->flush();
+
+            
+            
+            return $this->redirectToRoute('app_programme_index', ['id' => $voyageId]);
+
         }
-        $id = $request->query->get('id');
-    
+
+        
         return $this->renderForm('programme/new.html.twig', [
-            'id' => $id,
             'programme' => $programme,
             'form' => $form,
         ]);
