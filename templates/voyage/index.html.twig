@@ -36,8 +36,8 @@
                 <th>Distination</th>
                 <th>Month</th>
                 <th>Year</th>
-                
                 <th>actions</th>
+                <th>Program</th>
             </tr>
         </thead>
         <tbody>
@@ -57,7 +57,7 @@
                 </td>
                 <td>
                     
-                    <a href="{{ path('app_programme_new', {'voyage': voyage}) }}">Plan trip</a>
+                    <a href="{{ path('app_programme_new', {'id': voyage.id}) }}">Plan trip</a>
                 </td>
             </tr>
         {% else %}

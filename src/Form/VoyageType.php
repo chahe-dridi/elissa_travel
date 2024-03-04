@@ -3,6 +3,8 @@ namespace App\Form;
 
 
 use App\Entity\Voyage;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -44,9 +46,10 @@ class VoyageType extends AbstractType
                     '2026' => '2026'],'placeholder' => 'Select year',
                     'required' => false, 
                 ])
+            
             ->add('villedepart')
             ->add('destination')
-            ->add('voyage',HiddenType::class)
+         
 
 
         ;

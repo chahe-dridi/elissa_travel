@@ -34,31 +34,37 @@ class ProgrammeController extends AbstractController
 
 
 
-
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager  ): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $programme = new Programme();
-
+    
         $form = $this->createForm(ProgrammeType::class, $programme);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $voyage=$request->get('voyage');
-            $programme->setVoyage($voyage);
-            $entityManager->persist($programme);
-            $entityManager->flush();
-            
-
-            return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+            $voyage = $programme->getVoyage();
+            // Vérifiez si un voyage est associé au programme
+            if ($voyage) {
+                // Obtenez l'ID du voyage et affectez-le au programme
+                $id = $voyage->getId();
+                $programme->setVoyage($voyage);
+    
+                $entityManager->persist($programme);
+                $entityManager->flush();
+    
+                return $this->redirectToRoute('app_programme_index', ['id' => $id], Response::HTTP_SEE_OTHER);
+            }
         }
-
+        $id = $request->query->get('id');
+    
         return $this->renderForm('programme/new.html.twig', [
+            'id' => $id,
             'programme' => $programme,
             'form' => $form,
         ]);
     }
-
+    
 
 
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]
@@ -68,6 +74,11 @@ class ProgrammeController extends AbstractController
             'programme' => $programme,
         ]);
     }
+
+
+
+  
+
 
     #[Route('/{id}/edit', name: 'app_programme_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response

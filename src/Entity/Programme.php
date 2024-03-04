@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 use App\Repository\ProgrammeRepository;
 use Doctrine\DBAL\Types\Types;
@@ -14,8 +16,11 @@ class Programme
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank(message: 'Please enter a description')]   
+    #[Assert\Type(type: "string", message: 'Le description  doit être une chaîne de caractères.')]
+
+     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $datedebut = null;
@@ -23,7 +28,9 @@ class Programme
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $datefin = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank(message: 'Please enter a price')]
+    #[Assert\Positive(message: 'Le prix doit être un nombre positif.')]
     private ?int $prix = null;
 
     #[ORM\ManyToOne(inversedBy: 'programmes')]

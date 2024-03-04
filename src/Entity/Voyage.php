@@ -14,17 +14,16 @@ class Voyage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
     #[ORM\Column(type: 'integer')]
+  
     private ?int $id = null;
 
     #[ORM\Column (length: 255)]
     #[Assert\NotBlank(message: "Le mois est requis")]
      private ?string $mois = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: "L'année est requise")]
-    #[Assert\Type(type: 'integer', message: "L'année doit être un nombre")]
     private ?int $annee = null;
 
     #[ORM\Column(length: 255)]
@@ -45,6 +44,9 @@ class Voyage
     #[Assert\NotBlank(message: "La destination est requise")]
 
     private ?string $destination = null;
+
+    //#[ORM\Column(length: 255)]
+    //private ?string $imagevoyage = null;
 
     public function __construct()
     {
@@ -74,7 +76,7 @@ class Voyage
     return $this->annee ;
 }
 
-public function setAnnee(\DateTimeInterface $annee): static
+public function setAnnee(int $annee): static
 {
     $this->annee = $annee;
     return $this;
@@ -175,4 +177,16 @@ public function setAnnee(\DateTimeInterface $annee): static
 
         return $this;
     }
+
+   // public function getImagevoyage(): ?string
+   // {
+     //   return $this->imagevoyage;
+      
+
+   // public function setImagevoyage(string $imagevoyage): static
+   // {
+      //  $this->imagevoyage = $imagevoyage;
+
+        //return $this;
+    //
 }
