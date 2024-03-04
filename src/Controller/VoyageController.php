@@ -23,19 +23,18 @@ class VoyageController extends AbstractController
         ]);
     }
 
-    #[Route('/clientF', name: 'app_voyage_clientF', methods: ['GET'])]
-    public function clientF(VoyageRepository $voyageRepository): Response
+    #[Route('/clientF/{voyageId}', name: 'app_voyage_clientF', methods: ['GET'])]
+    public function clientF(VoyageRepository $voyageRepository, int $voyageId ,EntityManagerInterface $entityManager): Response
     {
+        $voyage = $entityManager->getRepository(Voyage::class)->find($voyageId);
+        $programmes = $voyage->getProgrammes();
+        
         return $this->render('voyage/clientF.html.twig', [
+            'voyage' => $voyage,
+            'programmes' => $programmes,
             'voyages' => $voyageRepository->findAll(),
         ]);
     }
-
-
-
-
-
-
 
 
 
@@ -49,6 +48,7 @@ class VoyageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($voyage);
             $entityManager->flush();
+            
 
             return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }

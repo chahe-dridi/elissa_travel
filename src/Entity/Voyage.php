@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VoyageRepository::class)]
 class Voyage
@@ -14,15 +15,21 @@ class Voyage
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column (length: 255)]
-    private ?string $mois = null;
+    #[Assert\NotBlank(message: "Le mois est requis")]
+     private ?string $mois = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "L'année est requise")]
+    #[Assert\Type(type: 'integer', message: "L'année doit être un nombre")]
     private ?int $annee = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La ville de départ est requise")]
+
     private ?string $villedepart = null;
 
     #[ORM\ManyToOne(inversedBy: 'voyages')]
@@ -35,6 +42,8 @@ class Voyage
     private Collection $reservationVoyages;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La destination est requise")]
+
     private ?string $destination = null;
 
     public function __construct()

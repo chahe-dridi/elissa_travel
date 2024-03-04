@@ -6,7 +6,8 @@ use App\Entity\Voyage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType; 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class VoyageType extends AbstractType
 {
@@ -45,6 +46,9 @@ class VoyageType extends AbstractType
                 ])
             ->add('villedepart')
             ->add('destination')
+            ->add('voyage',HiddenType::class)
+
+
         ;
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\voyage;
 
 use App\Entity\Programme;
 use App\Form\ProgrammeType;
@@ -22,16 +23,32 @@ class ProgrammeController extends AbstractController
         ]);
     }
 
+
+    #[Route('/clientprog', name: 'app_programme_clientprog', methods: ['GET'])]
+    public function clientprog(ProgrammeRepository $ProgrammeRepository): Response
+    {
+        return $this->render('programme/clientprog.html.twig', [
+            'programme' => $ProgrammeRepository->findAll(),
+        ]);
+    }
+
+
+
+
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager  ): Response
     {
         $programme = new Programme();
+
         $form = $this->createForm(ProgrammeType::class, $programme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $voyage=$request->get('voyage');
+            $programme->setVoyage($voyage);
             $entityManager->persist($programme);
             $entityManager->flush();
+            
 
             return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -41,6 +58,8 @@ class ProgrammeController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
 
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]
     public function show(Programme $programme): Response
@@ -79,11 +98,5 @@ class ProgrammeController extends AbstractController
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/clientprog', name: 'app_programme_clientprog', methods: ['GET'])]
-    public function clientprog(programmeRepository $programmeRepository): Response
-    {
-        return $this->render('programme/clientprog.html.twig', [
-            'programme' => $programmeRepository->findAll(),
-        ]);
-    }
+   
 }
