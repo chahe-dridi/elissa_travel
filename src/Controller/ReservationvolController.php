@@ -65,10 +65,15 @@ public function __construct(PaginatorInterface $paginator)
 #[Route('/', name: 'app_reservationvol_index', methods: ['GET'])]
 public function index(VolRepository $volRepository, Request $request): Response
 {
-    // Fetch available flights
+    // Get the current datetime
+    $currentTime = new \DateTime();
+
+    // Fetch available flights with departure time in the future
     $query = $volRepository->createQueryBuilder('v')
         ->where('v.disponible = :disponible')
+        ->andWhere('v.heure_depart > :currentTime')
         ->setParameter('disponible', true)
+        ->setParameter('currentTime', $currentTime)
         ->getQuery();
 
     // Paginate the results
@@ -83,6 +88,7 @@ public function index(VolRepository $volRepository, Request $request): Response
         'flights' => $pagination,
     ]);
 }
+
 
 
 
@@ -249,25 +255,82 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $volClassDescription = $vol->getVolclass()->getDescription(); // Assuming you have a method to get the description
         $totalPrice = $reservationvol->getTotalPrice(); // Assuming you have a method to get the total price
         
+
+        $Compagnie_aerienne = $vol->getCompagnieAerienne();
         // Generate the HTML content for the email
         $htmlContent = "
-            <p>Flight Details:</p>
-            <ul>
-            <li><strong>Departure Country:</strong> $countryDepart</li>
-                <li><strong>Departure City:</strong> $cityDepart</li>           
-                <li><strong>Arrival Country:</strong> $countryArrive</li>
-                <li><strong>Arrival City:</strong> $cityArrive</li>    
-                <li><strong>Departure Time:</strong> $heureDepart</li>
-                <li><strong>Arrival Time:</strong> $heureArrivee</li>
-                <li><strong>Departure Airport:</strong> $airportDepart</li>
-                <li><strong>Arrival Airport:</strong> $airportArrive</li>
-             
-             
-                <li><strong>Class Name:</strong> $volClassName</li>
-                <li><strong>Class Description:</strong> $volClassDescription</li>
-                <li><strong>Total Price:</strong> $totalPrice</li>
-            </ul>
-        ";
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                    margin: 0;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                }
+                h2 {
+                    color: #333;
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                }
+                p {
+                    margin-bottom: 15px;
+                    font-size: 16px;
+                }
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    margin-bottom: 20px;
+                }
+                li {
+                    margin-bottom: 10px;
+                    font-size: 16px;
+                }
+                strong {
+                    font-weight: bold;
+                }
+                .thank-you {
+                    font-size: 16px;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <h2>Dear {$user->getprenom()} {$user->getNom()},</h2>
+                <p>We are delighted to confirm your flight reservation. Below are the details:</p>
+                <ul>
+                    <li><strong>Departure Country:</strong> $countryDepart</li>
+                    <li><strong>Departure City:</strong> $cityDepart</li>           
+                    <li><strong>Arrival Country:</strong> $countryArrive</li>
+                    <li><strong>Arrival City:</strong> $cityArrive</li>    
+                    <li><strong>Departure Time:</strong> $heureDepart</
+                    </li>
+                    <li><strong>Arrival Time:</strong> $heureArrivee</li>
+                    <li><strong>Departure Airport:</strong> $airportDepart</li>
+                    <li><strong>Arrival Airport:</strong> $airportArrive</li>
+                    <li><strong>Class Name:</strong> $volClassName</li>
+                    <li><strong>Class Description:</strong> $volClassDescription</li>
+                    <li><strong>Total Price:</strong> $totalPrice</li>
+                </ul>
+                <p class='thank-you'>Thank you for choosing $Compagnie_aerienne. We look forward to serving you on board.</p>
+                <p>Best regards,<br> $Compagnie_aerienne Team</p>
+            </div>
+        </body>
+        </html>
+";                
+
+        
+
     
         $transport = Transport::fromDsn('smtp://tester44.tester2@gmail.com:hpevdqbvclzebhxa@smtp.gmail.com:587');
         $mailer = new Mailer($transport);
