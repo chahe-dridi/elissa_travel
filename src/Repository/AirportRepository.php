@@ -20,7 +20,7 @@ class AirportRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Airport::class);
     }
-
+/*
    public function findBySearchQuery(string $searchQuery): array
 {
     return $this->createQueryBuilder('a')
@@ -28,10 +28,21 @@ class AirportRepository extends ServiceEntityRepository
         ->setParameter('searchQuery', '%' . $searchQuery . '%')
         ->getQuery()
         ->getResult();
+}*/
+
+
+public function findBySearchQuery(?string $searchQuery): array
+{
+    if (!$searchQuery) {
+        return $this->findAll();
+    }
+
+    return $this->createQueryBuilder('a')
+        ->andWhere('a.code LIKE :searchQuery')
+        ->setParameter('searchQuery', "%{$searchQuery}%")
+        ->getQuery()
+        ->getResult();
 }
-
-
-
 
 //    /**
 //     * @return Airport[] Returns an array of Airport objects

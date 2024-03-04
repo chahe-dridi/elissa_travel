@@ -9,6 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType; // Import HiddenType
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
+
+
 class ReservationvolType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -16,6 +19,7 @@ class ReservationvolType extends AbstractType
         $builder
             // Add other fields as needed
             ->add('total_price')
+            
             ->add('payment_method', ChoiceType::class, [ // Use ChoiceType for select dropdown
                 'choices' => [
                     'Online' => 'online',
@@ -29,7 +33,12 @@ class ReservationvolType extends AbstractType
             ->add('user')
             ->add('flight', HiddenType::class, [
                 'mapped' => false, // This field should not be mapped to the entity
-            ]);
+          
+          
+          
+          
+            ]) 
+            ->add('captcha', ReCaptchaType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

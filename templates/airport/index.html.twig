@@ -48,30 +48,27 @@
 
 
 
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('input[name="search"]');
+    $(document).ready(function() {
+        // Function to handle search when input changes
+        function handleSearch() {
+            const searchTerm = $('#searchInput').val().trim();
 
-        searchInput.addEventListener('input', function() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const airportRows = document.querySelectorAll('.airport-row');
+            // Send AJAX request to the server only if the search term is not empty
+            if (searchTerm !== '') {
+                $.get('{{ path('app_airport_search') }}', { search: searchTerm }, function(response) {
+                    // Replace the table content with filtered results
+                    $('#airportTable').html(response.html);
+                });
+            }
+        }
 
-            airportRows.forEach(function(airportRow) {
-                const airportCode = airportRow.querySelector('.airport-code').textContent.toLowerCase();
-                const airportName = airportRow.querySelector('.airport-name').textContent.toLowerCase();
-                const airportCity = airportRow.querySelector('.airport-city').textContent.toLowerCase();
-                const airportCountry = airportRow.querySelector('.airport-country').textContent.toLowerCase();
-
-                if (airportCode.includes(searchTerm) || airportName.includes(searchTerm) || airportCity.includes(searchTerm) || airportCountry.includes(searchTerm)) {
-                    airportRow.style.display = '';
-                } else {
-                    airportRow.style.display = 'none';
-                }
-            });
+        // Listen for changes in the input field and trigger search
+        $('#searchInput').on('input', function() {
+            // Trigger the search when the input changes
+            handleSearch();
         });
     });
 </script>
@@ -88,16 +85,13 @@
             <a href="{{ path('airport_stat') }}" class="btn btn-success btn-lg">airport stat</a>
       
         </div>
-
-        <form id="searchForm" action="#" method="GET" > 
-          
-           
-                    <!-- Search form -->
-             <div class="input-group">
-                        <input type="text" name="search" class="btn btn-outline-secondary" placeholder="Search by Airport Code">
-                </div>
-       
-    </form>
+   
+        <form id="searchForm" action="{{ path('app_airport_search') }}" method="get">
+            <div class="form-group">
+                <input type="text" name="search" id="searchInput" placeholder="Search by Airport Code, Name, City, or Country" class="form-control" value="{{ app.request.query.get('search') }}">
+            </div>
+        </form>
+        
 
 
 
@@ -106,7 +100,7 @@
             <button id="addNewAirportButton" class="btn btn-outline-secondary" onclick="location.href='{{ path('app_airport_new') }}'">Add New Airport</button>
         </div>
     </div>
-    <div class="col-lg-8">
+    <div class="table-responsive" class="col-lg-8">
         <table class="table">
             <thead>
                 <tr>
@@ -121,25 +115,26 @@
             </thead>
             <tbody>
                 {% if airports|length > 0 %}
-                    {% for airport in airports %}
-                        <tr class="airport-row">
-                            <td>{{ airport.id }}</td>
-                            <td>{{ airport.user.nom }} {{ airport.user.prenom }}</td>
-                            <td class="airport-code">{{ airport.code }}</td>
-                            <td class="airport-name">{{ airport.name }}</td>
-                            <td class="airport-city">{{ airport.city }}</td>
-                            <td class="airport-country">{{ airport.country }}</td>
-                            <td>
-                                <a href="{{ path('app_airport_show', {'id': airport.id}) }}" class="btn btn-sm btn-info">Show</a>
-                                <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" class="btn btn-sm btn-primary">Edit</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="6">No records found</td>
+                {% for airport in airports %}
+                    <tr class="airport-row">
+                        <td>{{ airport.id }}</td>
+                        <td>{{ airport.user.nom }} {{ airport.user.prenom }}</td>
+                        <td class="airport-code">{{ airport.code }}</td>
+                        <td class="airport-name">{{ airport.name }}</td>
+                        <td class="airport-city">{{ airport.city }}</td>
+                        <td class="airport-country">{{ airport.country }}</td>
+                        <td>
+                            <a href="{{ path('app_airport_show', {'id': airport.id}) }}" class="btn btn-sm btn-info">Show</a>
+                            <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
                     </tr>
-                {% endif %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">No records found</td>
+                </tr>
+            {% endif %}
+            
             </tbody>
         </table>
     </div>
