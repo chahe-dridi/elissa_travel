@@ -7,13 +7,18 @@ use App\Entity\Chambre;
 use App\Entity\ReservationHotel;
 use App\Form\ReservationHotelType;
 use App\Form\reservationtype;
-
+use App\Repository\HotelRepository;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use SensioLabs\Security\SecurityChecker;
 use App\Repository\ReservationHotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 #[Route('/reservation/hotel')]
 class ReservationHotelController extends AbstractController
@@ -76,9 +81,18 @@ return $this->render('reservation_hotel/backindex.html.twig', [
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->addFlash('success', 'Réservation effectuée avec succès! Vous recevrez une confirmation par e-mail' );
             $formData = $form->getData();
             $selectedChambre = $formData->getChambree();
-
+            
+            $transport = Transport::fromDsn('smtp://tester44.tester2@gmail.com:hpevdqbvclzebhxa@smtp.gmail.com:587');
+            $mailer = new Mailer($transport);
+            $email = (new Email())
+                ->from('tester44.tester2@gmail.com')
+                ->to('aymenbahri351@gmail.com')
+                ->subject('Someone write a comment')
+                ->html('hello check our web application! someone write a comment ');
+                $mailer->send($email);
 
             if ($selectedChambre) {
                 $prixHotel = $selectedChambre->getPrixHotel();
@@ -182,4 +196,53 @@ return $this->render('reservation_hotel/backindex.html.twig', [
         'Content-Disposition' => 'inline; filename="invoice.pdf"',
     ]);
 }
+
+
+
+    
+
+    #[Route('/calendar', name: 'app_reservation_hotel_calendar')]
+public function eventCalendar(ReservationHotel  $reservationHotel): Response
+{
+    try {
+        // Fetch all events from the repository
+        $reservations = $reservationHotel->findAll();
+
+        // Check if events exist
+        if (empty($reservations)) {
+            throw new \Exception('No reservations found.');
+        }
+
+        // Format the events data for the calendar
+        $formattedEvents = [];
+        foreach ($reservations as $reservation) {
+            $formattedEvents[] = [
+                'datearrive' => $reservationHotel->getdateArrive()->format('Y-m-d'),
+                'datedepart' => $reservationHotel->getdateDepart()->format('Y-m-d'),
+                'id_chambre' => $reservationHotel->getdate(),
+                
+
+                // You can add more fields like color, url, etc. if needed
+            ];
+        }
+        $data = json_encode($formattedEvents);
+
+        // Pass formatted events to the Twig template
+        return $this->render('reservation_hotel/calendar.html.twig', compact('data'));
+    } catch (\Exception $e) {
+        // Handle any exceptions
+        return $this->render('reservation_hotel/calendar.html.twig', ['error' => $e->getMessage()]);
+    }
 }
+
+
+
+
+
+
+
+
+}
+
+
+

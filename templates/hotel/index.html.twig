@@ -87,12 +87,16 @@
                                         <a href="{{ path('app_chambre_index', {'id': hotel.id}) }}" class="btn btn-sm btn-primary" style="margin-bottom: 10px;">chambre</a>
                                     </td>
                                 </tr>
+                               
                             {% else %}
                                 <tr>
                                     <td colspan="11">No records found</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
+                                                    <div class="navigation.flex.justify-content.mb-8">
+                {{ knp_pagination_render(users) }}
+             </div>    
                     </table>
                 </div>
             </div>

@@ -10,27 +10,36 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Knp\Component\Pager\PaginatorInterface;
 #[Route('/hotel')]
 class HotelController extends AbstractController
 {
     #[Route('/', name: 'app_hotel_index', methods: ['GET'])]
-    public function index(HotelRepository $hotelRepository, Request $request): Response
-{
-    $searchQuery = $request->query->get('search');
+    public function index(HotelRepository $hotelRepository, Request $request, PaginatorInterface $paginatorInterface): Response
+    {
+        $data = $hotelRepository->findAll();
+        $users = $paginatorInterface->paginate(
+            $data,
+            $request->query->getInt('page',1),
+           3
+        );
+        $searchQuery = $request->query->get('search');
 
-    // Retrieve hotels based on search query
-    if ($searchQuery) {
-        $hotels = $hotelRepository->findByNomHotel($searchQuery);
-    } else {
-        $hotels = $hotelRepository->findAll();
+        // Retrieve hotels based on search query
+        if ($searchQuery) {
+            $hotels = $hotelRepository->findByNomHotel($searchQuery);
+        } else {
+            $hotels = $hotelRepository->findAll();
+        }
+
+        return $this->render('hotel/index.html.twig', [
+            'hotels' => $hotels,
+            'searchQuery' => $searchQuery, // Pass the search query to the template
+            'users' => $users,
+        ]);
     }
 
-    return $this->render('hotel/index.html.twig', [
-        'hotels' => $hotels,
-        'searchQuery' => $searchQuery,
-    ]);
-}
+   
 
     #[Route('/new', name: 'app_hotel_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -100,4 +109,6 @@ class HotelController extends AbstractController
     }
 
     
+    
+
 }

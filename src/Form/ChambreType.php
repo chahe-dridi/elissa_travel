@@ -48,6 +48,21 @@ class ChambreType extends AbstractType
         
     }
 
+
+    public function isAvailable(DateTime $dateArrive, DateTime $dateDepart): bool
+    {
+        // Parcourir toutes les réservations de la chambre
+        foreach ($this->reservationHotels as $reservation) {
+            // Vérifier si la réservation chevauche la période spécifiée
+            if ($reservation->getdateArrive() < $dateDepart && $reservation->getdateDepart() > $dateArrive) {
+                // La chambre n'est pas disponible si une réservation chevauche cette période
+                return false;
+            }
+        }
+        // La chambre est disponible si aucune réservation ne chevauche cette période
+        return true;
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

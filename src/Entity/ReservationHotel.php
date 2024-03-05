@@ -22,22 +22,26 @@ class ReservationHotel
     #[ORM\Column(nullable: true)]
     private ?float $PrixTT = null;
     
-     
+    
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateArrive = null;
-
+    
+    
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateDepart = null;
 
     #[ORM\ManyToOne]
     private ?Payment $Payment = null;
 
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
-
+    
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
-
+    
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
     #[ORM\Column(length: 255)]
     private ?string $preNom = null;
 

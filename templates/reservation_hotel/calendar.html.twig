@@ -1,0 +1,36 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block title %}reservationcalendar Calendar{% endblock %}
+
+
+{% block body %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        let calendarElt = document.getElementById('calendar')
+        let calendar = new FullCalendar.Calendar(calendarElt, {
+          initialView: 'dayGridMonth',
+          locale: 'FR',
+          headerToolbar: {
+            start:'prev,next today',
+            center: 'title',
+            end: 'dayGridMonth,timeGridWeek'
+          },
+            reservation: {{data|raw}},
+            editable: true,
+            eventResizableFromStart: true
+        })
+        calendar.render()
+      })
+
+    </script>
+  </head>
+
+                    
+           
+    </script>
+{% endblock %}

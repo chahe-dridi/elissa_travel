@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
 
 class reservationtype extends AbstractType
 {
@@ -30,7 +31,8 @@ class reservationtype extends AbstractType
                 },
                 'placeholder' => 'Choose a chambre',
 
-            ]);
+            ])
+            ->add("recaptcha", ReCaptchaType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
