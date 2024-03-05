@@ -40,73 +40,58 @@
        
         <div class="row" id="flightList">
             {% for flight in flights %}
-                <div class="col-md-4 mb-3 probootstrap-form">
-                    <div class="card-body" style="height: 100%; background-color: #fff; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);"> <!-- Set a fixed height for the card body -->
-                        <h5 class="card-title">Flight Information</h5>
-                        <p class="card-text departure-airport" style="color: black;">Departure Airport: {{ flight.getairportDepart().getName() }} ({{ flight.getairportDepart().getCity() }}, {{ flight.getairportDepart().getCountry() }})</p>
-                        <p class="card-text arrival-airport" style="color: black;">Arrival Airport: {{ flight.getairportarrive().getName() }} ({{ flight.getairportarrive().getCity() }}, {{ flight.getairportarrive().getCountry() }})</p>
-                        <p class="card-text departure-time" style="color: black;">Departure Time: {{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</p>
-                        <p class="card-text arrival-time" style="color: black;">Arrival Time: {{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</p>
-                        <p class="card-text" style="color: black;">Class: {{ flight.getVolclass().getClassName() }}</p>
-                        <p class="card-text price" style="color: black;">Price: ${{ flight.getVolclass().getPrice() }}</p>
-                        <a href="{{ path('app_reservationvol_new', {'id': flight.getId()}) }}" class="btn btn-primary">View Reservation</a>
+                {% if flight.disponible %}
+                    <div class="col-md-4 mb-3 probootstrap-form flight-card">
+                        <div class="card-body" style="height: 100%; background-color: #fff; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);"> <!-- Set a fixed height for the card body -->
+                            <h5 class="card-title">Flight Information</h5>
+                            <p class="card-text departure-airport" style="color: black;">Departure Airport: {{ flight.getairportDepart().getName() }} ({{ flight.getairportDepart().getCity() }}, {{ flight.getairportDepart().getCountry() }})</p>
+                            <p class="card-text arrival-airport" style="color: black;">Arrival Airport: {{ flight.getairportarrive().getName() }} ({{ flight.getairportarrive().getCity() }}, {{ flight.getairportarrive().getCountry() }})</p>
+                            <p class="card-text departure-time" style="color: black;">Departure Time: {{ flight.getHeureDepart()|date('Y-m-d H:i:s') }}</p>
+                            <p class="card-text arrival-time" style="color: black;">Arrival Time: {{ flight.getHeureArrive()|date('Y-m-d H:i:s') }}</p>
+                            <p class="card-text" style="color: black;">Class: {{ flight.getVolclass().getClassName() }}</p>
+                            <p class="card-text price" style="color: black;">Price: ${{ flight.getVolclass().getPrice() }}</p>
+                            <a href="{{ path('app_reservationvol_new', {'id': flight.getId()}) }}" class="btn btn-primary">View Reservation</a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
 </section>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const debounce = (func, delay) => {
-            let timeoutId;
-            return (...args) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    func.apply(this, args);
-                }, delay);
-            };
-        };
+    $(document).ready(function() {
+        function filterFlights() {
+            var departureCity = $('#departureCity').val().trim().toLowerCase();
+            var arrivalCity = $('#arrivalCity').val().trim().toLowerCase();
+            var maxPrice = parseFloat($('#maxPrice').val().trim());
+            var departureDate = $('#departureDate').val();
 
-        const departureInput = document.getElementById('departureCity');
-        const arrivalInput = document.getElementById('arrivalCity');
-        const maxPriceInput = document.getElementById('maxPrice');
-        const departureDateInput = document.getElementById('departureDate');
-        const flightList = document.getElementById('flightList');
+            $('.flight-card').each(function() {
+                var departureAirport = $(this).find('.departure-airport').text().toLowerCase();
+                var arrivalAirport = $(this).find('.arrival-airport').text().toLowerCase();
+                var price = parseFloat($(this).find('.price').text().replace('Price: $', ''));
+                var flightDepartureDate = $(this).find('.departure-time').text();
 
-        const updateFlights = () => {
-            const departureCity = departureInput.value.trim().toLowerCase();
-            const arrivalCity = arrivalInput.value.trim().toLowerCase();
-            const maxPrice = parseFloat(maxPriceInput.value.trim());
-            const departureDate = new Date(departureDateInput.value); // Convert input to Date object
-
-            // Loop through each flight card and show/hide based on input values
-            document.querySelectorAll('.probootstrap-form').forEach(function(card) {
-                const departureAirport = card.querySelector('.card-text.departure-airport').textContent.toLowerCase();
-                const arrivalAirport = card.querySelector('.card-text.arrival-airport').textContent.toLowerCase();
-                const price = parseFloat(card.querySelector('.card-text.price').textContent.replace('Price: $', ''));
-                const flightDepartureDate = new Date(card.querySelector('.card-text.departure-time').textContent);
-
-                const showDeparture = departureCity === '' || departureAirport.includes(departureCity);
-                const showArrival = arrivalCity === '' || arrivalAirport.includes(arrivalCity);
-                const showPrice = isNaN(maxPrice) || price <= maxPrice;
-                const showDate = isNaN(departureDate.getTime()) || flightDepartureDate.toDateString() === departureDate.toDateString(); // Compare dates without time
+                var showDeparture = departureCity === '' || departureAirport.includes(departureCity);
+                var showArrival = arrivalCity === '' || arrivalAirport.includes(arrivalCity);
+                var showPrice = isNaN(maxPrice) || price <= maxPrice;
+                var showDate = departureDate === '' || flightDepartureDate === departureDate;
 
                 if (showDeparture && showArrival && showPrice && showDate) {
-                    card.style.display = 'block';
+                    $(this).show();
                 } else {
-                    card.style.display = 'none';
+                    $(this).hide();
                 }
             });
-        };
+        }
 
-        const inputs = [departureInput, arrivalInput, maxPriceInput, departureDateInput];
-        inputs.forEach(input => {
-            input.addEventListener('input', debounce(updateFlights, 300));
-        });
+        $('#departureCity, #arrivalCity, #maxPrice, #departureDate').on('input change', filterFlights);
     });
 </script>
+
 
 <style>
     /* Pagination styling */

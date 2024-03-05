@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
+
 
 use App\Repository\VolclassRepository;
 
@@ -10,6 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+
+use Doctrine\DBAL\Types\Types;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VolclassRepository::class)]
 class Volclass
@@ -20,25 +25,31 @@ class Volclass
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank(message: "Class name should not be empty")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s]+$/',
+        message: "Class name should only contain letters and spaces"
+    )]
     private ?string $class_name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank(message: "Description should not be empty")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s]+$/',
+        message: "Description should only contain letters and spaces"
+    )]
     private ?string $description = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Assert\Positive]
-    #[Assert\Type(type: 'numeric')] 
+    #[ORM\Column(type: Types::FLOAT)]
+    #[Assert\NotBlank(message: "Price should not be empty")]
+    #[Assert\Positive(message: "Price should be a positive number")]
+    #[Assert\Type(type: 'float', message: "Price should be a valid number")]
     private ?float $price = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Assert\Positive]
-    #[Assert\Type(type: 'numeric')]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank(message: "Ticket number should not be empty")]
+    #[Assert\Positive(message: "Ticket number should be a positive integer")]
+    #[Assert\Type(type: 'integer', message: "Ticket number should be a valid integer")]
     private ?int $ticket_number = null;
 
     #[ORM\ManyToOne]

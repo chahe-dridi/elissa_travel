@@ -1,46 +1,37 @@
- 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="container">
-   
     <div class="row">
         <div class="col-md-6">
-            {{ form_start(form) }}
-              <div class="form-group row">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="form-group row">
                 <label for="airport_depart" class="col-sm-3 col-form-label">Departure Airport</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.airport_depart, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.airport_depart) }}
                 </div>
             </div>
+
             <div class="form-group row">
                 <label for="airport_arrive" class="col-sm-3 col-form-label">Arrival Airport</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.airport_arrive, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.airport_arrive) }}
                 </div>
             </div>
+
             <div class="form-group row">
                 <label for="compagnie_aerienne" class="col-sm-3 col-form-label">Airline</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.compagnie_aerienne, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.compagnie_aerienne) }}
                 </div>
             </div>
+
             <div class="form-group row">
                 <label for="heure_depart" class="col-sm-3 col-form-label">Departure Time</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.heure_depart, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.heure_depart) }}
                 </div>
             </div>
 
@@ -48,14 +39,9 @@
                 <label for="heure_arrive" class="col-sm-3 col-form-label">Arrival Time</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.heure_arrive, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.heure_arrive) }}
                 </div>
             </div>
-
-            
-
-  
-
-           
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Availability</label>
@@ -64,39 +50,32 @@
                         {{ form_widget(form.disponible, {'attr': {'class': 'form-check-input'}}) }}
                         <label class="form-check-label" for="{{ form.disponible.vars.id }}">Yes</label>
                     </div>
+                    {{ form_errors(form.disponible) }}
                 </div>
             </div>
-            
+
             <div class="form-group row">
                 <label for="user" class="col-sm-3 col-form-label">User</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.user) }}
                 </div>
             </div>
+
             <div class="form-group row">
                 <label for="volclass" class="col-sm-3 col-form-label">Flight Class</label>
                 <div class="col-sm-9">
                     {{ form_widget(form.volclass, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.volclass) }}
                 </div>
             </div>
 
-            
             <div class="form-group row">
                 <div class="col-sm-12 text-center">
                     <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
                 </div>
             </div>
             {{ form_end(form) }}
-
-            
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
- 

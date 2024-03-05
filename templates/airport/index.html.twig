@@ -1,5 +1,7 @@
 {% extends 'nav_admin.html.twig' %}
 
+{% block title %}Airport Index{% endblock %}
+
 {% block body %}
 
 <style>
@@ -44,63 +46,41 @@
     .pagination a[rel="prev"], .pagination a[rel="next"] {
         text-decoration: none;
     }
+
+    /* Styling for search form */
+    #searchForm {
+        margin-bottom: 20px;
+    }
 </style>
-
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        // Function to handle search when input changes
-        function handleSearch() {
-            const searchTerm = $('#searchInput').val().trim();
-
-            // Send AJAX request to the server only if the search term is not empty
-            if (searchTerm !== '') {
-                $.get('{{ path('app_airport_search') }}', { search: searchTerm }, function(response) {
-                    // Replace the table content with filtered results
-                    $('#airportTable').html(response.html);
-                });
-            }
-        }
-
-        // Listen for changes in the input field and trigger search
-        $('#searchInput').on('input', function() {
-            // Trigger the search when the input changes
-            handleSearch();
-        });
-    });
-</script>
-
 <div style="padding-bottom: 5%;"></div>
 <div class="row">
     <div class="col-lg-12 d-flex justify-content-between align-items-center">
+        <!-- Navigation buttons -->
         <div class="button-group">
             <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
             <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
             <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
             <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
-           
-            <a href="{{ path('airport_stat') }}" class="btn btn-success btn-lg">airport stat</a>
-      
+            <a href="{{ path('airport_stat') }}" class="btn btn-success btn-lg">Airport Stat</a>
         </div>
-   
-        <form id="searchForm" action="{{ path('app_airport_search') }}" method="get">
-            <div class="form-group">
-                <input type="text" name="search" id="searchInput" placeholder="Search by Airport Code, Name, City, or Country" class="form-control" value="{{ app.request.query.get('search') }}">
-            </div>
+
+        <!-- Search form -->
+        <form id="searchForm">
+             
+            <input type="text" id="airportSearch" name="search"  class="btn btn-outline-secondary" class="form-control input-default mr-2" placeholder="Search by Airport Name, Code, City, or Country">
         </form>
-        
 
+        <!-- Display area for search results -->
+        <div id="airportSearchResults"></div>
 
-
-
+        <!-- Add new airport button -->
         <div>
             <button id="addNewAirportButton" class="btn btn-outline-secondary" onclick="location.href='{{ path('app_airport_new') }}'">Add New Airport</button>
         </div>
     </div>
-    <div class="table-responsive" class="col-lg-8">
+
+    <!-- Table displaying airports -->
+    <div class="table-responsive col-lg-8">
         <table class="table">
             <thead>
                 <tr>
@@ -113,53 +93,44 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="airportListContainer">
                 {% if airports|length > 0 %}
-                {% for airport in airports %}
-                    <tr class="airport-row">
-                        <td>{{ airport.id }}</td>
-                        <td>{{ airport.user.nom }} {{ airport.user.prenom }}</td>
-                        <td class="airport-code">{{ airport.code }}</td>
-                        <td class="airport-name">{{ airport.name }}</td>
-                        <td class="airport-city">{{ airport.city }}</td>
-                        <td class="airport-country">{{ airport.country }}</td>
-                        <td>
-                            <a href="{{ path('app_airport_show', {'id': airport.id}) }}" class="btn btn-sm btn-info">Show</a>
-                            <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" class="btn btn-sm btn-primary">Edit</a>
-                        </td>
+                    {% for airport in airports %}
+                        <tr class="airport-row">
+                            <td>{{ airport.id }}</td>
+                            <td>{{ airport.user.nom }} {{ airport.user.prenom }}</td>
+                            <td class="airport-code">{{ airport.code }}</td>
+                            <td class="airport-name">{{ airport.name }}</td>
+                            <td class="airport-city">{{ airport.city }}</td>
+                            <td class="airport-country">{{ airport.country }}</td>
+                            <td>
+                                <a href="{{ path('app_airport_show', {'id': airport.id}) }}" class="btn btn-sm btn-info">Show</a>
+                                <a href="{{ path('app_airport_edit', {'id': airport.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">No records found</td>
                     </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="6">No records found</td>
-                </tr>
-            {% endif %}
-            
+                {% endif %}
             </tbody>
         </table>
     </div>
-    
-    </div>
 </div>
 
+<!-- Pagination -->
+<div>{{ knp_pagination_render(airports) }}</div>
 
-
-
-
-
-    <div>
-            {{ knp_pagination_render(airports) }} </div>
-
-       
-    </div>
-
-
-
-
-
-
-
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#airportSearch").on("keyup", function() {
+            var searchQuery = $(this).val().toLowerCase();
+            $(".airport-row").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchQuery) > -1);
+            });
+        });
+    });
+</script>
 {% endblock %}

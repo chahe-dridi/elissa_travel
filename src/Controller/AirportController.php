@@ -60,7 +60,7 @@ class AirportController extends AbstractController
     }
 
 */
-     #[Route('/', name: 'app_airport_index', methods: ['GET'])]
+   /*  #[Route('/', name: 'app_airport_index', methods: ['GET'])]
     public function index(AirportRepository $airportRepository, Request $request, PaginatorInterface $paginator): Response
     {
         // Retrieve all airports from the repository
@@ -77,20 +77,21 @@ class AirportController extends AbstractController
         return $this->render('airport/index.html.twig', [
             'airports' => $airports,
         ]);
-    }
+    }*/
      
  
 
-    /*#[Route('/', name: 'app_airport_index', methods: ['GET'])]
+   
+    #[Route('/', name: 'app_airport_index', methods: ['GET', 'POST'])]
     public function index(AirportRepository $airportRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        // Get the search term from the request query parameters
-        $searchTerm = $request->query->get('search');
+        $searchQuery = $request->request->get('search');
+        $airportsQuery = $airportRepository->findAll();
     
-        // Retrieve all airports or filtered airports based on the search term
-        $airportsQuery = $searchTerm ?
-            $airportRepository->findBySearchQuery($searchTerm) :
-            $airportRepository->findAll();
+        // If there's a search query, filter airports based on it
+        if ($searchQuery) {
+            $airportsQuery = $airportRepository->findBySearchQuery($searchQuery);
+        }
     
         // Paginate the results
         $airports = $paginator->paginate(
@@ -99,13 +100,12 @@ class AirportController extends AbstractController
             10 // Number of items per page
         );
     
-        // Render the template with pagination
+        // Render the template with pagination and search query
         return $this->render('airport/index.html.twig', [
             'airports' => $airports,
+            'searchQuery' => $searchQuery,
         ]);
     }
-    
-*/
 
 
 
@@ -114,25 +114,7 @@ class AirportController extends AbstractController
 
 
 
-
-
-
-
-
-
-
-  /*  #[Route('/search', name: 'app_airport_search', methods: ['GET'])]
-    public function search(AirportRepository $airportRepository, Request $request): Response
-    {
-        $searchQuery = $request->query->get('search');
-        $airports = $airportRepository->findBySearchQuery($searchQuery);
-
-      
-
-        return $this->render('airport/index.html.twig', [
-            'airports' => $airports,
-        ]);
-    }*/
+ 
 
     #[Route('/new', name: 'app_airport_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -233,28 +215,23 @@ class AirportController extends AbstractController
 
 
 
-
-
+   
+    
     #[Route('/search', name: 'app_airport_search', methods: ['GET'])]
     public function search(AirportRepository $airportRepository, Request $request): JsonResponse
     {
         $searchQuery = $request->query->get('search');
         $airports = $airportRepository->findBySearchQuery($searchQuery);
 
-        // Render the airport list template and return it as JSON response
-        $html = $this->renderView('airport/index.html.twig', [
-            'airports' => $airports,
-        ]);
+        // Render the template for search results
+        $html = $this->renderView('airport/_airport_list.html.twig', ['airports' => $airports]);
 
         return new JsonResponse(['html' => $html]);
     }
-
-
-   
-
  
 
 
 
 }
 
+ 

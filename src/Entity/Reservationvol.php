@@ -15,24 +15,25 @@ class Reservationvol
     private ?int $id = null;
 
     #[ORM\Column(type: 'float')]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Total price should not be empty")]
     private ?float $total_price = null;
     
     #[ORM\ManyToOne]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Vol should not be empty")]
     private ?Vol $vol = null;
 
     #[ORM\ManyToOne]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "User should not be empty")]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank(message: "Payment method should not be empty")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s]+$/',
+        message: "Payment method should only contain letters and spaces"
+    )]
     private ?string $payment_method = null;
-    
    
     
 

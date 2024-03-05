@@ -24,19 +24,27 @@ class Vol
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s]+$/',
+        message: "Compagnie aérienne should only contain letters and spaces"
+    )]
     private ?string $compagnie_aerienne = null;
-
+    
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
     #[Assert\GreaterThanOrEqual("now")]
     private ?\DateTimeInterface $heure_depart = null;
-
+    
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\GreaterThan(propertyPath: "heure_depart")]
+    #[Assert\GreaterThan(
+        propertyPath: "heure_depart",
+        message: "Arrival time should be greater than departure time"
+    )]
     #[Assert\NotBlank]
     private ?\DateTimeInterface $heure_arrive = null;
+    
 
  
     #[ORM\Column]

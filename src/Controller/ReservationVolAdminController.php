@@ -53,7 +53,7 @@ public function index(ReservationvolRepository $reservationvolRepository, Pagina
 }
 
 
-
+/*
     #[Route('/new', name: 'app_reservation_vol_admin_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -73,6 +73,30 @@ public function index(ReservationvolRepository $reservationvolRepository, Pagina
             'form' => $form,
         ]);
     }
+*/
+
+
+    #[Route('/new', name: 'app_reservation_vol_admin_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $reservationvol = new Reservationvol();
+        $form = $this->createForm(Reservationvol1Type::class, $reservationvol);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($reservationvol);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_reservation_vol_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // If form is invalid, pass the form with errors to the template
+        return $this->render('reservation_vol_admin/new.html.twig', [
+            'reservationvol' => $reservationvol,
+            'form' => $form->createView(), // Pass the form view to the template
+        ]);
+    }
+
 
 
     #[Route('/{id}', name: 'app_reservation_vol_admin_show', methods: ['GET'])]

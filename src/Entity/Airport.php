@@ -24,26 +24,39 @@ class Airport
 */
 
 
-    #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="should not be blank")
-     */
-    private ?string $code = null;
+        #[ORM\Column(length: 255)]
+        #[Assert\NotBlank(message: "Code should not be empty")]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Z\s,.\/_-]+$/',
+            message: "Code should only contain letters, spaces, commas, slashes, hyphens, and underscores"
+        )]
+        private ?string $code = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "code should not be empty")]
-    #[Assert\Regex('/^[a-zA-Z\s,.\/-]+$/')]
-    private ?string $name = null;
+        #[ORM\Column(length: 255)]
+        #[Assert\NotBlank(message: "Name should not be empty")]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Z\s,.\/_-]+$/',
+            message: "Name should only contain letters, spaces, commas, slashes, hyphens, and underscores"
+        )]
+        private ?string $name = null;
+
+                    
     
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message:"code should be not empty")]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank(message: "City should not be empty")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s,-]+$/',
+        message: "City should only contain letters, spaces, hyphens, and commas"
+    )]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message:"code should be not empty")]
-    #[Assert\Regex('/^[a-zA-Z\s]+$/')]
+    #[Assert\NotBlank(message: "Country should not be empty")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z\s,-]+$/',
+        message: "Country should only contain letters, spaces, hyphens, and commas"
+    )]
     private ?string $country = null;
 
     #[ORM\ManyToOne]

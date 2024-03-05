@@ -2,9 +2,6 @@
 
 {% block body %}
 
-
-
-
 <style>
     /* Pagination styling */
     .pagination {
@@ -49,37 +46,6 @@
     }
 </style>
 
-
-
-
-
-
-
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('#searchForm input[name="search"]');
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const volClassRows = document.querySelectorAll('.volclass-row');
-
-            volClassRows.forEach(function(volClassRow) {
-                const className = volClassRow.querySelector('.class-name').textContent.toLowerCase();
-                const description = volClassRow.querySelector('.class-description').textContent.toLowerCase();
-
-                if (className.includes(searchTerm)  ) {
-                    volClassRow.style.display = '';
-                } else {
-                    volClassRow.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>
-
 <div style="padding-bottom: 5%;"></div>
 <div class="row">
     <div class="col-lg-12 d-flex justify-content-between align-items-center">
@@ -92,8 +58,7 @@
 
         <form id="searchForm" action="#" method="GET" style="margin-bottom: 20px;">
             <div class="input-group">
-                <input type="text" name="search"  class="btn btn-outline-secondary" placeholder="Search by Class Name ">
-               
+                <input type="text" name="search" class="form-control" placeholder="Search by Class Name">
             </div>
         </form>
 
@@ -114,7 +79,7 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="flightClassTableBody">
                 {% if volclasses|length > 0 %}
                     {% for volclass in volclasses %}
                         <tr class="volclass-row">
@@ -141,26 +106,17 @@
     
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchForm input[name="search"]').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase().trim();
+            $('#flightClassTableBody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+            });
+        });
+    });
+</script>
 <div>
     {{ knp_pagination_render(volclasses) }} </div>
-
-
-</div>
-
 {% endblock %}

@@ -2,7 +2,6 @@
 
 {% block body %}
 
-
 <style>
     /* Pagination styling */
     .pagination {
@@ -47,12 +46,6 @@
     }
 </style>
 
-
-
-
-
-
-
 <div style="padding-bottom: 5%;"></div>
 <!-- Row 1 -->
 <div class="row">
@@ -62,32 +55,22 @@
             <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
             <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
             <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
-
-
             <a href="{{ path('reservationvol_stat') }}" class="btn btn-success btn-lg">Show Statistics</a>
-      
         </div>
-      
-      
 
-        <form id="searchForm" action="#" method="GET" > 
-        <div  >
-            <input type="text" name="search" class="btn btn-outline-secondary" placeholder="Search by User ID or Flight ID">
-        </div>
-    </form>
+        <form id="searchForm" action="#" method="GET">
+            <div>
+                <input type="text" name="search" class="btn btn-outline-secondary" placeholder="Search by User ID or Flight ID">
+            </div>
+        </form>
+
         <div>
             <a href="{{ path('app_reservation_vol_admin_new') }}" class="btn btn-outline-secondary">Add New Reservation</a>
-         
         </div>
-
-   
-   
     </div>
     
     <h1></h1>
     <h1></h1>
-
-   
 
     <table class="table">
         <thead>
@@ -100,7 +83,7 @@
                 <th>actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="reservationTableBody">
             {% for reservationvol in reservationvols %}
                 <tr class="reservation-row">
                     <td>{{ reservationvol.id }}</td>
@@ -122,61 +105,19 @@
     </table>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('#searchForm input[name="search"]');
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const reservationRows = document.querySelectorAll('.reservation-row');
-
-            reservationRows.forEach(function(reservationRow) {
-                const userId = reservationRow.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const flightId = reservationRow.querySelector('td:nth-child(3)').textContent.toLowerCase();
-
-                if (userId.includes(searchTerm) || flightId.includes(searchTerm)) {
-                    reservationRow.style.display = '';
-                } else {
-                    reservationRow.style.display = 'none';
-                }
+    $(document).ready(function() {
+        $('#searchForm input[name="search"]').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase().trim();
+            $('#reservationTableBody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
             });
         });
     });
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div>
     {{ knp_pagination_render(reservationvols) }} </div>
-
-
-</div>
-
-
-
-
-
-
-
-
 
 {% endblock %}
