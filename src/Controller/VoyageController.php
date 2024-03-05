@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 #[Route('/voyage')]
@@ -23,36 +25,56 @@ class VoyageController extends AbstractController
         ]);
     }
 
-    #[Route('/clientF/{voyageId}', name: 'app_voyage_clientF', methods: ['GET'])]
-    public function clientF(VoyageRepository $voyageRepository, int $voyageId ,EntityManagerInterface $entityManager): Response
-    {
-        $voyage = $entityManager->getRepository(Voyage::class)->find($voyageId);
-        $programmes = $voyage->getProgrammes();
-        
+    #[Route('/clientF', name: 'app_voyage_clientF', methods: ['GET'])]
+    public function clientF(VoyageRepository $voyageRepository ,PaginatorInterface $paginator ,Request $request ): Response
+    {   
+        $queryBuilder = $voyageRepository->createQueryBuilder('v')
+        ->orderBy('v.id', 'ASC');
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            1
+        );
         return $this->render('voyage/clientF.html.twig', [
-            'voyage' => $voyage,
-            'programmes' => $programmes,
-            'voyages' => $voyageRepository->findAll(),
+            'pagination' => $pagination,
+
         ]);
     }
 
 
-
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $voyage = new Voyage();
         $form = $this->createForm(VoyageType::class, $voyage);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+           
+            $imageFile = $form->get('image')->getData(); 
+    
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+               
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+    
+               
+                $imageFile->move(
+                    $this->getParameter('voyages_images_directory'),
+                    $newFilename
+                );
+    
+                
+                $voyage->setImageName($newFilename);
+            }
+    
             $entityManager->persist($voyage);
             $entityManager->flush();
-            
-
+    
             return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('voyage/new.html.twig', [
             'voyage' => $voyage,
             'form' => $form,

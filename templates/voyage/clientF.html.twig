@@ -2,7 +2,6 @@
 {% block body %}
 
 
-
 <section class="probootstrap_section bg-light">
 <div class="container">
 <div class="row text-center mb-5 probootstrap-animate">
@@ -11,11 +10,15 @@
 </div>
 </div>
 
- {% for voyage in voyages %}
-<div class="row">
-<div class="col-md-6">
+
+
+{% for voyage in pagination %}
+<div class="container">
+<div class="row text-center mb-5 probootstrap-animate">
+<div class="col-md-12">
 <div class="media probootstrap-media d-flex align-items-stretch mb-4 probootstrap-animate">
-<div class="probootstrap-media-image" style="background-image: url('{{ asset('assets/added_image/img_1.jpg') }}')">
+<div class="probootstrap-media-image" style="background-image">
+<img src="{{ asset('uploads/voyages/' ~ voyage.imageName) }}" alt="Image de voyage">
 </div>
 
 
@@ -38,12 +41,14 @@
 
 
 
-<button data-voyage-id="{{ voyage.id }}" class="load-programme-btn">Read More</button>
-
+ <a href="{{ path('app_programme_clientprog', {'voyageId': voyage.id}) }}">Read More</a>
 </div>
 </div>
 </div></div>
+ 
  {% endfor %}
+ {{ knp_pagination_render(pagination) }}
+
 
 </div>
 </section>

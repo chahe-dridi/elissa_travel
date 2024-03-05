@@ -1,8 +1,7 @@
 {% extends 'nav_user.html.twig' %}
 {% block body %}
-
-
 <section class="probootstrap_section bg-light">
+
 <div class="container">
 <div class="row text-center mb-5 probootstrap-animate">
 <div class="col-md-12">
@@ -10,33 +9,34 @@
 </div>
 </div>
 
-
-<div class="row">
 {% for p in programme %}
 
-
-  <div class="col-md">
-<div class="col-lg-3 col-md-6 probootstrap-animate mb-3">
-<a class="probootstrap-thumbnail">  
-<label for="round" class="mr-5"><input type="radio" id="round" name="direction"> <img src="{{ asset('assets/added_image/img_1.jpg') }}" alt="" class="img-fluid">
-</label> {{p.description }}
-
-<div class="probootstrap-text">
-</div>
-</a>
-</div>
+<div class="row probootstrap-animate">
+<div class="col-md-12">
+  <div class="owl-carousel js-owl-carousel">
+    <a class="probootstrap-slide" >{{p.description }}</a>
   </div>
-
-  <div class="text-center">
+  
   <div class="program-details">
     <strong> FROM </strong> {{ p.datedebut|date('Y-m-d') }} <strong> TO </strong> {{p.datefin|date('Y-m-d')}}
   </div>
 </div>
+
+<div class="row probootstrap-animate">
 <div class="text-center">
   <div class="program-details">
    <strong>prix:</strong> {{p.prix }}
-   
-   </div></div>
+</div></div></div>
+
+
+
+
+</div>
+</div>
+</section>
+
+
+
 
 
 
