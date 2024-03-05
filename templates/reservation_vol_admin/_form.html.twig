@@ -4,9 +4,8 @@
         <div class="col-sm-2">{{ form_label(form.total_price, 'Total Price', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">
             {{ form_widget(form.total_price, {'attr': {'class': 'form-control'}}) }}
-            {% if form_errors(form.total_price) %}
-                {% for error in form_errors(form.total_price) %}
-                    <span class="text-danger">{{ error.message }}</span>
+            {% if form.total_price.vars.errors|length > 0 %}
+            {% for error in form.total_price.vars.errors %}     <span class="text-danger">{{ error.message }}</span>
                 {% endfor %}
             {% endif %}
         </div>
@@ -17,9 +16,8 @@
         <div class="col-sm-2">{{ form_label(form.payment_method, 'Payment Method', {'label_attr': {'class': 'control-label'}}) }}</div>
         <div class="col-sm-10">
             {{ form_widget(form.payment_method, {'attr': {'class': 'form-control'}}) }}
-            {% if form_errors(form.payment_method) %}
-                {% for error in form_errors(form.payment_method) %}
-                    <span class="text-danger">{{ error.message }}</span>
+            {% if form.payment_method.vars.errors|length > 0 %}
+            {% for error in form.payment_method.vars.errors %}     <span class="text-danger">{{ error.message }}</span>
                 {% endfor %}
             {% endif %}
         </div>

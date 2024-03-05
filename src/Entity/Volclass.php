@@ -40,17 +40,24 @@ class Volclass
     )]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::FLOAT)]
+        #[ORM\Column(type: Types::FLOAT)]
     #[Assert\NotBlank(message: "Price should not be empty")]
     #[Assert\Positive(message: "Price should be a positive number")]
-    #[Assert\Type(type: 'float', message: "Price should be a valid number")]
+    #[Assert\Regex(
+        pattern: '/^\d+(\.\d+)?$/',
+        message: "Price should be a valid number"
+    )]
     private ?float $price = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotBlank(message: "Ticket number should not be empty")]
     #[Assert\Positive(message: "Ticket number should be a positive integer")]
-    #[Assert\Type(type: 'integer', message: "Ticket number should be a valid integer")]
+    #[Assert\Regex(
+        pattern: '/^\d+$/',
+        message: "Ticket number should be a valid integer"
+    )]
     private ?int $ticket_number = null;
+
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
