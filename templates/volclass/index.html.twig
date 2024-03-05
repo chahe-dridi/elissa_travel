@@ -112,7 +112,7 @@
         $('#searchForm input[name="search"]').on('input', function() {
             var searchTerm = $(this).val().toLowerCase().trim();
             $('#flightClassTableBody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+                $(this).toggle($(this).find('.class-name').text().toLowerCase().indexOf(searchTerm) > -1);
             });
         });
     });

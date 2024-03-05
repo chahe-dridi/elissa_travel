@@ -570,10 +570,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
      
      
      
-     
-     
- 
- 
+      
  
  
          // Redirect to the index page after successful submission
