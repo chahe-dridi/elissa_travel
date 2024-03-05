@@ -34,7 +34,7 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
      * @throws Exception\LogicException            when trying to set a parent for a form with
      *                                             an empty name
      */
-    public function setParent(self $parent = null);
+    public function setParent(?self $parent = null);
 
     /**
      * Returns the parent form.
@@ -56,7 +56,7 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
      * @throws Exception\LogicException            when trying to add a child to a non-compound form
      * @throws Exception\UnexpectedTypeException   if $child or $type has an unexpected type
      */
-    public function add($child, string $type = null, array $options = []);
+    public function add($child, ?string $type = null, array $options = []);
 
     /**
      * Returns the child with the given name.
@@ -211,9 +211,9 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
     /**
      * Returns whether the form and all children are valid.
      *
-     * @throws Exception\LogicException if the form is not submitted
-     *
      * @return bool
+     *
+     * @throws Exception\LogicException if the form is not submitted
      */
     public function isValid();
 
@@ -324,5 +324,5 @@ interface FormInterface extends \ArrayAccess, \Traversable, \Countable
     /**
      * @return FormView
      */
-    public function createView(FormView $parent = null);
+    public function createView(?FormView $parent = null);
 }

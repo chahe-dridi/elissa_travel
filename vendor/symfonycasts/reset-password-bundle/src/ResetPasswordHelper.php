@@ -60,7 +60,7 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
      *
      * @throws TooManyPasswordRequestsException
      */
-    public function generateResetToken(object $user): ResetPasswordToken
+    public function generateResetToken(object $user, ?int $resetRequestLifetime = null): ResetPasswordToken
     {
         $this->resetPasswordCleaner->handleGarbageCollection();
 
@@ -68,9 +68,11 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
             throw new TooManyPasswordRequestsException($availableAt);
         }
 
-        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->resetRequestLifetime));
+        $resetRequestLifetime = $resetRequestLifetime ?? $this->resetRequestLifetime;
 
-        $generatedAt = ($expiresAt->getTimestamp() - $this->resetRequestLifetime);
+        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $resetRequestLifetime));
+
+        $generatedAt = ($expiresAt->getTimestamp() - $resetRequestLifetime);
 
         $tokenComponents = $this->tokenGenerator->createToken($expiresAt, $this->repository->getUserIdentifier($user));
 
@@ -92,8 +94,6 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws ExpiredResetPasswordTokenException
      * @throws InvalidResetPasswordTokenException
      */
@@ -131,8 +131,6 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws InvalidResetPasswordTokenException
      */
     public function removeResetRequest(string $fullToken): void
@@ -146,9 +144,6 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
         $this->repository->removeResetPasswordRequest($request);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTokenLifetime(): int
     {
         return $this->resetRequestLifetime;
@@ -164,11 +159,12 @@ class ResetPasswordHelper implements ResetPasswordHelperInterface
      *
      * This method should not be used when timing attacks are a concern.
      */
-    public function generateFakeResetToken(): ResetPasswordToken
+    public function generateFakeResetToken(?int $resetRequestLifetime = null): ResetPasswordToken
     {
-        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $this->resetRequestLifetime));
+        $resetRequestLifetime = $resetRequestLifetime ?? $this->resetRequestLifetime;
+        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $resetRequestLifetime));
 
-        $generatedAt = ($expiresAt->getTimestamp() - $this->resetRequestLifetime);
+        $generatedAt = ($expiresAt->getTimestamp() - $resetRequestLifetime);
 
         return new ResetPasswordToken('fake-token', $expiresAt, $generatedAt);
     }

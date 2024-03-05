@@ -37,6 +37,7 @@ use function assert;
 use function count;
 use function get_class;
 use function implode;
+use function is_array;
 use function is_int;
 use function is_string;
 use function key;
@@ -209,6 +210,7 @@ class Connection
 
             $this->platform = $params['platform'];
             $this->platform->setEventManager($this->_eventManager);
+            $this->platform->setDisableTypeComments($config->getDisableTypeComments());
         }
 
         $this->_expr = $this->createExpressionBuilder();
@@ -315,6 +317,7 @@ class Connection
         if ($this->platform === null) {
             $this->platform = $this->detectDatabasePlatform();
             $this->platform->setEventManager($this->_eventManager);
+            $this->platform->setDisableTypeComments($this->_config->getDisableTypeComments());
         }
 
         return $this->platform;
@@ -438,6 +441,10 @@ class Connection
         // Explicit platform version requested (supersedes auto-detection).
         if (isset($this->params['serverVersion'])) {
             return $this->params['serverVersion'];
+        }
+
+        if (isset($this->params['primary']) && isset($this->params['primary']['serverVersion'])) {
+            return $this->params['primary']['serverVersion'];
         }
 
         // If not connected, we need to connect now to determine the platform version.
@@ -1051,7 +1058,7 @@ class Connection
     }
 
     /**
-     * Executes an, optionally parametrized, SQL query.
+     * Executes an, optionally parameterized, SQL query.
      *
      * If the query is parametrized, a prepared statement is used.
      * If an SQLLogger is configured, the execution is logged.
@@ -1131,6 +1138,10 @@ class Connection
 
         if ($item->isHit()) {
             $value = $item->get();
+            if (! is_array($value)) {
+                $value = [];
+            }
+
             if (isset($value[$realKey])) {
                 return new Result(new ArrayResult($value[$realKey]), $this);
             }
@@ -1330,7 +1341,7 @@ class Connection
      */
     protected function _getNestedTransactionSavePointName()
     {
-        return 'DOCTRINE2_SAVEPOINT_' . $this->transactionNestingLevel;
+        return 'DOCTRINE_' . $this->transactionNestingLevel;
     }
 
     /**
@@ -1788,7 +1799,7 @@ class Connection
                             'doctrine/dbal',
                             'https://github.com/doctrine/dbal/pull/5550',
                             'Using NULL as prepared statement parameter type is deprecated.'
-                                . 'Omit or use Parameter::STRING instead',
+                                . 'Omit or use ParameterType::STRING instead',
                         );
                     }
 
@@ -1811,7 +1822,7 @@ class Connection
                             'doctrine/dbal',
                             'https://github.com/doctrine/dbal/pull/5550',
                             'Using NULL as prepared statement parameter type is deprecated.'
-                                . 'Omit or use Parameter::STRING instead',
+                                . 'Omit or use ParameterType::STRING instead',
                         );
                     }
 
@@ -1915,6 +1926,7 @@ class Connection
                 $type === ArrayParameterType::INTEGER
                 || $type === ArrayParameterType::STRING
                 || $type === ArrayParameterType::ASCII
+                || $type === ArrayParameterType::BINARY
             ) {
                 return true;
             }
@@ -1940,33 +1952,54 @@ class Connection
     /**
      * BC layer for a wide-spread use-case of old DBAL APIs
      *
-     * @deprecated This API is deprecated and will be removed after 2022
+     * @deprecated Use {@see executeStatement()} instead
      *
      * @param array<mixed>           $params The query parameters
      * @param array<int|string|null> $types  The parameter types
      */
     public function executeUpdate(string $sql, array $params = [], array $types = []): int
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/4163',
+            '%s is deprecated, please use executeStatement() instead.',
+            __METHOD__,
+        );
+
         return $this->executeStatement($sql, $params, $types);
     }
 
     /**
      * BC layer for a wide-spread use-case of old DBAL APIs
      *
-     * @deprecated This API is deprecated and will be removed after 2022
+     * @deprecated Use {@see executeQuery()} instead
      */
     public function query(string $sql): Result
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/4163',
+            '%s is deprecated, please use executeQuery() instead.',
+            __METHOD__,
+        );
+
         return $this->executeQuery($sql);
     }
 
     /**
      * BC layer for a wide-spread use-case of old DBAL APIs
      *
-     * @deprecated This API is deprecated and will be removed after 2022
+     * @deprecated please use {@see executeStatement()} instead
      */
     public function exec(string $sql): int
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/4163',
+            '%s is deprecated, please use executeStatement() instead.',
+            __METHOD__,
+        );
+
         return $this->executeStatement($sql);
     }
 }

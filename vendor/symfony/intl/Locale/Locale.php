@@ -152,8 +152,8 @@ abstract class Locale
     /**
      * Not supported. Returns the localized display name for the locale language.
      *
-     * @param string $locale   The locale code to return the display language from
-     * @param string $inLocale Optional format locale code to use to display the language name
+     * @param string      $locale   The locale code to return the display language from
+     * @param string|null $inLocale Optional format locale code to use to display the language name
      *
      * @return string
      *
@@ -161,7 +161,7 @@ abstract class Locale
      *
      * @throws MethodNotImplementedException
      */
-    public static function getDisplayLanguage(string $locale, string $inLocale = null)
+    public static function getDisplayLanguage(string $locale, ?string $inLocale = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }
@@ -169,8 +169,8 @@ abstract class Locale
     /**
      * Not supported. Returns the localized display name for the locale.
      *
-     * @param string $locale   The locale code to return the display locale name from
-     * @param string $inLocale Optional format locale code to use to display the locale name
+     * @param string      $locale   The locale code to return the display locale name from
+     * @param string|null $inLocale Optional format locale code to use to display the locale name
      *
      * @return string
      *
@@ -178,7 +178,7 @@ abstract class Locale
      *
      * @throws MethodNotImplementedException
      */
-    public static function getDisplayName(string $locale, string $inLocale = null)
+    public static function getDisplayName(string $locale, ?string $inLocale = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }
@@ -186,8 +186,8 @@ abstract class Locale
     /**
      * Not supported. Returns the localized display name for the locale region.
      *
-     * @param string $locale   The locale code to return the display region from
-     * @param string $inLocale Optional format locale code to use to display the region name
+     * @param string      $locale   The locale code to return the display region from
+     * @param string|null $inLocale Optional format locale code to use to display the region name
      *
      * @return string
      *
@@ -195,7 +195,7 @@ abstract class Locale
      *
      * @throws MethodNotImplementedException
      */
-    public static function getDisplayRegion(string $locale, string $inLocale = null)
+    public static function getDisplayRegion(string $locale, ?string $inLocale = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }
@@ -203,8 +203,8 @@ abstract class Locale
     /**
      * Not supported. Returns the localized display name for the locale script.
      *
-     * @param string $locale   The locale code to return the display script from
-     * @param string $inLocale Optional format locale code to use to display the script name
+     * @param string      $locale   The locale code to return the display script from
+     * @param string|null $inLocale Optional format locale code to use to display the script name
      *
      * @return string
      *
@@ -212,7 +212,7 @@ abstract class Locale
      *
      * @throws MethodNotImplementedException
      */
-    public static function getDisplayScript(string $locale, string $inLocale = null)
+    public static function getDisplayScript(string $locale, ?string $inLocale = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }
@@ -220,8 +220,8 @@ abstract class Locale
     /**
      * Not supported. Returns the localized display name for the locale variant.
      *
-     * @param string $locale   The locale code to return the display variant from
-     * @param string $inLocale Optional format locale code to use to display the variant name
+     * @param string      $locale   The locale code to return the display variant from
+     * @param string|null $inLocale Optional format locale code to use to display the variant name
      *
      * @return string
      *
@@ -229,7 +229,7 @@ abstract class Locale
      *
      * @throws MethodNotImplementedException
      */
-    public static function getDisplayVariant(string $locale, string $inLocale = null)
+    public static function getDisplayVariant(string $locale, ?string $inLocale = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }
@@ -301,16 +301,16 @@ abstract class Locale
     /**
      * Not supported. Returns the closest language tag for the locale.
      *
-     * @param array  $langtag      A list of the language tags to compare to locale
-     * @param string $locale       The locale to use as the language range when matching
-     * @param bool   $canonicalize If true, the arguments will be converted to canonical form before matching
-     * @param string $default      The locale to use if no match is found
+     * @param array       $langtag      A list of the language tags to compare to locale
+     * @param string      $locale       The locale to use as the language range when matching
+     * @param bool        $canonicalize If true, the arguments will be converted to canonical form before matching
+     * @param string|null $default      The locale to use if no match is found
      *
      * @see https://php.net/locale.lookup
      *
      * @throws MethodNotImplementedException
      */
-    public static function lookup(array $langtag, string $locale, bool $canonicalize = false, string $default = null)
+    public static function lookup(array $langtag, string $locale, bool $canonicalize = false, ?string $default = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }

@@ -35,7 +35,7 @@ final class VerifyEmailSignatureComponents
      */
     private $transInterval = 0;
 
-    public function __construct(\DateTimeInterface $expiresAt, string $uri, int $generatedAt = null)
+    public function __construct(\DateTimeInterface $expiresAt, string $uri, ?int $generatedAt = null)
     {
         $this->expiresAt = $expiresAt;
         $this->uri = $uri;
@@ -130,6 +130,9 @@ final class VerifyEmailSignatureComponents
         return $this->expiresAt->diff($createdAtTime);
     }
 
+    /**
+     * @psalm-suppress UndefinedFunction
+     */
     private function triggerDeprecation(): void
     {
         trigger_deprecation(

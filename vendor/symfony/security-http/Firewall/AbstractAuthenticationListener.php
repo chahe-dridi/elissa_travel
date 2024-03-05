@@ -70,7 +70,7 @@ abstract class AbstractAuthenticationListener extends AbstractListener
     /**
      * @throws \InvalidArgumentException
      */
-    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, string $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = [], LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null)
+    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, string $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = [], ?LoggerInterface $logger = null, ?EventDispatcherInterface $dispatcher = null)
     {
         if (empty($providerKey)) {
             throw new \InvalidArgumentException('$providerKey must not be empty.');
@@ -133,12 +133,14 @@ abstract class AbstractAuthenticationListener extends AbstractListener
                 throw new SessionUnavailableException('Your session has timed out, or you have disabled cookies.');
             }
 
+            $previousToken = $this->tokenStorage->getToken();
+
             if (null === $returnValue = $this->attemptAuthentication($request)) {
                 return;
             }
 
             if ($returnValue instanceof TokenInterface) {
-                $this->sessionStrategy->onAuthentication($request, $returnValue);
+                $this->migrateSession($request, $returnValue, $previousToken);
 
                 $response = $this->onSuccess($request, $returnValue);
             } elseif ($returnValue instanceof Response) {
@@ -225,5 +227,19 @@ abstract class AbstractAuthenticationListener extends AbstractListener
         }
 
         return $response;
+    }
+
+    private function migrateSession(Request $request, TokenInterface $token, ?TokenInterface $previousToken)
+    {
+        if ($previousToken) {
+            $user = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
+            $previousUser = method_exists($previousToken, 'getUserIdentifier') ? $previousToken->getUserIdentifier() : $previousToken->getUsername();
+
+            if ('' !== ($user ?? '') && $user === $previousUser) {
+                return;
+            }
+        }
+
+        $this->sessionStrategy->onAuthentication($request, $token);
     }
 }

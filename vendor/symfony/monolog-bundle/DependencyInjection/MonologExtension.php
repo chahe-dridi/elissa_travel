@@ -12,6 +12,7 @@
 namespace Symfony\Bundle\MonologBundle\DependencyInjection;
 
 use Monolog\Attribute\AsMonologProcessor;
+use Monolog\Attribute\WithMonologChannel;
 use Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Logger;
@@ -22,17 +23,17 @@ use Symfony\Bridge\Monolog\Handler\FingersCrossed\HttpCodeActivationStrategy;
 use Symfony\Bridge\Monolog\Processor\SwitchUserTokenProcessor;
 use Symfony\Bridge\Monolog\Processor\TokenProcessor;
 use Symfony\Bridge\Monolog\Processor\WebProcessor;
+use Symfony\Bridge\Monolog\Logger as LegacyLogger;
 use Symfony\Bundle\FullStack;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Argument\BoundArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\Log\DebugLoggerConfigurator;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -40,39 +41,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Christophe Coevoet <stof@notk.org>
+ *
+ * @finalsince 3.9.0
  */
 class MonologExtension extends Extension
 {
     private $nestedHandlers = [];
 
     private $swiftMailerHandlers = [];
-
-    private function levelToMonologConst($level, ContainerBuilder $container)
-    {
-        if (null === $level || is_numeric($level)) {
-            return $level;
-        }
-
-        if (defined('Monolog\Logger::'.strtoupper($level))) {
-            return constant('Monolog\Logger::' . strtoupper($level));
-        }
-
-        if ($container->hasParameter($level)) {
-            return $this->levelToMonologConst($container->getParameter($level), $container);
-        }
-
-        try {
-            $logLevel = $container->resolveEnvPlaceholders($level, true);
-        } catch (ParameterNotFoundException $notFoundException) {
-            throw new \InvalidArgumentException(sprintf('Could not match "%s" to a log level.', $level));
-        }
-
-        if ($logLevel !== '' && $logLevel !== $level) {
-            return $this->levelToMonologConst($logLevel, $container);
-        }
-
-        throw new \InvalidArgumentException(sprintf('Could not match "%s" to a log level.', $level));
-    }
 
     /**
      * Loads the Monolog configuration.
@@ -82,10 +58,6 @@ class MonologExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (class_exists(FullStack::class) && Kernel::MAJOR_VERSION < 5 && Logger::API >= 2) {
-            throw new \RuntimeException('Symfony 5 is required for Monolog 2 support. Please downgrade Monolog to version 1.');
-        }
-
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -93,6 +65,10 @@ class MonologExtension extends Extension
         if (isset($config['handlers'])) {
             $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('monolog.xml');
+
+            if (!class_exists(DebugLoggerConfigurator::class)) {
+                $container->getDefinition('monolog.logger_prototype')->setClass(LegacyLogger::class);
+            }
 
             $container->setParameter('monolog.use_microseconds', $config['use_microseconds']);
 
@@ -129,29 +105,27 @@ class MonologExtension extends Extension
 
         $container->setParameter('monolog.additional_channels', isset($config['channels']) ? $config['channels'] : []);
 
-        if (method_exists($container, 'registerForAutoconfiguration')) {
-            if (interface_exists(ProcessorInterface::class)) {
-                $container->registerForAutoconfiguration(ProcessorInterface::class)
-                    ->addTag('monolog.processor');
-            } else {
-                $container->registerForAutoconfiguration(WebProcessor::class)
-                    ->addTag('monolog.processor');
-            }
-            if (interface_exists(ResettableInterface::class)) {
-                $container->registerForAutoconfiguration(ResettableInterface::class)
-                    ->addTag('kernel.reset', ['method' => 'reset']);
-            }
-            $container->registerForAutoconfiguration(TokenProcessor::class)
+        if (interface_exists(ProcessorInterface::class)) {
+            $container->registerForAutoconfiguration(ProcessorInterface::class)
                 ->addTag('monolog.processor');
-            if (interface_exists(HttpClientInterface::class)) {
-                $handlerAutoconfiguration = $container->registerForAutoconfiguration(HandlerInterface::class);
-                $handlerAutoconfiguration->setBindings($handlerAutoconfiguration->getBindings() + [
-                    HttpClientInterface::class => new BoundArgument(new Reference('monolog.http_client'), false),
-                ]);
-            }
+        } else {
+            $container->registerForAutoconfiguration(WebProcessor::class)
+                ->addTag('monolog.processor');
+        }
+        if (interface_exists(ResettableInterface::class)) {
+            $container->registerForAutoconfiguration(ResettableInterface::class)
+                ->addTag('kernel.reset', ['method' => 'reset']);
+        }
+        $container->registerForAutoconfiguration(TokenProcessor::class)
+            ->addTag('monolog.processor');
+        if (interface_exists(HttpClientInterface::class)) {
+            $handlerAutoconfiguration = $container->registerForAutoconfiguration(HandlerInterface::class);
+            $handlerAutoconfiguration->setBindings($handlerAutoconfiguration->getBindings() + [
+                HttpClientInterface::class => new BoundArgument(new Reference('monolog.http_client'), false),
+            ]);
         }
 
-        if (80000 <= \PHP_VERSION_ID && method_exists($container, 'registerAttributeForAutoconfiguration')) {
+        if (80000 <= \PHP_VERSION_ID) {
             $container->registerAttributeForAutoconfiguration(AsMonologProcessor::class, static function (ChildDefinition $definition, AsMonologProcessor $attribute, \Reflector $reflector): void {
                 $tagAttributes = get_object_vars($attribute);
                 if ($reflector instanceof \ReflectionMethod) {
@@ -163,6 +137,9 @@ class MonologExtension extends Extension
                 }
 
                 $definition->addTag('monolog.processor', $tagAttributes);
+            });
+            $container->registerAttributeForAutoconfiguration(WithMonologChannel::class, static function (ChildDefinition $definition, WithMonologChannel $attribute): void {
+                $definition->addTag('monolog.logger', ['channel' => $attribute->channel]);
             });
         }
     }
@@ -197,8 +174,6 @@ class MonologExtension extends Extension
 
         $handlerClass = $this->getHandlerClassByType($handler['type']);
         $definition = new Definition($handlerClass);
-
-        $handler['level'] = $this->levelToMonologConst($handler['level'], $container);
 
         if ($handler['include_stacktraces']) {
             $definition->setConfigurator(['Symfony\\Bundle\\MonologBundle\\MonologBundle', 'includeStacktraces']);
@@ -433,10 +408,6 @@ class MonologExtension extends Extension
             break;
 
         case 'fingers_crossed':
-            $handler['action_level'] = $this->levelToMonologConst($handler['action_level'], $container);
-            if (null !== $handler['passthru_level']) {
-                $handler['passthru_level'] = $this->levelToMonologConst($handler['passthru_level'], $container);
-            }
             $nestedHandlerId = $this->getHandlerId($handler['handler']);
             $this->markNestedHandler($nestedHandlerId);
 
@@ -459,9 +430,6 @@ class MonologExtension extends Extension
                 $container->setDefinition($handlerId.'.not_found_strategy', $activationDef);
                 $activation = new Reference($handlerId.'.not_found_strategy');
             } elseif (!empty($handler['excluded_http_codes'])) {
-                if (!class_exists('Symfony\Bridge\Monolog\Handler\FingersCrossed\HttpCodeActivationStrategy')) {
-                    throw new \LogicException('"excluded_http_codes" cannot be used as your version of Monolog bridge does not support it.');
-                }
                 $activationDef = new Definition('Symfony\Bridge\Monolog\Handler\FingersCrossed\HttpCodeActivationStrategy', [
                     new Reference('request_stack'),
                     $handler['excluded_http_codes'],
@@ -482,12 +450,6 @@ class MonologExtension extends Extension
             break;
 
         case 'filter':
-            $handler['min_level'] = $this->levelToMonologConst($handler['min_level'], $container);
-            $handler['max_level'] = $this->levelToMonologConst($handler['max_level'], $container);
-            foreach (array_keys($handler['accepted_levels']) as $k) {
-                $handler['accepted_levels'][$k] = $this->levelToMonologConst($handler['accepted_levels'][$k], $container);
-            }
-
             $nestedHandlerId = $this->getHandlerId($handler['handler']);
             $this->markNestedHandler($nestedHandlerId);
             $minLevelOrList = !empty($handler['accepted_levels']) ? $handler['accepted_levels'] : $handler['min_level'];
@@ -922,14 +884,19 @@ class MonologExtension extends Extension
             ]);
             break;
         case 'server_log':
-            if (!class_exists('Symfony\Bridge\Monolog\Handler\ServerLogHandler')) {
-                throw new \RuntimeException('The ServerLogHandler is not available. Please update "symfony/monolog-bridge" to 3.3.');
-            }
-
             $definition->setArguments([
                 $handler['host'],
                 $handler['level'],
                 $handler['bubble'],
+            ]);
+            break;
+        case 'sampling':
+            $nestedHandlerId = $this->getHandlerId($handler['handler']);
+            $this->markNestedHandler($nestedHandlerId);
+
+            $definition->setArguments([
+                new Reference($nestedHandlerId),
+                $handler['factor'],
             ]);
             break;
 
@@ -1032,6 +999,7 @@ class MonologExtension extends Extension
             'redis' => 'Monolog\Handler\RedisHandler',
             'predis' => 'Monolog\Handler\RedisHandler',
             'insightops' => 'Monolog\Handler\InsightOpsHandler',
+            'sampling' => 'Monolog\Handler\SamplingHandler',
         ];
 
         $v2HandlerTypesAdded = [

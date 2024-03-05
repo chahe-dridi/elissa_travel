@@ -13,7 +13,7 @@ use SensitiveParameter;
 final class Driver extends AbstractPostgreSQLDriver
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return Connection
      */
@@ -124,6 +124,10 @@ final class Driver extends AbstractPostgreSQLDriver
 
         if (isset($params['application_name'])) {
             $dsn .= 'application_name=' . $params['application_name'] . ';';
+        }
+
+        if (isset($params['gssencmode'])) {
+            $dsn .= 'gssencmode=' . $params['gssencmode'] . ';';
         }
 
         return $dsn;

@@ -14,7 +14,6 @@ use function constant;
 use function count;
 use function in_array;
 use function is_string;
-use function method_exists;
 use function strlen;
 use function strpos;
 use function strtoupper;
@@ -34,12 +33,7 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('doctrine_migrations');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('doctrine_migrations', 'array');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $organizeMigrationModes = $this->getOrganizeMigrationsModes();
 
@@ -59,7 +53,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('service')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function ($v): bool {
+                        ->ifTrue(static function (array $v): bool {
                             return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
                                 return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
                             })) !== 0;
@@ -74,7 +68,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('factory')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function ($v): bool {
+                        ->ifTrue(static function (array $v): bool {
                             return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
                                 return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
                             })) !== 0;
@@ -148,7 +142,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->booleanNode('enable_profiler')
-                    ->info('Use profiler to calculate and visualize migration status.')
+                    ->info('Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead.')
                     ->defaultFalse()
                 ->end()
                 ->booleanNode('transactional')
@@ -170,15 +164,15 @@ class Configuration implements ConfigurationInterface
         $constPrefix = 'VERSIONS_ORGANIZATION_';
         $prefixLen   = strlen($constPrefix);
         $refClass    = new ReflectionClass('Doctrine\Migrations\Configuration\Configuration');
-        $constsArray = $refClass->getConstants();
+        $constsArray = array_keys($refClass->getConstants());
         $namesArray  = [];
 
-        foreach ($constsArray as $key => $value) {
-            if (strpos($key, $constPrefix) !== 0) {
+        foreach ($constsArray as $constant) {
+            if (strpos($constant, $constPrefix) !== 0) {
                 continue;
             }
 
-            $namesArray[] = substr($key, $prefixLen);
+            $namesArray[] = substr($constant, $prefixLen);
         }
 
         return $namesArray;

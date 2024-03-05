@@ -1,3 +1,17 @@
+## Unreleased
+
+## 3.10.0 (2023-11-06)
+
+* Add configuration support for SamplingHandler
+
+## 3.9.0 (2023-11-06)
+
+* Add support for the `WithMonologChannel` attribute of Monolog 3.5.0 to autoconfigure the `monolog.logger` tag
+* Add support for Symfony 7
+* Remove support for Symfony 4
+* Mark classes as internal when relevant
+* Add support for env placeholders in the `level` option of handlers
+
 ## 3.8.0 (2022-05-10)
 
 * Deprecated ambiguous `elasticsearch` type, use `elastica` instead
@@ -18,7 +32,7 @@
 
 ## 3.7.0 (2021-03-31)
 
-* Use `ActivationStrategy` instead of `actionLevel` when available 
+* Use `ActivationStrategy` instead of `actionLevel` when available
 * Register resettable processors (`ResettableInterface`) for autoconfiguration (tag: `kernel.reset`)
 * Drop support for Symfony 3.4
 * Drop support for PHP < 7.1

@@ -61,6 +61,7 @@ return [
         'bfd' => 'bafut',
         'bfq' => 'badagština',
         'bg' => 'bulharština',
+        'bgc' => 'harijánština',
         'bgn' => 'balúčština (západní)',
         'bho' => 'bhódžpurština',
         'bi' => 'bislamština',

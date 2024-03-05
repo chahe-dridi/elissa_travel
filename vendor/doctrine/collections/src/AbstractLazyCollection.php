@@ -62,8 +62,6 @@ abstract class AbstractLazyCollection implements Collection
 
     /**
      * {@inheritDoc}
-     *
-     * @template TMaybeContained
      */
     public function contains(mixed $element)
     {
@@ -232,10 +230,7 @@ abstract class AbstractLazyCollection implements Collection
     }
 
     /**
-     * @psalm-param Closure(T, TKey):bool $p
-     *
-     * @return ReadableCollection<mixed>
-     * @psalm-return ReadableCollection<TKey, T>
+     * {@inheritDoc}
      */
     public function filter(Closure $p)
     {
@@ -256,13 +251,6 @@ abstract class AbstractLazyCollection implements Collection
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-param Closure(T):U $func
-     *
-     * @return ReadableCollection<mixed>
-     * @psalm-return ReadableCollection<TKey, U>
-     *
-     * @psalm-template U
      */
     public function map(Closure $func)
     {

@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -18,25 +18,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Please enter an email')]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
-
     #[ORM\Column]
     private array $roles = [];
-
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Please enter a password')]
-    private ?string $password = null;
+    
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Please enter a username')]
     private ?string $username = null;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Please enter a password')]
+    private ?string $password = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $reset_token = null;
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Please enter a first name')]
     private ?string $firstName = null;
@@ -45,18 +44,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'Please enter a last name')]
     private ?string $lastName = null;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $isVerified = false;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    protected $resetToken;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
+    
+    
 
     public function getId(): ?int
     {
@@ -68,66 +60,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
+    
     public function getUsername(): ?string
     {
         return $this->username;
@@ -139,7 +79,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
 
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(string $reset_token): static
+    {
+        $this->reset_token = $reset_token;
+
+        return $this;
+    }
+    public function getSalt(): ?string
+    {
+        // you might not need this method if using bcrypt or a modern hashing algorithm
+        return null;
+    }
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+    public function getRoleTitle()
+    {
+        if(in_array("ROLE_ADMIN", $this->roles)) return "Administrateur";
+        else return "Utilisateur";
+    }
+
+    public function eraseCredentials() : void
+    {
+        // If you store any temporary, sensitive data on the user, erase it here
+        // This method is called after the user's password has been validated and the 
+        // data is no longer needed
+    }
+
+    public function getUserIdentifier(): string
+    {
+        // Return a unique identifier for the user (e.g., username, email)
+        return $this->email;
+    }
     public function getFirstName(): ?string
     {
         return $this->firstName;
@@ -179,35 +180,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return "{$this->firstName} {$this->lastName}";
     }
-    public function getRoleTitle()
-    {
-        if(in_array("ROLE_ADMIN", $this->roles)) return "Administrateur";
-        else return "Utilisateur";
-    }
-    
-    public function getSalt()
-    {}
 
     
-    public function getResetToken(): string
-    {
-        return $this->resetToken;
-    }
-     
-    public function setResetToken(?string $resetToken): void
-    {
-        $this->resetToken = $resetToken;
-    }
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
     
-    /**
-     * Get roles as a string.
-     */
-    public function getRolesAsString(): string
-    {
-        return implode(', ', $this->roles);
-    }
 }

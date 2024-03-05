@@ -30,9 +30,9 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function clear($className = null)
+    public function clear($className = null): void
     {
         if ($className === null) {
             $this->instances = [];
@@ -46,9 +46,9 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function register($object)
+    public function register($object): void
     {
         if (! is_object($object)) {
             throw new InvalidArgumentException(sprintf('An object was expected, but got "%s".', gettype($object)));
@@ -60,7 +60,7 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function registerService($className, $serviceId)
     {
@@ -68,9 +68,9 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function resolve($className)
+    public function resolve($className): object
     {
         $className = $this->normalizeClassName($className);
 
@@ -85,8 +85,7 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
         return $this->instances[$className];
     }
 
-    /** @return object */
-    private function resolveService(string $serviceId)
+    private function resolveService(string $serviceId): object
     {
         if (! $this->container->has($serviceId)) {
             throw new RuntimeException(sprintf('There is no service named "%s"', $serviceId));

@@ -22,7 +22,7 @@ trait ResetPasswordRequestRepositoryTrait
 {
     public function getUserIdentifier(object $user): string
     {
-        return $this->getEntityManager()
+        return (string) $this->getEntityManager()
             ->getUnitOfWork()
             ->getSingleIdentifierValue($user)
         ;
@@ -49,7 +49,7 @@ trait ResetPasswordRequestRepositoryTrait
             ->orderBy('t.requestedAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneorNullResult()
+            ->getOneOrNullResult()
         ;
 
         if (null !== $resetPasswordRequest && !$resetPasswordRequest->isExpired()) {

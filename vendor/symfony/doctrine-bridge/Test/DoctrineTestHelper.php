@@ -12,13 +12,19 @@
 namespace Symfony\Bridge\Doctrine\Test;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\DefaultSchemaManagerFactory;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Persistence\Mapping\Driver\SymfonyFileLocator;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\VarExporter\LazyGhostTrait;
 
 /**
  * Provides utility functions needed in tests.
@@ -34,7 +40,7 @@ class DoctrineTestHelper
      *
      * @return EntityManager
      */
-    public static function createTestEntityManager(Configuration $config = null)
+    public static function createTestEntityManager(?Configuration $config = null)
     {
         if (!\extension_loaded('pdo_sqlite')) {
             TestCase::markTestSkipped('Extension pdo_sqlite is required.');
@@ -53,7 +59,13 @@ class DoctrineTestHelper
             'memory' => true,
         ];
 
-        return EntityManager::create($params, $config);
+        if (!(new \ReflectionMethod(EntityManager::class, '__construct'))->isPublic()) {
+            return EntityManager::create($params, $config);
+        }
+
+        $eventManager = new EventManager();
+
+        return new EntityManager(DriverManager::getConnection($params, $config, $eventManager), $config, $eventManager);
     }
 
     /**
@@ -65,12 +77,23 @@ class DoctrineTestHelper
             trigger_deprecation('symfony/doctrine-bridge', '5.3', '"%s" is deprecated and will be removed in 6.0.', __CLASS__);
         }
 
-        $config = new Configuration();
+        $config = class_exists(ORMSetup::class) ? ORMSetup::createConfiguration(true) : new Configuration();
         $config->setEntityNamespaces(['SymfonyTestsDoctrine' => 'Symfony\Bridge\Doctrine\Tests\Fixtures']);
         $config->setAutoGenerateProxyClasses(true);
         $config->setProxyDir(sys_get_temp_dir());
         $config->setProxyNamespace('SymfonyTests\Doctrine');
-        $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        if (\PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            $config->setMetadataDriverImpl(new AttributeDriver([__DIR__.'/../Tests/Fixtures' => 'Symfony\Bridge\Doctrine\Tests\Fixtures'], true));
+        } else {
+            $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader(), null, true));
+        }
+        if (class_exists(DefaultSchemaManagerFactory::class)) {
+            $config->setSchemaManagerFactory(new DefaultSchemaManagerFactory());
+        }
+
+        if (\PHP_VERSION_ID >= 80100 && method_exists(Configuration::class, 'setLazyGhostObjectEnabled') && trait_exists(LazyGhostTrait::class)) {
+            $config->setLazyGhostObjectEnabled(true);
+        }
 
         return $config;
     }
@@ -91,7 +114,9 @@ class DoctrineTestHelper
             new XmlDriver(
                 new SymfonyFileLocator(
                     [__DIR__.'/../Tests/Resources/orm' => 'Symfony\\Bridge\\Doctrine\\Tests\\Fixtures'], '.orm.xml'
-                )
+                ),
+                '.orm.xml',
+                true
             ),
             'Symfony\\Bridge\\Doctrine\\Tests\\Fixtures'
         );

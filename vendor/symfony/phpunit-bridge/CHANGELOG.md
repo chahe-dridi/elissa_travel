@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+6.4
+---
+
+ * Allow setting the locale using `SYMFONY_PHPUNIT_LOCALE` env var
+
+6.3
+---
+
+ * Add support for mocking the `enum_exists` function
+ * Enable reporting of deprecations triggered by Doctrine by default
+
 6.2
 ---
 

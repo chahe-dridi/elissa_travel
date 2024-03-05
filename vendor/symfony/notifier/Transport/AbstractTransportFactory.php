@@ -26,7 +26,7 @@ abstract class AbstractTransportFactory implements TransportFactoryInterface
     protected $dispatcher;
     protected $client;
 
-    public function __construct(EventDispatcherInterface $dispatcher = null, HttpClientInterface $client = null)
+    public function __construct(?EventDispatcherInterface $dispatcher = null, ?HttpClientInterface $client = null)
     {
         $this->dispatcher = class_exists(Event::class) ? LegacyEventDispatcherProxy::decorate($dispatcher) : $dispatcher;
         $this->client = $client;
@@ -46,7 +46,7 @@ abstract class AbstractTransportFactory implements TransportFactoryInterface
     {
         $user = $dsn->getUser();
         if (null === $user) {
-            throw new IncompleteDsnException('User is not set.', $dsn->getOriginalDsn());
+            throw new IncompleteDsnException('User is not set.', $dsn->getScheme().'://'.$dsn->getHost());
         }
 
         return $user;

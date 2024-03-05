@@ -24,12 +24,17 @@
         </div>
         <div class="card-body">
            <div class="d-flex">
-            <button id="btPrint" onclick="createPDF()" class="btn btn-success btn-icon-split ml-auto">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </button>
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search ..." class="form-control">
+            <a href="{{ path('users_pdf') }}" class="btn btn-primary">Generate PDF</a>
+            {{ form_start(form) }}
+    {{ form_row(form.searchTerm, {'attr': {'class': 'form-control'}}) }}
+    <button type="submit" class="btn btn-primary">Search</button>
+{{ form_end(form) }}
+
         </div>
             <div class="table-responsive">
+            
+    {% if users is not empty %}
+        <h2>Search Results</h2>
                 <table class="table table-bordered" id="table" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -38,7 +43,7 @@
                             <th>Email</th>
                             <th>Nom d'utilisateur</th>
                             <th>Type</th>
-                            <th>Créer le</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -49,12 +54,17 @@
                             <td>{{ user.lastName }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.username }}</td>
-                            <td>{{ user.roleTitle }}</td>
-                            <td>{{ user.createdAt | date("d-m-Y H:i") }}</td>
+                            <td>{{ user.roleTitle  }}</td>
+                            <td>{{user.isVerified ? 'Enabled' : 'Disabled'}}
                             <td>
                                 <a href="{{ path("admin_user_show", {"id": user.id}) }}" class="btn btn-info">
                                     Show
                                 </a>
+                                
+                        <form method="post" action="{{ path('Status', {'id': user.id}) }}">
+                            <button type="submit" class ="btn btn-info">Toggle Status</button>
+                        </form>
+                    
                                 {% if user.roleTitle == "Utilisateur" %}
                                     <a href="{{ path("admin_user_edit", {"id": user.id}) }}" class="btn btn-primary">
                                        Edit
@@ -68,6 +78,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                   {% endif %}
             </div>
         </div>
     </div>

@@ -33,7 +33,7 @@ class EmailChannel implements ChannelInterface
     private $from;
     private $envelope;
 
-    public function __construct(TransportInterface $transport = null, MessageBusInterface $bus = null, string $from = null, Envelope $envelope = null)
+    public function __construct(?TransportInterface $transport = null, ?MessageBusInterface $bus = null, ?string $from = null, ?Envelope $envelope = null)
     {
         if (null === $transport && null === $bus) {
             throw new LogicException(sprintf('"%s" needs a Transport or a Bus but both cannot be "null".', static::class));
@@ -45,7 +45,7 @@ class EmailChannel implements ChannelInterface
         $this->envelope = $envelope;
     }
 
-    public function notify(Notification $notification, RecipientInterface $recipient, string $transportName = null): void
+    public function notify(Notification $notification, RecipientInterface $recipient, ?string $transportName = null): void
     {
         $message = null;
         if ($notification instanceof EmailNotificationInterface) {
@@ -57,7 +57,7 @@ class EmailChannel implements ChannelInterface
         if ($email instanceof Email) {
             if (!$email->getFrom()) {
                 if (null === $this->from) {
-                    throw new LogicException(sprintf('To send the "%s" notification by email, you should either configure a global "from" header, set a sender in the global "envelope" of the mailer configuration or set a "from" header in the "asEmailMessage()" method.', get_debug_type($notification)));
+                    throw new LogicException(sprintf('To send the "%s" notification by email, you must configure a "from" header by either setting a sender in the global "envelope" of the mailer configuration or by setting a "from" header in the "asEmailMessage()" method.', get_debug_type($notification)));
                 }
 
                 $email->from($this->from);

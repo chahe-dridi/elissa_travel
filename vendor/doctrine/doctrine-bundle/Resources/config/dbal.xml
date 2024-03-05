@@ -17,7 +17,6 @@
     </parameters>
 
     <services>
-        <service id="Doctrine\DBAL\Driver\Connection" alias="database_connection" public="false" />
         <service id="Doctrine\DBAL\Connection" alias="database_connection" public="false" />
 
         <service id="data_collector.doctrine" class="%doctrine.data_collector.class%" public="false">
@@ -29,6 +28,11 @@
 
         <service id="doctrine.dbal.connection_factory" class="%doctrine.dbal.connection_factory.class%">
             <argument>%doctrine.dbal.connection_factory.types%</argument>
+            <argument type="service" id="doctrine.dbal.connection_factory.dsn_parser" />
+        </service>
+
+        <service id="doctrine.dbal.connection_factory.dsn_parser" class="Doctrine\DBAL\Tools\DsnParser">
+            <argument type="collection" />
         </service>
 
         <service id="doctrine.dbal.connection" class="Doctrine\DBAL\Connection" abstract="true">
@@ -96,6 +100,9 @@
 
             <tag name="controller.service_arguments" />
         </service>
+
+        <service id="doctrine.dbal.default_schema_manager_factory" class="Doctrine\DBAL\Schema\DefaultSchemaManagerFactory" />
+        <service id="doctrine.dbal.legacy_schema_manager_factory" class="Doctrine\DBAL\Schema\LegacySchemaManagerFactory" />
 
     </services>
 </container>

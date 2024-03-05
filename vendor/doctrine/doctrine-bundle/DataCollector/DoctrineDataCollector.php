@@ -6,9 +6,8 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Cache\CacheConfiguration;
 use Doctrine\ORM\Cache\Logging\CacheLoggerChain;
 use Doctrine\ORM\Cache\Logging\StatisticsCacheLogger;
-use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
@@ -41,7 +40,7 @@ use function usort;
  *       regions: array<"puts"|"hits"|"misses", array<string, int>>,
  *    },
  *    connections: list<string>,
- *    entities: array<string, array<class-string, class-string>>,
+ *    entities: array<string, array<class-string, array{class: class-string, file: false|string, line: false|int}>>,
  *    errors: array<string, array<class-string, list<string>>>,
  *    managers: list<string>,
  *    queries: array<string, list<QueryType>>,
@@ -55,7 +54,7 @@ class DoctrineDataCollector extends BaseCollector
 
     /**
      * @var mixed[][]|null
-     * @psalm-var ?array<string, list<QueryType&array{count: int, index: int, executionPercent: float}>>
+     * @psalm-var ?array<string, list<QueryType&array{count: int, index: int, executionPercent?: float}>>
      */
     private ?array $groupedQueries = null;
 
@@ -66,17 +65,10 @@ class DoctrineDataCollector extends BaseCollector
         $this->registry             = $registry;
         $this->shouldValidateSchema = $shouldValidateSchema;
 
-        if ($debugDataHolder === null) {
-            parent::__construct($registry);
-        } else {
-            parent::__construct($registry, $debugDataHolder);
-        }
+        parent::__construct($registry, $debugDataHolder);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function collect(Request $request, Response $response, ?Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
         parent::collect($request, $response, $exception);
 
@@ -108,13 +100,18 @@ class DoctrineDataCollector extends BaseCollector
                 assert($factory instanceof AbstractClassMetadataFactory);
 
                 foreach ($factory->getLoadedMetadata() as $class) {
-                    assert($class instanceof ClassMetadataInfo);
+                    assert($class instanceof ClassMetadata);
                     if (isset($entities[$name][$class->getName()])) {
                         continue;
                     }
 
                     $classErrors                        = $validator->validateClass($class);
-                    $entities[$name][$class->getName()] = $class->getName();
+                    $r                                  = $class->getReflectionClass();
+                    $entities[$name][$class->getName()] = [
+                        'class' => $class->getName(),
+                        'file' => $r->getFileName(),
+                        'line' => $r->getStartLine(),
+                    ];
 
                     if (empty($classErrors)) {
                         continue;
@@ -124,8 +121,7 @@ class DoctrineDataCollector extends BaseCollector
                 }
             }
 
-            $emConfig = $em->getConfiguration();
-            assert($emConfig instanceof Configuration);
+            $emConfig   = $em->getConfiguration();
             $slcEnabled = $emConfig->isSecondLevelCacheEnabled();
 
             if (! $slcEnabled) {
@@ -182,7 +178,7 @@ class DoctrineDataCollector extends BaseCollector
         $this->groupedQueries   = null;
     }
 
-    /** @return array<string, array<string, string>> */
+    /** @return array<string, array<class-string, array{class: class-string, file: false|string, line: false|int}>> */
     public function getEntities()
     {
         return $this->data['entities'];
@@ -241,7 +237,7 @@ class DoctrineDataCollector extends BaseCollector
 
     /**
      * @return string[][]
-     * @psalm-return array<string, list<QueryType&array{count: int, index: int, executionPercent: float}>>
+     * @psalm-return array<string, list<QueryType&array{count: int, index: int, executionPercent?: float}>>
      */
     public function getGroupedQueries()
     {

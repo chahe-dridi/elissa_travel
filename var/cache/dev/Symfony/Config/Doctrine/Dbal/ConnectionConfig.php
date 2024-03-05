@@ -51,6 +51,7 @@ class ConnectionConfig
     private $profiling;
     private $profilingCollectBacktrace;
     private $profilingCollectSchemaErrors;
+    private $disableTypeComments;
     private $serverVersion;
     private $driverClass;
     private $wrapperClass;
@@ -59,6 +60,8 @@ class ConnectionConfig
     private $options;
     private $mappingTypes;
     private $defaultTableOptions;
+    private $schemaManagerFactory;
+    private $resultCache;
     private $slaves;
     private $replicas;
     private $_usedProperties = [];
@@ -493,6 +496,7 @@ class ConnectionConfig
     /**
      * @default null
      * @param ParamConfigurator|mixed $value
+     * @deprecated The "platform_service" configuration key is deprecated since doctrine-bundle 2.9. DBAL 4 will not support setting a custom platform via connection params anymore.
      * @return $this
      */
     public function platformService($value): self
@@ -579,6 +583,19 @@ class ConnectionConfig
     {
         $this->_usedProperties['profilingCollectSchemaErrors'] = true;
         $this->profilingCollectSchemaErrors = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function disableTypeComments($value): self
+    {
+        $this->_usedProperties['disableTypeComments'] = true;
+        $this->disableTypeComments = $value;
 
         return $this;
     }
@@ -681,6 +698,32 @@ class ConnectionConfig
     {
         $this->_usedProperties['defaultTableOptions'] = true;
         $this->defaultTableOptions[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default 'doctrine.dbal.legacy_schema_manager_factory'
+     * @param ParamConfigurator|mixed $value
+     * @return $this
+     */
+    public function schemaManagerFactory($value): self
+    {
+        $this->_usedProperties['schemaManagerFactory'] = true;
+        $this->schemaManagerFactory = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|mixed $value
+     * @return $this
+     */
+    public function resultCache($value): self
+    {
+        $this->_usedProperties['resultCache'] = true;
+        $this->resultCache = $value;
 
         return $this;
     }
@@ -959,6 +1002,12 @@ class ConnectionConfig
             unset($value['profiling_collect_schema_errors']);
         }
 
+        if (array_key_exists('disable_type_comments', $value)) {
+            $this->_usedProperties['disableTypeComments'] = true;
+            $this->disableTypeComments = $value['disable_type_comments'];
+            unset($value['disable_type_comments']);
+        }
+
         if (array_key_exists('server_version', $value)) {
             $this->_usedProperties['serverVersion'] = true;
             $this->serverVersion = $value['server_version'];
@@ -1005,6 +1054,18 @@ class ConnectionConfig
             $this->_usedProperties['defaultTableOptions'] = true;
             $this->defaultTableOptions = $value['default_table_options'];
             unset($value['default_table_options']);
+        }
+
+        if (array_key_exists('schema_manager_factory', $value)) {
+            $this->_usedProperties['schemaManagerFactory'] = true;
+            $this->schemaManagerFactory = $value['schema_manager_factory'];
+            unset($value['schema_manager_factory']);
+        }
+
+        if (array_key_exists('result_cache', $value)) {
+            $this->_usedProperties['resultCache'] = true;
+            $this->resultCache = $value['result_cache'];
+            unset($value['result_cache']);
         }
 
         if (array_key_exists('slaves', $value)) {
@@ -1141,6 +1202,9 @@ class ConnectionConfig
         if (isset($this->_usedProperties['profilingCollectSchemaErrors'])) {
             $output['profiling_collect_schema_errors'] = $this->profilingCollectSchemaErrors;
         }
+        if (isset($this->_usedProperties['disableTypeComments'])) {
+            $output['disable_type_comments'] = $this->disableTypeComments;
+        }
         if (isset($this->_usedProperties['serverVersion'])) {
             $output['server_version'] = $this->serverVersion;
         }
@@ -1164,6 +1228,12 @@ class ConnectionConfig
         }
         if (isset($this->_usedProperties['defaultTableOptions'])) {
             $output['default_table_options'] = $this->defaultTableOptions;
+        }
+        if (isset($this->_usedProperties['schemaManagerFactory'])) {
+            $output['schema_manager_factory'] = $this->schemaManagerFactory;
+        }
+        if (isset($this->_usedProperties['resultCache'])) {
+            $output['result_cache'] = $this->resultCache;
         }
         if (isset($this->_usedProperties['slaves'])) {
             $output['slaves'] = array_map(function ($v) { return $v instanceof \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig ? $v->toArray() : $v; }, $this->slaves);

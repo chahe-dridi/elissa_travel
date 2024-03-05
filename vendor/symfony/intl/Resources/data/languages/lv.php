@@ -48,6 +48,7 @@ return [
         'bez' => 'bena',
         'bfd' => 'bafutu',
         'bg' => 'bulgāru',
+        'bgc' => 'harjanvi',
         'bgn' => 'rietumbeludžu',
         'bho' => 'bhodžpūru',
         'bi' => 'bišlamā',

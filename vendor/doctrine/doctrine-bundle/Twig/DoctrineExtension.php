@@ -27,6 +27,8 @@ use function trigger_deprecation;
 
 /**
  * This class contains the needed functions in order to do the query highlighting
+ *
+ * @internal since 2.11
  */
 class DoctrineExtension extends AbstractExtension
 {
@@ -130,7 +132,7 @@ class DoctrineExtension extends AbstractExtension
 
                 return $result;
             },
-            $query
+            $query,
         );
     }
 
@@ -148,7 +150,7 @@ class DoctrineExtension extends AbstractExtension
             'doctrine/doctrine-bundle',
             '2.1',
             'The "%s()" method is deprecated and will be removed in doctrine-bundle 3.0.',
-            __METHOD__
+            __METHOD__,
         );
 
         $this->setUpSqlFormatter(true, true);
@@ -159,7 +161,7 @@ class DoctrineExtension extends AbstractExtension
 
         return sprintf(
             '<div class="highlight highlight-sql"><pre>%s</pre></div>',
-            $this->sqlFormatter->format($sql)
+            $this->sqlFormatter->format($sql),
         );
     }
 
@@ -191,15 +193,5 @@ class DoctrineExtension extends AbstractExtension
             HtmlHighlighter::HIGHLIGHT_COMMENT        => 'class="comment"',
             HtmlHighlighter::HIGHLIGHT_VARIABLE       => 'class="variable"',
         ], ! $legacy) : new NullHighlighter());
-    }
-
-    /**
-     * Get the name of the extension
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'doctrine_extension';
     }
 }

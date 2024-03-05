@@ -2,10 +2,13 @@
 
 namespace Doctrine\Bundle\DoctrineBundle\DependencyInjection;
 
-use Doctrine\Common\Proxy\AbstractProxyFactory;
+use Doctrine\DBAL\Schema\LegacySchemaManagerFactory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Proxy\ProxyFactory;
+use InvalidArgumentException;
 use ReflectionClass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -13,6 +16,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 
+use function array_diff_key;
 use function array_intersect_key;
 use function array_key_exists;
 use function array_keys;
@@ -29,6 +33,7 @@ use function is_bool;
 use function is_int;
 use function is_string;
 use function key;
+use function method_exists;
 use function reset;
 use function sprintf;
 use function strlen;
@@ -42,6 +47,8 @@ use function trigger_deprecation;
  *
  * This information is solely responsible for how the different configuration
  * sections are normalized, and merged.
+ *
+ * @final since 2.9
  */
 class Configuration implements ConfigurationInterface
 {
@@ -69,17 +76,27 @@ class Configuration implements ConfigurationInterface
      */
     private function addDbalSection(ArrayNodeDefinition $node): void
     {
+        // Key that should not be rewritten to the connection config
+        $excludedKeys = ['default_connection' => true, 'driver_schemes' => true, 'driver_scheme' => true, 'types' => true, 'type' => true];
+
         $node
             ->children()
             ->arrayNode('dbal')
                 ->beforeNormalization()
-                    ->ifTrue(static function ($v) {
-                        return is_array($v) && ! array_key_exists('connections', $v) && ! array_key_exists('connection', $v);
+                    ->ifTrue(static function ($v) use ($excludedKeys) {
+                        if (! is_array($v)) {
+                            return false;
+                        }
+
+                        if (array_key_exists('connections', $v) || array_key_exists('connection', $v)) {
+                            return false;
+                        }
+
+                        // Is there actually anything to use once excluded keys are considered?
+                        return (bool) array_diff_key($v, $excludedKeys);
                     })
-                    ->then(static function ($v) {
-                        // Key that should not be rewritten to the connection config
-                        $excludedKeys = ['default_connection' => true, 'types' => true, 'type' => true];
-                        $connection   = [];
+                    ->then(static function ($v) use ($excludedKeys) {
+                        $connection = [];
                         foreach ($v as $key => $value) {
                             if (isset($excludedKeys[$key])) {
                                 continue;
@@ -89,8 +106,7 @@ class Configuration implements ConfigurationInterface
                             unset($v[$key]);
                         }
 
-                        $v['default_connection'] = isset($v['default_connection']) ? (string) $v['default_connection'] : 'default';
-                        $v['connections']        = [$v['default_connection'] => $connection];
+                        $v['connections'] = [($v['default_connection'] ?? 'default') => $connection];
 
                         return $v;
                     })
@@ -119,6 +135,35 @@ class Configuration implements ConfigurationInterface
                                     )
                                 ->end()
                             ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->fixXmlConfig('driver_scheme')
+                ->children()
+                    ->arrayNode('driver_schemes')
+                        ->useAttributeAsKey('scheme')
+                        ->normalizeKeys(false)
+                        ->scalarPrototype()->end()
+                        ->info('Defines a driver for given URL schemes. Schemes being driver names cannot be redefined. However, other default schemes can be overwritten.')
+                        ->validate()
+                            ->always()
+                            ->then(static function (array $value) {
+                                $unsupportedSchemes = [];
+
+                                foreach ($value as $scheme => $driver) {
+                                    if (! in_array($scheme, ['pdo-mysql', 'pdo-sqlite', 'pdo-pgsql', 'pdo-oci', 'oci8', 'ibm-db2', 'pdo-sqlsrv', 'mysqli', 'pgsql', 'sqlsrv', 'sqlite3'], true)) {
+                                        continue;
+                                    }
+
+                                    $unsupportedSchemes[] = $scheme;
+                                }
+
+                                if ($unsupportedSchemes) {
+                                    throw new InvalidArgumentException(sprintf('Registering a scheme with the name of one of the official drivers is forbidden, as those are defined in DBAL itself. The following schemes are forbidden: %s', implode(', ', $unsupportedSchemes)));
+                                }
+
+                                return $value;
+                            })
                         ->end()
                     ->end()
                 ->end()
@@ -155,7 +200,13 @@ class Configuration implements ConfigurationInterface
             ->fixXmlConfig('default_table_option')
             ->children()
                 ->scalarNode('driver')->defaultValue('pdo_mysql')->end()
-                ->scalarNode('platform_service')->end()
+                ->scalarNode('platform_service')
+                    ->setDeprecated(
+                        'doctrine/doctrine-bundle',
+                        '2.9',
+                        'The "platform_service" configuration key is deprecated since doctrine-bundle 2.9. DBAL 4 will not support setting a custom platform via connection params anymore.',
+                    )
+                ->end()
                 ->booleanNode('auto_commit')->end()
                 ->scalarNode('schema_filter')->end()
                 ->booleanNode('logging')->defaultValue($this->debug)->end()
@@ -168,6 +219,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(true)
                     ->info('Enables collecting schema errors when profiling is enabled')
                 ->end()
+                ->booleanNode('disable_type_comments')->end()
                 ->scalarNode('server_version')->end()
                 ->scalarNode('driver_class')->end()
                 ->scalarNode('wrapper_class')->end()
@@ -190,11 +242,16 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('default_table_options')
                 ->info(sprintf(
                     "This option is used by the schema-tool and affects generated SQL. Possible keys include 'charset','%s', and 'engine'.",
-                    $collationKey
+                    $collationKey,
                 ))
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
+                ->scalarNode('schema_manager_factory')
+                    ->cannotBeEmpty()
+                    ->defaultValue($this->getDefaultSchemaManagerFactory())
+                ->end()
+                ->scalarNode('result_cache')->end()
             ->end();
 
         // dbal < 2.11
@@ -245,7 +302,7 @@ class Configuration implements ConfigurationInterface
                         '2.4',
                         'Setting the "doctrine.dbal.%s" %s while the "url" one is defined is deprecated',
                         implode('", "', $urlConflictingValues),
-                        $tail
+                        $tail,
                     );
                 }
 
@@ -278,7 +335,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('servicename')
                     ->info(
                         'Overrules dbname parameter if given and used as SERVICE_NAME or SID connection parameter ' .
-                        'for Oracle depending on the service parameter.'
+                        'for Oracle depending on the service parameter.',
                     )
                 ->end()
                 ->scalarNode('sessionMode')
@@ -289,34 +346,34 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('default_dbname')
                     ->info(
-                        'Override the default database (postgres) to connect to for PostgreSQL connexion.'
+                        'Override the default database (postgres) to connect to for PostgreSQL connexion.',
                     )
                 ->end()
                 ->scalarNode('sslmode')
                     ->info(
                         'Determines whether or with what priority a SSL TCP/IP connection will be negotiated with ' .
-                        'the server for PostgreSQL.'
+                        'the server for PostgreSQL.',
                     )
                 ->end()
                 ->scalarNode('sslrootcert')
                     ->info(
                         'The name of a file containing SSL certificate authority (CA) certificate(s). ' .
-                        'If the file exists, the server\'s certificate will be verified to be signed by one of these authorities.'
+                        'If the file exists, the server\'s certificate will be verified to be signed by one of these authorities.',
                     )
                 ->end()
                 ->scalarNode('sslcert')
                     ->info(
-                        'The path to the SSL client certificate file for PostgreSQL.'
+                        'The path to the SSL client certificate file for PostgreSQL.',
                     )
                 ->end()
                 ->scalarNode('sslkey')
                     ->info(
-                        'The path to the SSL client key file for PostgreSQL.'
+                        'The path to the SSL client key file for PostgreSQL.',
                     )
                 ->end()
                 ->scalarNode('sslcrl')
                     ->info(
-                        'The file name of the SSL certificate revocation list for PostgreSQL.'
+                        'The file name of the SSL certificate revocation list for PostgreSQL.',
                     )
                 ->end()
                 ->booleanNode('pooled')->info('True to use a pooled server with the oci8/pdo_oracle driver')->end()
@@ -326,7 +383,7 @@ class Configuration implements ConfigurationInterface
                 ->info(
                     'Optional parameter, complete whether to add the INSTANCE_NAME parameter in the connection.' .
                     ' It is generally used to connect to an Oracle RAC server to select the name' .
-                    ' of a particular instance.'
+                    ' of a particular instance.',
                 )
                 ->end()
                 ->scalarNode('connectstring')
@@ -334,7 +391,7 @@ class Configuration implements ConfigurationInterface
                     'Complete Easy Connect connection descriptor, see https://docs.oracle.com/database/121/NETAG/naming.htm.' .
                     'When using this option, you will still need to provide the user and password parameters, but the other ' .
                     'parameters will no longer be used. Note that when using this parameter, the getHost and getPort methods' .
-                    ' from Doctrine\DBAL\Connection will no longer function as expected.'
+                    ' from Doctrine\DBAL\Connection will no longer function as expected.',
                 )
                 ->end()
             ->end()
@@ -367,30 +424,39 @@ class Configuration implements ConfigurationInterface
      */
     private function addOrmSection(ArrayNodeDefinition $node): void
     {
+        // Key that should not be rewritten to the entity-manager config
+        $excludedKeys = [
+            'default_entity_manager' => true,
+            'auto_generate_proxy_classes' => true,
+            'enable_lazy_ghost_objects' => true,
+            'proxy_dir' => true,
+            'proxy_namespace' => true,
+            'resolve_target_entities' => true,
+            'resolve_target_entity' => true,
+            'controller_resolver' => true,
+        ];
+
         $node
             ->children()
                 ->arrayNode('orm')
                     ->beforeNormalization()
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function ($v) use ($excludedKeys) {
                             if (! empty($v) && ! class_exists(EntityManager::class)) {
                                 throw new LogicException('The doctrine/orm package is required when the doctrine.orm config is set.');
                             }
 
-                            return $v === null || (is_array($v) && ! array_key_exists('entity_managers', $v) && ! array_key_exists('entity_manager', $v));
+                            if (! is_array($v)) {
+                                return false;
+                            }
+
+                            if (array_key_exists('entity_managers', $v) || array_key_exists('entity_manager', $v)) {
+                                return false;
+                            }
+
+                            // Is there actually anything to use once excluded keys are considered?
+                            return (bool) array_diff_key($v, $excludedKeys);
                         })
-                        ->then(static function ($v) {
-                            $v = (array) $v;
-                            // Key that should not be rewritten to the entity-manager config
-                            $excludedKeys  = [
-                                'default_entity_manager' => true,
-                                'auto_generate_proxy_classes' => true,
-                                'enable_lazy_ghost_objects' => true,
-                                'proxy_dir' => true,
-                                'proxy_namespace' => true,
-                                'resolve_target_entities' => true,
-                                'resolve_target_entity' => true,
-                                'controller_resolver' => true,
-                            ];
+                        ->then(static function ($v) use ($excludedKeys) {
                             $entityManager = [];
                             foreach ($v as $key => $value) {
                                 if (isset($excludedKeys[$key])) {
@@ -401,8 +467,7 @@ class Configuration implements ConfigurationInterface
                                 unset($v[$key]);
                             }
 
-                            $v['default_entity_manager'] = isset($v['default_entity_manager']) ? (string) $v['default_entity_manager'] : 'default';
-                            $v['entity_managers']        = [$v['default_entity_manager'] => $entityManager];
+                            $v['entity_managers'] = [($v['default_entity_manager'] ?? 'default') => $entityManager];
 
                             return $v;
                         })
@@ -436,11 +501,13 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                                 ->ifString()
                                 ->then(static function ($v) {
-                                    return constant('Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_' . strtoupper($v));
+                                    return constant('Doctrine\ORM\Proxy\ProxyFactory::AUTOGENERATE_' . strtoupper($v));
                                 })
                             ->end()
                         ->end()
-                        ->booleanNode('enable_lazy_ghost_objects')->defaultFalse()
+                        ->booleanNode('enable_lazy_ghost_objects')
+                            ->defaultValue(! method_exists(ProxyFactory::class, 'resetUninitializedProxy'))
+                            ->info('Enables the new implementation of proxies based on lazy ghosts instead of using the legacy implementation')
                         ->end()
                         ->scalarNode('proxy_dir')->defaultValue('%kernel.cache_dir%/doctrine/orm/Proxies')->end()
                         ->scalarNode('proxy_namespace')->defaultValue('Proxies')->end()
@@ -597,6 +664,15 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('schema_ignore_classes')
                         ->prototype('scalar')->end()
                     ->end()
+                    ->booleanNode('report_fields_where_declared')
+                        ->defaultValue(! class_exists(AnnotationDriver::class))
+                        ->info('Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.16 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/10455.')
+                        ->validate()
+                            ->ifTrue(static fn (bool $v): bool => ! class_exists(AnnotationDriver::class) && ! $v)
+                            ->thenInvalid('The setting "report_fields_where_declared" cannot be disabled for ORM 3.')
+                        ->end()
+                    ->end()
+                    ->booleanNode('validate_xml_mapping')->defaultFalse()->info('Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.14 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/6728.')->end()
                 ->end()
                 ->children()
                     ->arrayNode('second_level_cache')
@@ -768,7 +844,7 @@ class Configuration implements ConfigurationInterface
     {
         $constPrefix = 'AUTOGENERATE_';
         $prefixLen   = strlen($constPrefix);
-        $refClass    = new ReflectionClass(AbstractProxyFactory::class);
+        $refClass    = new ReflectionClass(ProxyFactory::class);
         $constsArray = $refClass->getConstants();
         $namesArray  = [];
         $valuesArray = [];
@@ -786,5 +862,14 @@ class Configuration implements ConfigurationInterface
             'names' => $namesArray,
             'values' => $valuesArray,
         ];
+    }
+
+    private function getDefaultSchemaManagerFactory(): string
+    {
+        if (class_exists(LegacySchemaManagerFactory::class)) {
+            return 'doctrine.dbal.legacy_schema_manager_factory';
+        }
+
+        return 'doctrine.dbal.default_schema_manager_factory';
     }
 }

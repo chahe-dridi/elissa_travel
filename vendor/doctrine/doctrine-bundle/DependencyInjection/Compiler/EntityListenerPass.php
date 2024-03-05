@@ -20,14 +20,14 @@ use function substr;
 
 /**
  * Class for Symfony bundles to register entity listeners
+ *
+ * @final since 2.9
  */
 class EntityListenerPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @return void */
     public function process(ContainerBuilder $container)
     {
         $resolvers = $this->findAndSortTaggedServices('doctrine.orm.entity_listener', $container);
@@ -64,7 +64,7 @@ class EntityListenerPass implements CompilerPassInterface
                 if ($lazyByAttribute && ! $resolverSupportsLazyListeners) {
                     throw new InvalidArgumentException(sprintf(
                         'Lazy-loaded entity listeners can only be resolved by a resolver implementing %s.',
-                        EntityListenerServiceResolver::class
+                        EntityListenerServiceResolver::class,
                     ));
                 }
 
@@ -94,7 +94,7 @@ class EntityListenerPass implements CompilerPassInterface
         }
     }
 
-    /** @param array{entity: class-string, event?: ?string} $attributes */
+    /** @param array{entity: class-string, event?: ?string, method?: string} $attributes */
     private function attachToListener(ContainerBuilder $container, string $name, string $class, array $attributes): void
     {
         $listenerId = sprintf('doctrine.orm.%s_listeners.attach_entity_listeners', $name);

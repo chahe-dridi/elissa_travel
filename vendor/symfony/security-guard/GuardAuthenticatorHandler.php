@@ -46,7 +46,7 @@ class GuardAuthenticatorHandler
     /**
      * @param array $statelessProviderKeys An array of provider/firewall keys that are "stateless" and so do not need the session migrated on success
      */
-    public function __construct(TokenStorageInterface $tokenStorage, EventDispatcherInterface $eventDispatcher = null, array $statelessProviderKeys = [])
+    public function __construct(TokenStorageInterface $tokenStorage, ?EventDispatcherInterface $eventDispatcher = null, array $statelessProviderKeys = [])
     {
         $this->tokenStorage = $tokenStorage;
         $this->dispatcher = $eventDispatcher;
@@ -56,9 +56,9 @@ class GuardAuthenticatorHandler
     /**
      * Authenticates the given token in the system.
      */
-    public function authenticateWithToken(TokenInterface $token, Request $request, string $providerKey = null)
+    public function authenticateWithToken(TokenInterface $token, Request $request, ?string $providerKey = null, ?TokenInterface $previousToken = null)
     {
-        $this->migrateSession($request, $token, $providerKey);
+        $this->migrateSession($request, $token, $providerKey, 3 < \func_num_args() ? $previousToken : $this->tokenStorage->getToken());
         $this->tokenStorage->setToken($token);
 
         if (null !== $this->dispatcher) {
@@ -91,7 +91,7 @@ class GuardAuthenticatorHandler
         // create an authenticated token for the User
         $token = $authenticator->createAuthenticatedToken($user, $providerKey);
         // authenticate this in the system
-        $this->authenticateWithToken($token, $request, $providerKey);
+        $this->authenticateWithToken($token, $request, $providerKey, $this->tokenStorage->getToken());
 
         // return the success metric
         return $this->handleAuthenticationSuccess($token, $request, $authenticator, $providerKey);
@@ -122,10 +122,19 @@ class GuardAuthenticatorHandler
         $this->sessionStrategy = $sessionStrategy;
     }
 
-    private function migrateSession(Request $request, TokenInterface $token, ?string $providerKey)
+    private function migrateSession(Request $request, TokenInterface $token, ?string $providerKey, ?TokenInterface $previousToken)
     {
         if (\in_array($providerKey, $this->statelessProviderKeys, true) || !$this->sessionStrategy || !$request->hasSession() || !$request->hasPreviousSession()) {
             return;
+        }
+
+        if ($previousToken) {
+            $user = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
+            $previousUser = method_exists($previousToken, 'getUserIdentifier') ? $previousToken->getUserIdentifier() : $previousToken->getUsername();
+
+            if ('' !== ($user ?? '') && $user === $previousUser) {
+                return;
+            }
         }
 
         $this->sessionStrategy->onAuthentication($request, $token);

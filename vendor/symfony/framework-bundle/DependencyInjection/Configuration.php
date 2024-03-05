@@ -123,7 +123,7 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
-        $willBeAvailable = static function (string $package, string $class, string $parentPackage = null) {
+        $willBeAvailable = static function (string $package, string $class, ?string $parentPackage = null) {
             $parentPackages = (array) $parentPackage;
             $parentPackages[] = 'symfony/framework-bundle';
 
@@ -350,7 +350,7 @@ class Configuration implements ConfigurationInterface
 
                                 foreach ($workflows as $key => $workflow) {
                                     if (isset($workflow['enabled']) && false === $workflow['enabled']) {
-                                        throw new LogicException(sprintf('Cannot disable a single workflow. Remove the configuration for the workflow "%s" instead.', $workflow['name']));
+                                        throw new LogicException(sprintf('Cannot disable a single workflow. Remove the configuration for the workflow "%s" instead.', $key));
                                     }
 
                                     unset($workflows[$key]['enabled']);
@@ -446,6 +446,10 @@ class Configuration implements ConfigurationInterface
                                         ->beforeNormalization()
                                             ->always()
                                             ->then(function ($places) {
+                                                if (!\is_array($places)) {
+                                                    throw new InvalidConfigurationException('The "places" option must be an array in workflow configuration.');
+                                                }
+
                                                 // It's an indexed array of shape  ['place1', 'place2']
                                                 if (isset($places[0]) && \is_string($places[0])) {
                                                     return array_map(function (string $place) {
@@ -491,6 +495,10 @@ class Configuration implements ConfigurationInterface
                                         ->beforeNormalization()
                                             ->always()
                                             ->then(function ($transitions) {
+                                                if (!\is_array($transitions)) {
+                                                    throw new InvalidConfigurationException('The "transitions" option must be an array in workflow configuration.');
+                                                }
+
                                                 // It's an indexed array, we let the validation occur
                                                 if (isset($transitions[0]) && \is_array($transitions[0])) {
                                                     return $transitions;

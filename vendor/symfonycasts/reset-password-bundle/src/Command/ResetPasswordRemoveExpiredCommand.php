@@ -29,19 +29,11 @@ class ResetPasswordRemoveExpiredCommand extends Command
         parent::__construct('reset-password:remove-expired');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this->setDescription('Remove expired reset password requests from persistence.');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @psalm-suppress InvalidReturnType
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Removing expired reset password requests...');

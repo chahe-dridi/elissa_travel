@@ -52,6 +52,8 @@ use Symfony\Thanks\Thanks;
  */
 class Flex implements PluginInterface, EventSubscriberInterface
 {
+    public static $storedOperations = [];
+
     /**
      * @var Composer
      */
@@ -86,6 +88,9 @@ class Flex implements PluginInterface, EventSubscriberInterface
     ];
     private $filter;
 
+    /**
+     * @return void
+     */
     public function activate(Composer $composer, IOInterface $io)
     {
         if (!\extension_loaded('openssl')) {
@@ -107,6 +112,13 @@ class Flex implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
         $this->config = $composer->getConfig();
         $this->options = $this->initOptions();
+
+        // if Flex is being upgraded, the original operations from the original Flex
+        // instance are stored in the static property, so we can reuse them now.
+        if (property_exists(self::class, 'storedOperations') && self::$storedOperations) {
+            $this->operations = self::$storedOperations;
+            self::$storedOperations = [];
+        }
 
         $symfonyRequire = preg_replace('/\.x$/', '.x-dev', getenv('SYMFONY_REQUIRE') ?: ($composer->getPackage()->getExtra()['symfony']['require'] ?? ''));
 
@@ -193,8 +205,13 @@ class Flex implements PluginInterface, EventSubscriberInterface
         }
     }
 
+    /**
+     * @return void
+     */
     public function deactivate(Composer $composer, IOInterface $io)
     {
+        // store operations in case Flex is being upgraded
+        self::$storedOperations = $this->operations;
         self::$activated = false;
     }
 
@@ -375,6 +392,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
         $installContribs = $this->composer->getPackage()->getExtra()['symfony']['allow-contrib'] ?? false;
         $manifest = null;
         $originalComposerJsonHash = $this->getComposerJsonHash();
+        $postInstallRecipes = [];
         foreach ($recipes as $recipe) {
             if ('install' === $recipe->getJob() && !$installContribs && $recipe->isContrib()) {
                 $warning = $this->io->isInteractive() ? 'WARNING' : 'IGNORING';
@@ -421,6 +439,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
 
             switch ($recipe->getJob()) {
                 case 'install':
+                    $postInstallRecipes[] = $recipe;
                     $this->io->writeError(sprintf('  - Configuring %s', $this->formatOrigin($recipe)));
                     $this->configurator->install($recipe, $this->lock, [
                         'force' => $event instanceof UpdateEvent && $event->force(),
@@ -441,6 +460,14 @@ class Flex implements PluginInterface, EventSubscriberInterface
                     $this->io->writeError(sprintf('  - Unconfiguring %s', $this->formatOrigin($recipe)));
                     $this->configurator->unconfigure($recipe, $this->lock);
                     break;
+            }
+        }
+
+        if (method_exists($this->configurator, 'postInstall')) {
+            foreach ($postInstallRecipes as $recipe) {
+                $this->configurator->postInstall($recipe, $this->lock, [
+                    'force' => $event instanceof UpdateEvent && $event->force(),
+                ]);
             }
         }
 
@@ -474,16 +501,11 @@ class Flex implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($rootDir);
         $vendorDir = trim((new Filesystem())->makePathRelative($this->config->get('vendor-dir'), $rootDir), '/');
 
-        $synchronizer = new PackageJsonSynchronizer($rootDir, $vendorDir);
+        $executor = new ScriptExecutor($this->composer, $this->io, $this->options);
+        $synchronizer = new PackageJsonSynchronizer($rootDir, $vendorDir, $executor, $this->io);
 
         if ($synchronizer->shouldSynchronize()) {
             $lockData = $this->composer->getLocker()->getLockData();
-
-            if (method_exists($synchronizer, 'addPackageJsonLink') && 'string' === (new \ReflectionParameter([$synchronizer, 'addPackageJsonLink'], 'phpPackage'))->getType()->getName()) {
-                // support for smooth upgrades from older flex versions
-                $lockData['packages'] = array_column($lockData['packages'] ?? [], 'name');
-                $lockData['packages-dev'] = array_column($lockData['packages-dev'] ?? [], 'name');
-            }
 
             if ($synchronizer->synchronize(array_merge($lockData['packages'] ?? [], $lockData['packages-dev'] ?? []))) {
                 $this->io->writeError('<info>Synchronizing package.json with PHP packages</>');
@@ -493,6 +515,9 @@ class Flex implements PluginInterface, EventSubscriberInterface
         }
     }
 
+    /**
+     * @return void
+     */
     public function uninstall(Composer $composer, IOInterface $io)
     {
         $this->lock->delete();
@@ -557,7 +582,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
             $job = method_exists($operation, 'getOperationType') ? $operation->getOperationType() : $operation->getJobType();
 
             if (!isset($manifests[$name]) && isset($data['conflicts'][$name])) {
-                $this->io->writeError(sprintf('  - Skipping recipe for %s: all versions of the recipe conflict with your package versions.', $name), true, IOInterface::VERBOSE);
+                $this->io->writeError(sprintf('  - Skipping recipe for %s: all versions of the recipe conflict with your package versions.', $name));
                 continue;
             }
 
@@ -568,7 +593,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
 
                 if (!isset($newManifests[$name])) {
                     // no older recipe found
-                    $this->io->writeError(sprintf('  - Skipping recipe for %s: all versions of the recipe conflict with your package versions.', $name), true, IOInterface::VERBOSE);
+                    $this->io->writeError(sprintf('  - Skipping recipe for %s: all versions of the recipe conflict with your package versions.', $name));
 
                     continue 2;
                 }
@@ -789,6 +814,9 @@ class Flex implements PluginInterface, EventSubscriberInterface
             $composer->getEventDispatcher(),
             $composer->getAutoloadGenerator()
         );
+        if (method_exists($installer, 'setPlatformRequirementFilter')) {
+            $installer->setPlatformRequirementFilter(((array) $this->installer)["\0*\0platformRequirementFilter"]);
+        }
 
         if (!$update) {
             $installer->setUpdateAllowList(['php']);

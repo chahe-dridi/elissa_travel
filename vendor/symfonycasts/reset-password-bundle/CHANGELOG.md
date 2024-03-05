@@ -3,6 +3,56 @@
 *We intend to follow [Semantic Versioning 2.0.0](https://semver.org/), if you 
 find a change that break's semver, please create an issue.*
 
+## [v1.18.0](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.18.0)
+
+*September 19th, 2023*
+
+### Feature
+
+- [#260](https://github.com/symfonycasts/reset-password-bundle/pull/260) - [ci] handle possible return types - *@jrushlow*
+- [#271](https://github.com/symfonycasts/reset-password-bundle/pull/271) - Add el, mk translations - *@zmakrevski*
+
+### Bug
+
+- [#263](https://github.com/symfonycasts/reset-password-bundle/pull/263) - chore: fix type cast in `ResetPasswordRequestRepositoryTrait` when using `declare(strict_types=1);` - *@Crovitche-1623*
+
+## [v1.17.0](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.17.0)
+
+*February 2nd, 2023*
+
+### Feature
+
+- [#257](https://github.com/symfonycasts/reset-password-bundle/pull/257) - Allow overriding the $resetRequestLifetime when generating a token - *@kbond*
+
+## [v1.16.0](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.16.0)
+
+*October 4th, 2022*
+
+### Feature
+
+- [#245](https://github.com/symfonycasts/reset-password-bundle/pull/245) - [translations] add additional Polish translations and fix pluralizations - *@Flower7C3*
+- [#242](https://github.com/symfonycasts/reset-password-bundle/pull/242) - [translations] Additional German translations - *@dennis-g*
+
+## [v1.15.0](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.15.0)
+
+*September 13th, 2022*
+
+### Feature
+
+- [#237](https://github.com/symfonycasts/reset-password-bundle/pull/237) - drop symfony 4.4 support - *@jrushlow*
+
+### Bug
+
+- [#235](https://github.com/symfonycasts/reset-password-bundle/pull/235) - fix expiration diff bug in php 8.1 - *@jrushlow*
+
+## [v1.14.1](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.14.1)
+
+*August 6th, 2022*
+
+### Bug
+
+- [#234](https://github.com/symfonycasts/reset-password-bundle/pull/234) - [command] Fix Override deprecation - *@chindit*
+
 ## [v1.14.0](https://github.com/symfonycasts/reset-password-bundle/releases/tag/v1.14.0)
 
 *July 12th, 2022*

@@ -25,11 +25,11 @@ final class BackedEnumNormalizer implements NormalizerInterface, DenormalizerInt
     /**
      * {@inheritdoc}
      *
-     * @throws InvalidArgumentException
-     *
      * @return int|string
+     *
+     * @throws InvalidArgumentException
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         if (!$object instanceof \BackedEnum) {
             throw new InvalidArgumentException('The data must belong to a backed enumeration.');
@@ -41,7 +41,7 @@ final class BackedEnumNormalizer implements NormalizerInterface, DenormalizerInt
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, string $format = null): bool
+    public function supportsNormalization($data, ?string $format = null): bool
     {
         return $data instanceof \BackedEnum;
     }
@@ -51,7 +51,7 @@ final class BackedEnumNormalizer implements NormalizerInterface, DenormalizerInt
      *
      * @throws NotNormalizableValueException
      */
-    public function denormalize($data, string $type, string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
         if (!is_subclass_of($type, \BackedEnum::class)) {
             throw new InvalidArgumentException('The data must belong to a backed enumeration.');
@@ -64,14 +64,18 @@ final class BackedEnumNormalizer implements NormalizerInterface, DenormalizerInt
         try {
             return $type::from($data);
         } catch (\ValueError $e) {
-            throw new InvalidArgumentException('The data must belong to a backed enumeration of type '.$type);
+            if (isset($context['has_constructor'])) {
+                throw new InvalidArgumentException('The data must belong to a backed enumeration of type '.$type, 0, $e);
+            }
+
+            throw NotNormalizableValueException::createForUnexpectedDataType('The data must belong to a backed enumeration of type '.$type, $data, [$type], $context['deserialization_path'] ?? null, true, 0, $e);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supportsDenormalization($data, string $type, string $format = null): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null): bool
     {
         return is_subclass_of($type, \BackedEnum::class);
     }

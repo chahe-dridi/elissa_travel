@@ -244,10 +244,10 @@ abstract class NumberFormatter
 
     /**
      * @param string|null $locale  The locale code. The only currently supported locale is "en" (or null using the default locale, i.e. "en")
-     * @param int         $style   Style of the formatting, one of the format style constants.
+     * @param int|null    $style   Style of the formatting, one of the format style constants.
      *                             The only supported styles are NumberFormatter::DECIMAL
      *                             and NumberFormatter::CURRENCY.
-     * @param string      $pattern Not supported. A pattern string in case $style is NumberFormat::PATTERN_DECIMAL or
+     * @param string|null $pattern Not supported. A pattern string in case $style is NumberFormat::PATTERN_DECIMAL or
      *                             NumberFormat::PATTERN_RULEBASED. It must conform to  the syntax
      *                             described in the ICU DecimalFormat or ICU RuleBasedNumberFormat documentation
      *
@@ -259,7 +259,7 @@ abstract class NumberFormatter
      * @throws MethodArgumentValueNotImplementedException When the $style is not supported
      * @throws MethodArgumentNotImplementedException      When the pattern value is different than null
      */
-    public function __construct(?string $locale = 'en', int $style = null, string $pattern = null)
+    public function __construct(?string $locale = 'en', ?int $style = null, ?string $pattern = null)
     {
         if ('en' !== $locale && null !== $locale) {
             throw new MethodArgumentValueNotImplementedException(__METHOD__, 'locale', $locale, 'Only the locale "en" is supported');
@@ -281,10 +281,10 @@ abstract class NumberFormatter
      * Static constructor.
      *
      * @param string|null $locale  The locale code. The only supported locale is "en" (or null using the default locale, i.e. "en")
-     * @param int         $style   Style of the formatting, one of the format style constants.
+     * @param int|null    $style   Style of the formatting, one of the format style constants.
      *                             The only currently supported styles are NumberFormatter::DECIMAL
      *                             and NumberFormatter::CURRENCY.
-     * @param string      $pattern Not supported. A pattern string in case $style is NumberFormat::PATTERN_DECIMAL or
+     * @param string|null $pattern Not supported. A pattern string in case $style is NumberFormat::PATTERN_DECIMAL or
      *                             NumberFormat::PATTERN_RULEBASED. It must conform to  the syntax
      *                             described in the ICU DecimalFormat or ICU RuleBasedNumberFormat documentation
      *
@@ -298,7 +298,7 @@ abstract class NumberFormatter
      * @throws MethodArgumentValueNotImplementedException When the $style is not supported
      * @throws MethodArgumentNotImplementedException      When the pattern value is different than null
      */
-    public static function create(?string $locale = 'en', int $style = null, string $pattern = null)
+    public static function create(?string $locale = 'en', ?int $style = null, ?string $pattern = null)
     {
         return new static($locale, $style, $pattern);
     }
@@ -485,9 +485,9 @@ abstract class NumberFormatter
     /**
      * Not supported. Parse a currency number.
      *
-     * @param string $value    The value to parse
-     * @param string $currency Parameter to receive the currency name (reference)
-     * @param int    $position Offset to begin the parsing on return this value will hold the offset at which the parsing ended
+     * @param string   $value    The value to parse
+     * @param string   $currency Parameter to receive the currency name (reference)
+     * @param int|null $position Offset to begin the parsing on return this value will hold the offset at which the parsing ended
      *
      * @return float|false The parsed numeric value or false on error
      *
@@ -495,7 +495,7 @@ abstract class NumberFormatter
      *
      * @throws MethodNotImplementedException
      */
-    public function parseCurrency(string $value, string &$currency, int &$position = null)
+    public function parseCurrency(string $value, string &$currency, ?int &$position = null)
     {
         throw new MethodNotImplementedException(__METHOD__);
     }

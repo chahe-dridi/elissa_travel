@@ -9,7 +9,8 @@
 
 namespace SymfonyCasts\Bundle\VerifyEmail;
 
-use Symfony\Component\HttpKernel\UriSigner;
+use Symfony\Component\HttpFoundation\UriSigner;
+use Symfony\Component\HttpKernel\UriSigner as LegacyUriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\ExpiredSignatureException;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\InvalidSignatureException;
@@ -25,6 +26,9 @@ use SymfonyCasts\Bundle\VerifyEmail\Util\VerifyEmailQueryUtility;
 final class VerifyEmailHelper implements VerifyEmailHelperInterface
 {
     private $router;
+    /**
+     * @var UriSigner|LegacyUriSigner
+     */
     private $uriSigner;
     private $queryUtility;
     private $tokenGenerator;
@@ -34,7 +38,7 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
      */
     private $lifetime;
 
-    public function __construct(UrlGeneratorInterface $router, UriSigner $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
+    public function __construct(UrlGeneratorInterface $router, /* no typehint for BC with legacy PHP */ $uriSigner, VerifyEmailQueryUtility $queryUtility, VerifyEmailTokenGenerator $generator, int $lifetime)
     {
         $this->router = $router;
         $this->uriSigner = $uriSigner;
@@ -43,9 +47,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         $this->lifetime = $lifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateSignature(string $routeName, string $userId, string $userEmail, array $extraParams = []): VerifyEmailSignatureComponents
     {
         $generatedAt = time();
@@ -62,9 +63,6 @@ final class VerifyEmailHelper implements VerifyEmailHelperInterface
         return new VerifyEmailSignatureComponents(\DateTimeImmutable::createFromFormat('U', (string) $expiryTimestamp), $signature, $generatedAt);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateEmailConfirmation(string $signedUrl, string $userId, string $userEmail): void
     {
         if (!$this->uriSigner->check($signedUrl)) {

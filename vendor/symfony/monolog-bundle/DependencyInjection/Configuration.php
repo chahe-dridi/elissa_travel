@@ -366,22 +366,26 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   - [split_long_messages]: bool, defaults to false, split messages longer than 4096 bytes into multiple messages
  *   - [delay_between_messages]: bool, defaults to false, adds a 1sec delay/sleep between sending split messages
  *
+ * - sampling:
+ *   - handler: the wrapped handler's name
+ *   - factor: the sampling factor (e.g. 10 means every ~10th record is sampled)
+ *
  * All handlers can also be marked with `nested: true` to make sure they are never added explicitly to the stack
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Christophe Coevoet <stof@notk.org>
+ *
+ * @finalsince 3.9.0
  */
 class Configuration implements ConfigurationInterface
 {
     /**
      * Generates the configuration tree builder.
-     *
-     * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder The tree builder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('monolog');
-        $rootNode = method_exists(TreeBuilder::class, 'getRootNode') ? $treeBuilder->getRootNode() : $treeBuilder->root('monolog');
+        $rootNode = $treeBuilder->getRootNode();
 
         $handlers = $rootNode
             ->fixXmlConfig('channel')
@@ -591,6 +595,7 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('disable_notification')->defaultNull()->end() // telegram
                 ->booleanNode('split_long_messages')->defaultFalse()->end() // telegram
                 ->booleanNode('delay_between_messages')->defaultFalse()->end() // telegram
+                ->integerNode('factor')->defaultValue(1)->min(1)->end() // sampling
                 ->arrayNode('tags') // loggly
                     ->beforeNormalization()
                         ->ifString()
@@ -604,7 +609,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                  // console
                 ->variableNode('console_formater_options')
-                    ->setDeprecated(...$this->getDeprecationMsg('"%path%.%node%" is deprecated, use "%path%.console_formatter_options" instead.', 3.7))
+                    ->setDeprecated('symfony/monolog-bundle', 3.7, '"%path%.%node%" is deprecated, use "%path%.console_formatter_options" instead.')
                     ->validate()
                         ->ifTrue(function ($v) {
                             return !is_array($v);
@@ -650,8 +655,8 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('Service handlers can not have a formatter configured in the bundle, you must reconfigure the service itself instead')
             ->end()
             ->validate()
-                ->ifTrue(function ($v) { return ('fingers_crossed' === $v['type'] || 'buffer' === $v['type'] || 'filter' === $v['type']) && empty($v['handler']); })
-                ->thenInvalid('The handler has to be specified to use a FingersCrossedHandler or BufferHandler or FilterHandler')
+                ->ifTrue(function ($v) { return ('fingers_crossed' === $v['type'] || 'buffer' === $v['type'] || 'filter' === $v['type'] || 'sampling' === $v['type']) && empty($v['handler']); })
+                ->thenInvalid('The handler has to be specified to use a FingersCrossedHandler or BufferHandler or FilterHandler or SamplingHandler')
             ->end()
             ->validate()
                 ->ifTrue(function ($v) { return 'fingers_crossed' === $v['type'] && !empty($v['excluded_404s']) && !empty($v['activation_strategy']); })
@@ -1136,28 +1141,5 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-    }
-
-    /**
-     * Returns the correct deprecation param's as an array for setDeprecated.
-     *
-     * Symfony/Config v5.1 introduces a deprecation notice when calling
-     * setDeprecation() with less than 3 args and the getDeprecation method was
-     * introduced at the same time. By checking if getDeprecation() exists,
-     * we can determine the correct param count to use when calling setDeprecated.
-     *
-     * @return array{0:string}|array{0:string, 1: numeric-string, string}
-     */
-    private function getDeprecationMsg(string $message, string $version): array
-    {
-        if (method_exists(BaseNode::class, 'getDeprecation')) {
-            return [
-                'symfony/monolog-bundle',
-                $version,
-                $message,
-            ];
-        }
-
-        return [$message];
     }
 }

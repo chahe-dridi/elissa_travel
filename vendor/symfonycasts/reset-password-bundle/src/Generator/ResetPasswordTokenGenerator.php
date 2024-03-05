@@ -16,6 +16,7 @@ use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordTokenComponents;
  * @author Ryan Weaver   <ryan@symfonycasts.com>
  *
  * @internal
+ *
  * @final
  */
 class ResetPasswordTokenGenerator
@@ -42,7 +43,7 @@ class ResetPasswordTokenGenerator
      * @param mixed  $userId   Unique user identifier
      * @param string $verifier Only required for token comparison
      */
-    public function createToken(\DateTimeInterface $expiresAt, $userId, string $verifier = null): ResetPasswordTokenComponents
+    public function createToken(\DateTimeInterface $expiresAt, $userId, ?string $verifier = null): ResetPasswordTokenComponents
     {
         if (null === $verifier) {
             $verifier = $this->randomGenerator->getRandomAlphaNumStr();

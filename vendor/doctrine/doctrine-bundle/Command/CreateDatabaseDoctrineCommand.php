@@ -10,7 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 use function in_array;
-use function method_exists;
 use function sprintf;
 
 /**
@@ -27,7 +26,7 @@ class CreateDatabaseDoctrineCommand extends DoctrineCommand
             ->setDescription('Creates the configured database')
             ->addOption('connection', 'c', InputOption::VALUE_OPTIONAL, 'The connection to use for this command')
             ->addOption('if-not-exists', null, InputOption::VALUE_NONE, 'Don\'t trigger an error, when the database already exists')
-            ->setHelp(<<<EOT
+            ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command creates the default connections database:
 
     <info>php %command.full_name%</info>
@@ -35,8 +34,7 @@ The <info>%command.name%</info> command creates the default connections database
 You can also optionally specify the name of a connection to create the database for:
 
     <info>php %command.full_name% --connection=default</info>
-EOT
-        );
+EOT);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -63,13 +61,11 @@ EOT
         }
 
         // Need to get rid of _every_ occurrence of dbname from connection configuration and we have already extracted all relevant info from url
+        /** @psalm-suppress InvalidArrayOffset Need to be compatible with DBAL < 4, which still has `$params['url']` */
         unset($params['dbname'], $params['path'], $params['url']);
 
-        $tmpConnection = DriverManager::getConnection($params);
-
-        $schemaManager           = method_exists($tmpConnection, 'createSchemaManager')
-            ? $tmpConnection->createSchemaManager()
-            : $tmpConnection->getSchemaManager();
+        $tmpConnection           = DriverManager::getConnection($params, $connection->getConfiguration());
+        $schemaManager           = $tmpConnection->createSchemaManager();
         $shouldNotCreateDatabase = $ifNotExists && in_array($name, $schemaManager->listDatabases());
 
         // Only quote if we don't have a path

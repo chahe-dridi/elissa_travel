@@ -15,6 +15,7 @@ class DbalConfig
 {
     private $defaultConnection;
     private $types;
+    private $driverSchemes;
     private $connections;
     private $_usedProperties = [];
 
@@ -54,6 +55,18 @@ class DbalConfig
     }
 
     /**
+     * @param ParamConfigurator|mixed $value
+     * @return $this
+     */
+    public function driverScheme(string $scheme, $value): self
+    {
+        $this->_usedProperties['driverSchemes'] = true;
+        $this->driverSchemes[$scheme] = $value;
+
+        return $this;
+    }
+
+    /**
      * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig|$this
      */
     public function connection(string $name, $value = [])
@@ -89,6 +102,12 @@ class DbalConfig
             unset($value['types']);
         }
 
+        if (array_key_exists('driver_schemes', $value)) {
+            $this->_usedProperties['driverSchemes'] = true;
+            $this->driverSchemes = $value['driver_schemes'];
+            unset($value['driver_schemes']);
+        }
+
         if (array_key_exists('connections', $value)) {
             $this->_usedProperties['connections'] = true;
             $this->connections = array_map(function ($v) { return \is_array($v) ? new \Symfony\Config\Doctrine\Dbal\ConnectionConfig($v) : $v; }, $value['connections']);
@@ -108,6 +127,9 @@ class DbalConfig
         }
         if (isset($this->_usedProperties['types'])) {
             $output['types'] = array_map(function ($v) { return $v instanceof \Symfony\Config\Doctrine\Dbal\TypeConfig ? $v->toArray() : $v; }, $this->types);
+        }
+        if (isset($this->_usedProperties['driverSchemes'])) {
+            $output['driver_schemes'] = $this->driverSchemes;
         }
         if (isset($this->_usedProperties['connections'])) {
             $output['connections'] = array_map(function ($v) { return $v instanceof \Symfony\Config\Doctrine\Dbal\ConnectionConfig ? $v->toArray() : $v; }, $this->connections);

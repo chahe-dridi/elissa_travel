@@ -32,18 +32,18 @@ abstract class ResourceBundle
      *
      * @see BundleEntryReaderInterface::readEntry()
      *
-     * @param string[] $indices  The indices to read from the bundle
-     * @param string   $locale   The locale to read
-     * @param bool     $fallback Whether to merge the value with the value from
-     *                           the fallback locale (e.g. "en" for "en_GB").
-     *                           Only applicable if the result is multivalued
-     *                           (i.e. array or \ArrayAccess) or cannot be found
-     *                           in the requested locale.
+     * @param string[]    $indices  The indices to read from the bundle
+     * @param string|null $locale   The locale to read
+     * @param bool        $fallback Whether to merge the value with the value from
+     *                              the fallback locale (e.g. "en" for "en_GB").
+     *                              Only applicable if the result is multivalued
+     *                              (i.e. array or \ArrayAccess) or cannot be found
+     *                              in the requested locale.
      *
      * @return mixed returns an array or {@link \ArrayAccess} instance for
      *               complex data and a scalar value for simple data
      */
-    final protected static function readEntry(array $indices, string $locale = null, bool $fallback = true)
+    final protected static function readEntry(array $indices, ?string $locale = null, bool $fallback = true)
     {
         if (null === self::$entryReader) {
             self::$entryReader = new BundleEntryReader(new BufferedBundleReader(
@@ -58,7 +58,7 @@ abstract class ResourceBundle
         return self::$entryReader->readEntry(static::getPath(), $locale ?? \Locale::getDefault(), $indices, $fallback);
     }
 
-    final protected static function asort(iterable $list, string $locale = null): array
+    final protected static function asort(iterable $list, ?string $locale = null): array
     {
         if ($list instanceof \Traversable) {
             $list = iterator_to_array($list);

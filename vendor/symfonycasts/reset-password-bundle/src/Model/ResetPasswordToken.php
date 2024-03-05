@@ -35,7 +35,7 @@ final class ResetPasswordToken
      */
     private $transInterval = 0;
 
-    public function __construct(string $token, \DateTimeInterface $expiresAt, int $generatedAt = null)
+    public function __construct(string $token, \DateTimeInterface $expiresAt, ?int $generatedAt = null)
     {
         $this->token = $token;
         $this->expiresAt = $expiresAt;
@@ -143,6 +143,9 @@ final class ResetPasswordToken
         return $this->expiresAt->diff($createdAtTime);
     }
 
+    /**
+     * @psalm-suppress UndefinedFunction
+     */
     private function triggerDeprecation(): void
     {
         trigger_deprecation(

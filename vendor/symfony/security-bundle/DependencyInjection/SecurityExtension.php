@@ -544,6 +544,7 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
                     ->register('debug.security.firewall.authenticator.'.$id, TraceableAuthenticatorManagerListener::class)
                     ->setDecoratedService('security.firewall.authenticator.'.$id)
                     ->setArguments([new Reference('debug.security.firewall.authenticator.'.$id.'.inner')])
+                    ->addTag('kernel.reset', ['method' => 'reset'])
                 ;
             }
 
@@ -619,7 +620,7 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
         return $this->contextListeners[$contextKey] = $listenerId;
     }
 
-    private function createAuthenticationListeners(ContainerBuilder $container, string $id, array $firewall, array &$authenticationProviders, ?string $defaultProvider, array $providerIds, ?string $defaultEntryPoint, string $contextListenerId = null)
+    private function createAuthenticationListeners(ContainerBuilder $container, string $id, array $firewall, array &$authenticationProviders, ?string $defaultProvider, array $providerIds, ?string $defaultEntryPoint, ?string $contextListenerId = null)
     {
         $listeners = [];
         $hasListeners = false;
@@ -848,7 +849,10 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
     {
         // a custom hasher service
         if (isset($config['id'])) {
-            return new Reference($config['id']);
+            return $config['migrate_from'] ?? false ? [
+                'instance' => new Reference($config['id']),
+                'migrate_from' => $config['migrate_from'],
+            ] : new Reference($config['id']);
         }
 
         if ($config['migrate_from'] ?? false) {
@@ -1056,7 +1060,7 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
         return $this->expressions[$id] = new Reference($id);
     }
 
-    private function createRequestMatcher(ContainerBuilder $container, string $path = null, string $host = null, int $port = null, array $methods = [], array $ips = null, array $attributes = []): Reference
+    private function createRequestMatcher(ContainerBuilder $container, ?string $path = null, ?string $host = null, ?int $port = null, array $methods = [], ?array $ips = null, array $attributes = []): Reference
     {
         if ($methods) {
             $methods = array_map('strtoupper', $methods);

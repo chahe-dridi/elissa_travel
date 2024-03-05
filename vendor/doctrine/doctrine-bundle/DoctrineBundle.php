@@ -13,15 +13,16 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\RemoveLoggingMid
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\RemoveProfilerControllerPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\ServiceRepositoryCompilerPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\WellKnownSchemaFilterPass;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Autoloader;
+use Doctrine\ORM\Proxy\DefaultProxyClassNameResolver;
 use Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\DoctrineValidationPass;
 use Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\RegisterEventListenersAndSubscribersPass;
 use Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\RegisterUidTypePass;
 use Symfony\Bridge\Doctrine\DependencyInjection\Security\UserProvider\EntityFactory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -31,16 +32,26 @@ use function class_exists;
 use function clearstatcache;
 use function spl_autoload_unregister;
 
+/** @final since 2.9 */
 class DoctrineBundle extends Bundle
 {
     private ?Closure $autoloader = null;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @return void */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
+
+        $container->addCompilerPass(new class () implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                if ($container->has('session.handler')) {
+                    return;
+                }
+
+                $container->removeDefinition('doctrine.orm.listeners.pdo_session_handler_schema_listener');
+            }
+        }, PassConfig::TYPE_BEFORE_OPTIMIZATION);
 
         $container->addCompilerPass(new RegisterEventListenersAndSubscribersPass('doctrine.connections', 'doctrine.dbal.%s_connection.event_manager', 'doctrine'), PassConfig::TYPE_BEFORE_OPTIMIZATION);
 
@@ -71,9 +82,7 @@ class DoctrineBundle extends Bundle
         $container->addCompilerPass(new RegisterUidTypePass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @return void */
     public function boot()
     {
         // Register an autoloader for proxies to avoid issues when unserializing them
@@ -88,10 +97,11 @@ class DoctrineBundle extends Bundle
 
         if ($this->container->getParameter('doctrine.orm.auto_generate_proxy_classes')) {
             // See https://github.com/symfony/symfony/pull/3419 for usage of references
+            /** @psalm-suppress UnsupportedPropertyReferenceUsage */
             $container = &$this->container;
 
             $proxyGenerator = static function ($proxyDir, $proxyNamespace, $class) use (&$container): void {
-                $originalClassName = ClassUtils::getRealClass($class);
+                $originalClassName = (new DefaultProxyClassNameResolver())->resolveClassName($class);
                 $registry          = $container->get('doctrine');
                 assert($registry instanceof Registry);
 
@@ -121,9 +131,7 @@ class DoctrineBundle extends Bundle
         $this->autoloader = Autoloader::register($dir, $namespace, $proxyGenerator);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @return void */
     public function shutdown()
     {
         if ($this->autoloader !== null) {
@@ -156,9 +164,7 @@ class DoctrineBundle extends Bundle
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @return void */
     public function registerCommands(Application $application)
     {
     }

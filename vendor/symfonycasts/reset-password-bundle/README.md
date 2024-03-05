@@ -49,10 +49,21 @@ You can change the default configuration parameters for the bundle in the
 
 ```yaml
 symfonycasts_reset_password:
-    request_password_repository: App\Repository\PasswordResetRequestRepository
+    request_password_repository: App\Repository\ResetPasswordRequestRepository
     lifetime: 3600
     throttle_limit: 3600
     enable_garbage_collection: true
+```
+
+The production environment may require the `default_uri` to be defined in the `config/packages/routing.yaml` to prevent the URI in emails to point to localhost.
+
+```yaml
+# config/packages/routing.yaml
+when@prod:
+    framework:
+        router:
+            # ...
+            default_uri: '<your project's root URI>'
 ```
 
 ### Parameters:

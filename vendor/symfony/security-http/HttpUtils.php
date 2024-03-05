@@ -39,7 +39,7 @@ class HttpUtils
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator = null, $urlMatcher = null, string $domainRegexp = null, string $secureDomainRegexp = null)
+    public function __construct(?UrlGeneratorInterface $urlGenerator = null, $urlMatcher = null, ?string $domainRegexp = null, ?string $secureDomainRegexp = null)
     {
         $this->urlGenerator = $urlGenerator;
         if (null !== $urlMatcher && !$urlMatcher instanceof UrlMatcherInterface && !$urlMatcher instanceof RequestMatcherInterface) {
@@ -118,6 +118,11 @@ class HttpUtils
     public function checkRequestPath(Request $request, string $path)
     {
         if ('/' !== $path[0]) {
+            // Shortcut if request has already been matched before
+            if ($request->attributes->has('_route')) {
+                return $path === $request->attributes->get('_route');
+            }
+
             try {
                 // matching a request is more powerful than matching a URL path + context, so try that first
                 if ($this->urlMatcher instanceof RequestMatcherInterface) {
@@ -148,7 +153,9 @@ class HttpUtils
      */
     public function generateUri(Request $request, string $path)
     {
-        if (str_starts_with($path, 'http') || !$path) {
+        $url = parse_url($path);
+
+        if ('' === $path || isset($url['scheme'], $url['host'])) {
             return $path;
         }
 

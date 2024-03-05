@@ -96,6 +96,7 @@ class HandlerConfig
     private $disableNotification;
     private $splitLongMessages;
     private $delayBetweenMessages;
+    private $factor;
     private $tags;
     private $consoleFormaterOptions;
     private $consoleFormatterOptions;
@@ -1104,6 +1105,19 @@ class HandlerConfig
     }
 
     /**
+     * @default 1
+     * @param ParamConfigurator|int $value
+     * @return $this
+     */
+    public function factor($value): self
+    {
+        $this->_usedProperties['factor'] = true;
+        $this->factor = $value;
+
+        return $this;
+    }
+
+    /**
      * @param ParamConfigurator|list<mixed|ParamConfigurator> $value
      * @return $this
      */
@@ -1926,6 +1940,12 @@ class HandlerConfig
             unset($value['delay_between_messages']);
         }
 
+        if (array_key_exists('factor', $value)) {
+            $this->_usedProperties['factor'] = true;
+            $this->factor = $value['factor'];
+            unset($value['factor']);
+        }
+
         if (array_key_exists('tags', $value)) {
             $this->_usedProperties['tags'] = true;
             $this->tags = $value['tags'];
@@ -2296,6 +2316,9 @@ class HandlerConfig
         }
         if (isset($this->_usedProperties['delayBetweenMessages'])) {
             $output['delay_between_messages'] = $this->delayBetweenMessages;
+        }
+        if (isset($this->_usedProperties['factor'])) {
+            $output['factor'] = $this->factor;
         }
         if (isset($this->_usedProperties['tags'])) {
             $output['tags'] = $this->tags;

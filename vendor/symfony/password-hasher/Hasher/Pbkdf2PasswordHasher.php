@@ -59,7 +59,7 @@ final class Pbkdf2PasswordHasher implements LegacyPasswordHasherInterface
         $this->iterations = $iterations;
     }
 
-    public function hash(string $plainPassword, string $salt = null): string
+    public function hash(string $plainPassword, ?string $salt = null): string
     {
         if ($this->isPasswordTooLong($plainPassword)) {
             throw new InvalidPasswordException();
@@ -69,12 +69,12 @@ final class Pbkdf2PasswordHasher implements LegacyPasswordHasherInterface
             throw new LogicException(sprintf('The algorithm "%s" is not supported.', $this->algorithm));
         }
 
-        $digest = hash_pbkdf2($this->algorithm, $plainPassword, $salt, $this->iterations, $this->length, true);
+        $digest = hash_pbkdf2($this->algorithm, $plainPassword, $salt ?? '', $this->iterations, $this->length, true);
 
         return $this->encodeHashAsBase64 ? base64_encode($digest) : bin2hex($digest);
     }
 
-    public function verify(string $hashedPassword, string $plainPassword, string $salt = null): bool
+    public function verify(string $hashedPassword, string $plainPassword, ?string $salt = null): bool
     {
         if (\strlen($hashedPassword) !== $this->encodedLength || false !== strpos($hashedPassword, '$')) {
             return false;

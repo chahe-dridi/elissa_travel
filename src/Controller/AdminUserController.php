@@ -13,12 +13,17 @@ use App\Form\UserEditType;
 use App\Form\UserAddType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Form\UserSearchType;
+
+
 
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/admin/utilisateur')]
 class AdminUserController extends AbstractController
-{
+{/*
     #[Route('/', name: 'admin_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -26,15 +31,69 @@ class AdminUserController extends AbstractController
             'users' => $userRepository->findAll(),
         ]);
     }
+    */
+    #[Route('/', name: 'admin_user_index')]
+    public function index(Request $request,UserRepository $userRepository): Response{
+        $form = $this->createForm(UserSearchType::class);
+        $form->handleRequest($request);
+    
+        $users = $userRepository->findAll();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $users = $userRepository->searchUsers($data['searchTerm']);
+            if (empty($users)) {
+                $message = 'No users found with the given search criteria.';
+            }
+        }
+    
+        return $this->render('back/user/index.html.twig', [
+            'form' => $form->createView(),
+            'users' => $users,
+        ]);
+    }
+
+    
+    #[Route('/status/{id}', name: 'Status')]
+    public function DisableOrEnableUser(ManagerRegistry $doctrine, $id): Response
+    {
+        $em = $doctrine->getManager();
+        $repo = $doctrine->getRepository(User::class);
+        $user = $repo->find($id);
+    
+        if ($user) {
+            dump('Original Status: ' . ($user->isVerified() ? 'Enabled' : 'Disabled'));
+    
+            // Toggle the status
+            $user->setIsVerified(!$user->isVerified());
+    
+            dump('New Status: ' . ($user->isVerified() ? 'Enabled' : 'Disabled'));
+    
+            $em->persist($user);
+            $em->flush();
+    
+            dump("Status changed successfully");
+        } else {
+            dump("User not found with ID: " . $id);
+        }
+        $em->persist($user);
+        $em->flush();
+    
+        return $this->redirectToRoute('admin_user_index');
+    }
 
     #[Route('/add', name: 'admin_user_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, UserRepository $userRepository): Response
+    public function add(Request $request, UserRepository $userRepository,UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
         $form = $this->createForm(UserAddType::class, $user);
         $form->handleRequest($request);
+        $user->setResetToken(" ");
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($encoder->encodePassword($user, $form->get('password')->getData()));
+            // lena try catch
+            $user->setRoles(["ROLE_USER"]);
+            $user->setIsVerified(true);
             $userRepository->save($user, true);
 
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
@@ -42,7 +101,7 @@ class AdminUserController extends AbstractController
 
         return $this->renderForm('back/user/add.html.twig', [
             'user' => $user,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 

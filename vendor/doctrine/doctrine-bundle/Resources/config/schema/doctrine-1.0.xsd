@@ -38,7 +38,10 @@
         <xsd:attribute name="profiling-collect-backtrace" type="xsd:string" default="false" />
         <xsd:attribute name="profiling-collect-schema-errors" type="xsd:string" default="true" />
         <xsd:attribute name="server-version" type="xsd:string" />
+        <xsd:attribute name="schema-manager-factory" type="xsd:string" />
+        <xsd:attribute name="result-cache" type="xsd:string" />
         <xsd:attribute name="use-savepoints" type="xsd:boolean" />
+        <xsd:attribute name="disable-type-comments" type="xsd:boolean" />
         <xsd:attributeGroup ref="driver-config" />
     </xsd:attributeGroup>
 
@@ -88,11 +91,20 @@
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
             <xsd:element name="connection" type="connection" />
             <xsd:element name="type" type="named_scalar" />
+            <xsd:element name="driver-scheme" type="driver_scheme" />
             <xsd:group ref="connection-child-config" />
         </xsd:choice>
 
         <xsd:attribute name="default-connection" type="xsd:string" />
         <xsd:attributeGroup ref="connection-config" />
+    </xsd:complexType>
+
+    <xsd:complexType name="driver_scheme">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="scheme" type="xsd:string" use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
     </xsd:complexType>
 
     <xsd:complexType name="option">
@@ -137,6 +149,7 @@
         <xsd:attribute name="proxy-dir" type="xsd:string" />
         <xsd:attribute name="proxy-namespace" type="xsd:string" />
         <xsd:attribute name="auto-generate-proxy-classes" type="xsd:string" default="false" />
+        <xsd:attribute name="enable-lazy-ghost-objects" type="xsd:boolean" />
         <xsd:attributeGroup ref="entity-manager-config" />
     </xsd:complexType>
 
@@ -217,6 +230,8 @@
         <xsd:attribute name="quote-strategy" type="xsd:string" />
         <xsd:attribute name="entity-listener-resolver" type="xsd:string" />
         <xsd:attribute name="repository-factory" type="xsd:string" />
+        <xsd:attribute name="report-fields-where-declared" type="xsd:boolean" />
+        <xsd:attribute name="validate-xml-mapping" type="xsd:boolean" />
     </xsd:attributeGroup>
 
     <xsd:complexType name="filter" mixed="true">

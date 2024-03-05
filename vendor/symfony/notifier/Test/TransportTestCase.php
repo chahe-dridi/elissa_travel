@@ -27,22 +27,22 @@ abstract class TransportTestCase extends TestCase
     protected const CUSTOM_HOST = 'host.test';
     protected const CUSTOM_PORT = 42;
 
-    abstract public function createTransport(HttpClientInterface $client = null): TransportInterface;
+    abstract public static function createTransport(?HttpClientInterface $client = null): TransportInterface;
 
     /**
      * @return iterable<array{0: string, 1: TransportInterface}>
      */
-    abstract public function toStringProvider(): iterable;
+    abstract public static function toStringProvider(): iterable;
 
     /**
      * @return iterable<array{0: MessageInterface, 1: TransportInterface}>
      */
-    abstract public function supportedMessagesProvider(): iterable;
+    abstract public static function supportedMessagesProvider(): iterable;
 
     /**
      * @return iterable<array{0: MessageInterface, 1: TransportInterface}>
      */
-    abstract public function unsupportedMessagesProvider(): iterable;
+    abstract public static function unsupportedMessagesProvider(): iterable;
 
     /**
      * @dataProvider toStringProvider
@@ -55,7 +55,7 @@ abstract class TransportTestCase extends TestCase
     /**
      * @dataProvider supportedMessagesProvider
      */
-    public function testSupportedMessages(MessageInterface $message, TransportInterface $transport = null)
+    public function testSupportedMessages(MessageInterface $message, ?TransportInterface $transport = null)
     {
         if (null === $transport) {
             $transport = $this->createTransport();
@@ -67,7 +67,7 @@ abstract class TransportTestCase extends TestCase
     /**
      * @dataProvider unsupportedMessagesProvider
      */
-    public function testUnsupportedMessages(MessageInterface $message, TransportInterface $transport = null)
+    public function testUnsupportedMessages(MessageInterface $message, ?TransportInterface $transport = null)
     {
         if (null === $transport) {
             $transport = $this->createTransport();
@@ -79,7 +79,7 @@ abstract class TransportTestCase extends TestCase
     /**
      * @dataProvider unsupportedMessagesProvider
      */
-    public function testUnsupportedMessagesTrowUnsupportedMessageTypeExceptionWhenSend(MessageInterface $message, TransportInterface $transport = null)
+    public function testUnsupportedMessagesTrowUnsupportedMessageTypeExceptionWhenSend(MessageInterface $message, ?TransportInterface $transport = null)
     {
         if (null === $transport) {
             $transport = $this->createTransport();

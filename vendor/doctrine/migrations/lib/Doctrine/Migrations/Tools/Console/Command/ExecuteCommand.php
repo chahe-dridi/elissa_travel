@@ -6,6 +6,7 @@ namespace Doctrine\Migrations\Tools\Console\Command;
 
 use Doctrine\Migrations\Version\Direction;
 use Doctrine\Migrations\Version\Version;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,10 +20,12 @@ use function is_dir;
 use function is_string;
 use function is_writable;
 use function sprintf;
+use function strtoupper;
 
 /**
  * The ExecuteCommand class is responsible for executing migration versions up or down manually.
  */
+#[AsCommand(name: 'migrations:execute', description: 'Execute one or more migration versions up or down manually.')]
 final class ExecuteCommand extends DoctrineCommand
 {
     /** @var string|null */
@@ -33,46 +36,46 @@ final class ExecuteCommand extends DoctrineCommand
         $this
             ->setAliases(['execute'])
             ->setDescription(
-                'Execute one or more migration versions up or down manually.'
+                'Execute one or more migration versions up or down manually.',
             )
             ->addArgument(
                 'versions',
                 InputArgument::REQUIRED | InputArgument::IS_ARRAY,
                 'The versions to execute.',
-                null
+                null,
             )
             ->addOption(
                 'write-sql',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'The path to output the migration SQL file. Defaults to current working directory.',
-                false
+                false,
             )
             ->addOption(
                 'dry-run',
                 null,
                 InputOption::VALUE_NONE,
-                'Execute the migration as a dry run.'
+                'Execute the migration as a dry run.',
             )
             ->addOption(
                 'up',
                 null,
                 InputOption::VALUE_NONE,
-                'Execute the migration up.'
+                'Execute the migration up.',
             )
             ->addOption(
                 'down',
                 null,
                 InputOption::VALUE_NONE,
-                'Execute the migration down.'
+                'Execute the migration down.',
             )
             ->addOption(
                 'query-time',
                 null,
                 InputOption::VALUE_NONE,
-                'Time all the queries individually.'
+                'Time all the queries individually.',
             )
-            ->setHelp(<<<EOT
+            ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command executes migration versions up or down manually:
 
     <info>%command.full_name% FQCN</info>
@@ -103,8 +106,7 @@ one migration at once:
 
     <info>%command.full_name% FQCN-1 FQCN-2 ...FQCN-n </info>
 
-EOT
-        );
+EOT);
 
         parent::configure();
     }
@@ -117,7 +119,7 @@ EOT
         $databaseName = (string) $this->getDependencyFactory()->getConnection()->getDatabase();
         $question     = sprintf(
             'WARNING! You are about to execute a migration in database "%s" that could result in schema changes and data loss. Are you sure you wish to continue?',
-            $databaseName === '' ? '<unnamed>' : $databaseName
+            $databaseName === '' ? '<unnamed>' : $databaseName,
         );
         if (! $migratorConfiguration->isDryRun() && ! $this->canExecute($question, $input)) {
             $this->io->error('Migration cancelled!');
@@ -141,16 +143,14 @@ EOT
         }
 
         $planCalculator = $this->getDependencyFactory()->getMigrationPlanCalculator();
-        $plan           = $planCalculator->getPlanForVersions(array_map(static function (string $version): Version {
-            return new Version($version);
-        }, $versions), $direction);
+        $plan           = $planCalculator->getPlanForVersions(array_map(static fn (string $version): Version => new Version($version), $versions), $direction);
 
         $this->getDependencyFactory()->getLogger()->notice(
             'Executing' . ($migratorConfiguration->isDryRun() ? ' (dry-run)' : '') . ' {versions} {direction}',
             [
                 'direction' => $plan->getDirection(),
                 'versions' => implode(', ', $versions),
-            ]
+            ],
         );
 
         $migrator = $this->getDependencyFactory()->getMigrator();
@@ -161,6 +161,11 @@ EOT
             $writer->write($path, $direction, $sql);
         }
 
+        $this->io->success(sprintf(
+            'Successfully migrated version(s): %s: [%s]',
+            implode(', ', $versions),
+            strtoupper($plan->getDirection()),
+        ));
         $this->io->newLine();
 
         return 0;

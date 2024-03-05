@@ -172,7 +172,7 @@ class DoctrineMigrationsConfig implements \Symfony\Component\Config\Builder\Conf
     }
 
     /**
-     * Use profiler to calculate and visualize migration status.
+     * Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead.
      * @default false
      * @param ParamConfigurator|bool $value
      * @return $this

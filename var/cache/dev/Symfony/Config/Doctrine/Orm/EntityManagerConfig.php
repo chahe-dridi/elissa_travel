@@ -32,6 +32,8 @@ class EntityManagerConfig
     private $entityListenerResolver;
     private $repositoryFactory;
     private $schemaIgnoreClasses;
+    private $reportFieldsWhereDeclared;
+    private $validateXmlMapping;
     private $secondLevelCache;
     private $hydrators;
     private $mappings;
@@ -243,6 +245,34 @@ class EntityManagerConfig
         return $this;
     }
 
+    /**
+     * Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.16 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/10455.
+     * @default false
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function reportFieldsWhereDeclared($value): self
+    {
+        $this->_usedProperties['reportFieldsWhereDeclared'] = true;
+        $this->reportFieldsWhereDeclared = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.14 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/6728.
+     * @default false
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function validateXmlMapping($value): self
+    {
+        $this->_usedProperties['validateXmlMapping'] = true;
+        $this->validateXmlMapping = $value;
+
+        return $this;
+    }
+
     public function secondLevelCache(array $value = []): \Symfony\Config\Doctrine\Orm\EntityManagerConfig\SecondLevelCacheConfig
     {
         if (null === $this->secondLevelCache) {
@@ -403,6 +433,18 @@ class EntityManagerConfig
             unset($value['schema_ignore_classes']);
         }
 
+        if (array_key_exists('report_fields_where_declared', $value)) {
+            $this->_usedProperties['reportFieldsWhereDeclared'] = true;
+            $this->reportFieldsWhereDeclared = $value['report_fields_where_declared'];
+            unset($value['report_fields_where_declared']);
+        }
+
+        if (array_key_exists('validate_xml_mapping', $value)) {
+            $this->_usedProperties['validateXmlMapping'] = true;
+            $this->validateXmlMapping = $value['validate_xml_mapping'];
+            unset($value['validate_xml_mapping']);
+        }
+
         if (array_key_exists('second_level_cache', $value)) {
             $this->_usedProperties['secondLevelCache'] = true;
             $this->secondLevelCache = new \Symfony\Config\Doctrine\Orm\EntityManagerConfig\SecondLevelCacheConfig($value['second_level_cache']);
@@ -479,6 +521,12 @@ class EntityManagerConfig
         }
         if (isset($this->_usedProperties['schemaIgnoreClasses'])) {
             $output['schema_ignore_classes'] = $this->schemaIgnoreClasses;
+        }
+        if (isset($this->_usedProperties['reportFieldsWhereDeclared'])) {
+            $output['report_fields_where_declared'] = $this->reportFieldsWhereDeclared;
+        }
+        if (isset($this->_usedProperties['validateXmlMapping'])) {
+            $output['validate_xml_mapping'] = $this->validateXmlMapping;
         }
         if (isset($this->_usedProperties['secondLevelCache'])) {
             $output['second_level_cache'] = $this->secondLevelCache->toArray();

@@ -202,7 +202,7 @@ final class EntityRegenerator
             sourceCode: $this->fileManager->getFileContents($classPath),
             overwrite: $this->overwrite,
             // if properties need to be generated then, by definition,
-            // some non-annotation config is being used, and so, the
+            // some non-annotation config is being used (e.g. XML), and so, the
             // properties should not have annotations added to them
             useAttributesForDoctrineMapping: false
         );
@@ -257,8 +257,8 @@ final class EntityRegenerator
             $targetFields = array_diff($targetFields, $traitProperties);
 
             // exclude inherited properties
-            $targetFields = array_filter($targetFields, static fn ($field) => $classReflection->hasProperty($field) &&
-                $classReflection->getProperty($field)->getDeclaringClass()->getName() === $classReflection->getName());
+            $targetFields = array_filter($targetFields, static fn ($field) => $classReflection->hasProperty($field)
+                && $classReflection->getProperty($field)->getDeclaringClass()->getName() === $classReflection->getName());
         }
 
         return $targetFields;

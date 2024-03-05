@@ -55,7 +55,7 @@ class ChoiceType extends AbstractType
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(ChoiceListFactoryInterface $choiceListFactory = null, $translator = null)
+    public function __construct(?ChoiceListFactoryInterface $choiceListFactory = null, $translator = null)
     {
         $this->choiceListFactory = $choiceListFactory ?? new CachingFactoryDecorator(
             new PropertyAccessDecorator(
@@ -165,11 +165,9 @@ class ChoiceType extends AbstractType
                         }
                     }
                 } else {
-                    foreach ($data as $value) {
-                        if ($choiceList->getChoicesForValues([$value])) {
-                            $knownValues[] = $value;
-                            unset($unknownValues[$value]);
-                        }
+                    foreach ($choiceList->getChoicesForValues($data) as $key => $choice) {
+                        $knownValues[] = $data[$key];
+                        unset($unknownValues[$data[$key]]);
                     }
                 }
 

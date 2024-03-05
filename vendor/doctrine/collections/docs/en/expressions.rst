@@ -76,7 +76,9 @@ orderBy
 Sets the ordering of the result of this Criteria.
 
 .. code-block:: php
-    $criteria->orderBy(['name' => Criteria::ASC]);
+    use Doctrine\Common\Collections\Order;
+
+    $criteria->orderBy(['name' => Order::Ascending]);
 
 setFirstResult
 --------------

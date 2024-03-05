@@ -56,7 +56,7 @@ class RecipesCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $installedRepo = $this->getComposer()->getRepositoryManager()->getLocalRepository();
 
@@ -165,6 +165,10 @@ class RecipesCommand extends BaseCommand
         $lockBranch = $recipeLock['recipe']['branch'] ?? null;
         $lockVersion = $recipeLock['recipe']['version'] ?? $recipeLock['version'] ?? null;
 
+        if ('master' === $lockBranch && \in_array($lockRepo, ['github.com/symfony/recipes', 'github.com/symfony/recipes-contrib'])) {
+            $lockBranch = 'main';
+        }
+
         $status = '<comment>up to date</comment>';
         if ($recipe->isAuto()) {
             $status = '<comment>auto-generated recipe</comment>';
@@ -222,7 +226,11 @@ class RecipesCommand extends BaseCommand
 
             // show commits since one second after the currently-installed recipe
             if (null !== $commitDate) {
-                $historyUrl .= '?since='.(new \DateTime($commitDate))->modify('+1 seconds')->format('c\Z');
+                $historyUrl .= '?since=';
+                $historyUrl .= (new \DateTime($commitDate))
+                    ->setTimezone(new \DateTimeZone('UTC'))
+                    ->modify('+1 seconds')
+                    ->format('Y-m-d\TH:i:s\Z');
             }
 
             $io->write('<info>recipe history</info>   : '.$historyUrl);
