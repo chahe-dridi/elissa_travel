@@ -124,7 +124,9 @@ return $this->render('reservation_hotel/backindex.html.twig', [
         return $this->render('reservation_hotel/show.html.twig', [
             'reservation_hotel' => $reservationHotel,
         ]);
+        
     }
+    
 
     #[Route('/{id}', name: 'app_reservation_afficher', methods: ['GET'])]
     public function afficher(ReservationHotel $reservationHotel): Response
@@ -201,12 +203,12 @@ return $this->render('reservation_hotel/backindex.html.twig', [
 
     
 
-    #[Route('/calendar', name: 'app_reservation_hotel_calendar')]
-public function eventCalendar(ReservationHotel  $reservationHotel): Response
+/*#[Route('/{id}/calendar', name: 'app_reservation_hotel_calendar')]
+public function eventCalendar(ReservationHotelRepository $reservationHotelRepository): Response
 {
     try {
         // Fetch all events from the repository
-        $reservations = $reservationHotel->findAll();
+        $reservations = $reservationHotelRepository->findAll();
 
         // Check if events exist
         if (empty($reservations)) {
@@ -217,14 +219,12 @@ public function eventCalendar(ReservationHotel  $reservationHotel): Response
         $formattedEvents = [];
         foreach ($reservations as $reservation) {
             $formattedEvents[] = [
-                'datearrive' => $reservationHotel->getdateArrive()->format('Y-m-d'),
-                'datedepart' => $reservationHotel->getdateDepart()->format('Y-m-d'),
-                'id_chambre' => $reservationHotel->getdate(),
-                
-
+                'datearrive' => $reservation->getdateArrive()->format('Y-m-d'),
+                'datedepart' => $reservation->getdateDepart()->format('Y-m-d'),
+                'id_reservation' => $reservation->getId(),
                 // You can add more fields like color, url, etc. if needed
             ];
-        }
+        }   
         $data = json_encode($formattedEvents);
 
         // Pass formatted events to the Twig template
@@ -235,11 +235,22 @@ public function eventCalendar(ReservationHotel  $reservationHotel): Response
     }
 }
 
+*/
 
 
 
 
+#[Route('/reservation/hotel/calendar', name: 'app_reservation_hotel_calendar')]
+public function reservationCalendar(ReservationHotelRepository $reservationHotelRepository): Response
+{
+    // Fetch vols from the repository
+    $reservations = $reservationHotelRepository->findAll();
 
+    // Pass vols to the Twig template
+    return $this->render('reservation_hotel/calendar.html.twig', [
+        'reservations' => $reservations,
+    ]);
+}
 
 
 }

@@ -1,5 +1,3 @@
-{% extends 'nav_admin.html.twig' %}
-
 {% block css %}
     <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
     <style>
@@ -8,28 +6,42 @@
         }
 
         .form-container {
-            max-width: 500px;
+            max-width: 800px; /* Augmenter la largeur du conteneur du formulaire */
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px; /* Augmenter l'espacement intérieur du conteneur */
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 10px; /* Augmenter le rayon des bords */
             background-color: #f9f9f9;
         }
 
         .form-title {
             margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 30px; /* Augmenter l'espacement en dessous du titre */
+            font-size: 28px; /* Augmenter la taille du titre */
             text-align: center;
+        }
+
+        .form-control {
+            margin-bottom: 20px; /* Espacement entre les contrôles */
+            border-radius: 10px; /* Arrondir les bords des contrôles */
+        }
+
+        .form-check-input {
+            width: auto; /* Réinitialiser la largeur des cases à auto */
+            margin-top: 5px; /* Espacement en haut de chaque case */
+        }
+
+        .form-check-label {
+            margin-left: 10px; /* Espacement entre la case et l'étiquette */
         }
 
         .form-back-link,
         .form-submit-button {
             display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
+            padding: 15px 30px; /* Augmenter la taille des boutons */
+            margin-top: 30px; /* Augmenter l'espacement au-dessus des boutons */
             border: none;
-            border-radius: 5px;
+            border-radius: 10px; /* Augmenter le rayon des bords */
             cursor: pointer;
             text-align: center;
             text-decoration: none;
@@ -54,9 +66,9 @@
         }
 
         .flash-message {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            margin-bottom: 30px; /* Augmenter l'espacement en dessous des messages flash */
+            padding: 15px; /* Augmenter le rembourrage des messages flash */
+            border-radius: 10px; /* Augmenter le rayon des bords */
             text-align: center;
             color: #fff;
         }
@@ -82,7 +94,7 @@
 
             {{ include('chambre/_form.html.twig') }}
 
-<a class="form-back-link" href="{{ path('app_chambre_index', {'id': id}) }}">Back to List</a>
+            <a class="form-back-link" href="{{ path('app_chambre_index', {'id': id}) }}">Back to List</a>
         </div>
     </div>
 {% endblock %}

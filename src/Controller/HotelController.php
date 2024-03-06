@@ -20,8 +20,7 @@ class HotelController extends AbstractController
         $data = $hotelRepository->findAll();
         $users = $paginatorInterface->paginate(
             $data,
-            $request->query->getInt('page',1),
-           3
+            $request->query->getInt('page',1),3
         );
         $searchQuery = $request->query->get('search');
 
