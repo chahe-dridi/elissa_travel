@@ -21,6 +21,28 @@ class VoyageRepository extends ServiceEntityRepository
         parent::__construct($registry, Voyage::class);
     }
 
+    public function findAssignedProgrammes(int $voyageId): array
+    {
+        return $this->createQueryBuilder('v')
+            ->select('p')
+            ->join('v.programmes', 'p')
+            ->andWhere('v.id = :voyageId')
+            ->setParameter('voyageId', $voyageId)
+            ->getQuery()
+            ->getResult();
+    }
+    public function search(?string $searchTerm): array
+{
+    $queryBuilder = $this->createQueryBuilder('u');
+
+    if (!empty($searchTerm)) {
+        $queryBuilder->andWhere('u.destination LIKE :searchTerm OR u.villedepart LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%');
+    }
+
+    return $queryBuilder->getQuery()->getResult();
+}
+
 //    /**
 //     * @return Voyage[] Returns an array of Voyage objects
 //     */

@@ -1,6 +1,6 @@
 
 
-{{ form_start(form) }}
+{{ form_start(form , {'attr': {'novalidate':'novalidate'} }) }}
  
            <div class="my-custom-class-for-errors">
             {{ form_errors(form) }}
@@ -76,8 +76,8 @@
     {{ form_widget(form.image, {  'attr': {'class': 'form-control' , 'type' : 'text' , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Destination '}}) }}
 
  
- 
-       
-<button class="btn btn-dark">{{ button_label|default('Save') }}</button>
+ </div></div></div>
+    
+<button class="btn btn-dark">{{ button_label|default('Save') }}</button> 
     
 {{ form_end(form) }}

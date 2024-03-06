@@ -1,4 +1,4 @@
-{{ form_start(form) }}
+{{ form_start(form , {'attr': {'novalidate':'novalidate'} }) }}
 
       <div class="my-custom-class-for-errors">
             {{ form_errors(form) }}
@@ -55,5 +55,5 @@
   
 
 
-    <button class="btn btn-secondary">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-dark">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

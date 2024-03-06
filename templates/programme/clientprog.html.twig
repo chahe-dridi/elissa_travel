@@ -1,35 +1,41 @@
 {% extends 'nav_user.html.twig' %}
 {% block body %}
-<section class="probootstrap_section bg-light">
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Programs</h2>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="container">
-<div class="row text-center mb-5 probootstrap-animate">
-<div class="col-md-12">
-<h2 class="display-4 border-bottom probootstrap-section-heading">PROGRAM</h2>
-</div>
-</div>
 
+
+
+
+<div class="row probootstrap-animate">
+<div class="col-md-12">    
+  <div class="owl-carousel js-owl-carousel">
 {% for p in programme %}
 
-<div class="row probootstrap-animate">
-<div class="col-md-12">
-  <div class="owl-carousel js-owl-carousel">
-    <a class="probootstrap-slide" >{{p.description }}</a>
-  </div>
+<div class="probootstrap-slide text-primary font-italic"> 
+    <a >{{p.description }}
+    </a><br>
   
-  <div class="program-details">
+  
+  
     <strong> FROM </strong> {{ p.datedebut|date('Y-m-d') }} <strong> TO </strong> {{p.datefin|date('Y-m-d')}}
-  </div>
-</div>
+  
 
-<div class="row probootstrap-animate">
-<div class="text-center">
-  <div class="program-details">
+
+<br>
    <strong>prix:</strong> {{p.prix }}  <strong>$</strong>
-</div></div></div> </div>
 
 
-
+</div>
+{% endfor %}</div>
     <div class="text-center">
      <a href="{{ path('app_reservation_voyage_new') }}" class="btn btn-dark" >Reservation</a>
      </div>
@@ -37,7 +43,8 @@
 
 
 
-</div>
+</div></div>
+
 </div>
 </section>
 
@@ -52,7 +59,7 @@
 
 
 
- {% endfor %}
+ 
 
 
 {% endblock %}

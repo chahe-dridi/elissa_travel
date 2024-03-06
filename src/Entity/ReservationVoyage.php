@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\ReservationVoyageRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,9 @@ class ReservationVoyage
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $numberticket = null;
+    #[Assert\Positive(message: 'Le nombre des tickets doit être un nombre positif.')]
+    #[Assert\NotBlank(message: " vide !! ")]
+      private ?int $numberticket = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservationVoyages')]
     private ?User $User = null;
@@ -26,12 +29,16 @@ class ReservationVoyage
     private ?Payment $Payment = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: " vide !! ")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: " vide !! ")]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le type de logement de l'hôtel ne doit pas être vide")]
+    #[Assert\Email( message :'L\'adresse e-mail "{{ value }}" n\'est pas valide.')]
     private ?string $email = null;
 
     public function getId(): ?int

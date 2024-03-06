@@ -20,15 +20,7 @@ class ProgrammeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Programme::class);
     }
-    public function findByVoyageId(int $voyageId): array
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.voyage', 'v')
-            ->andWhere('v.id = :voyageId')
-            ->setParameter('voyageId', $voyageId)
-            ->getQuery()
-            ->getResult();
-    }
+  
 
 //    /**
 //     * @return Programme[] Returns an array of Programme objects

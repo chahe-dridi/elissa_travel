@@ -2,14 +2,18 @@
 
 {% block body %}
 
-<section class="probootstrap_section bg-light">
-<div class="container">
-<div class="row text-center mb-5 probootstrap-animate">
-<div class="col-md-12">
-<h2 class="display-4 border-bottom probootstrap-section-heading">your comment
-</h2>
-</div>
-</div>
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50"> Comment Section</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="text-center">
     <div class="container-fluid">
         <div class="row">
             <h3>{{ blog.title }}</h3>
@@ -36,9 +40,10 @@
                 </li>
 
             </ul>
-            <a href="{{ path('app_voyage_clientF') }}">back to list</a>
+            
         </div>
-    </div>
+        <a href="{{ path('app_voyage_clientF') }}">back to list</a>
+    </div></div>
     <style>
         .btn-like {
             color: black;
@@ -79,4 +84,5 @@
             });
         });
     </script>
+
 {% endblock %}

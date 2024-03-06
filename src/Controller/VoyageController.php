@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Voyage;
+use App\Form\VoyageSearchType;
 use App\Form\VoyageType;
 use App\Repository\VoyageRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,19 +18,25 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/voyage')]
 class VoyageController extends AbstractController
 {
-    #[Route('/', name: 'app_voyage_index', methods: ['GET'])]
+    #[Route('/', name: 'app_voyage_index')]
     public function index(VoyageRepository $voyageRepository,Request $request): Response
     {
-        $searchQuery = $request->query->get('search');
-        $voyage = [];
-        if ($searchQuery) {
-            $voyage = $voyageRepository->findByDestination
-            ($searchQuery);
-        } else {
-            $voyage = $voyageRepository->findAll();
+        $form = $this->createForm(VoyageSearchType::class);
+        $form->handleRequest($request);
+        dump($form);
+
+        $voyages =$voyageRepository->findAll();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $voyages = $voyageRepository->search($data['searchTerm']);
+            dump($voyages);
+            if (empty($voyages)) {
+                $message = 'No voyages found with the given search criteria.';
+            }
         }
         return $this->render('voyage/index.html.twig', [
-            'voyages' => $voyageRepository->findAll(),
+            'form' => $form->createView(),
+            'voyages' =>  $voyages, 
         ]);
     }
 

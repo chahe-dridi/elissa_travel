@@ -13,17 +13,20 @@
         </div>
     
 
-<div class="col-sm" >
-            <form action="" method="GET">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search by  trip destination ">
-                    
-                    </div> 
+<br>
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-sm-9">
+        {{ form_row(form.searchTerm) }}
+    </div>
+    <div class="col-sm-3">
+        <button type="submit" class="btn btn-dark btn-block">Search</button>
+    </div>
 </div>
+{{ form_end(form) }}
+
          <div class="col-sm" >
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="submit">Search</button>
-                    </div>
+                    
          </div>
             </form>
 </div>

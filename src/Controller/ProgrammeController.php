@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\voyage;
+use App\Entity\Voyage;
 
 use App\Entity\Programme;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,16 +25,35 @@ class ProgrammeController extends AbstractController
         ]);
     }
 
-
-    #[Route('/clientprog/{id}', name: 'app_programme_clientprog', methods: ['GET'])]
-    public function clientprog(int $id,ProgrammeRepository $ProgrammeRepository): Response
+/*
+    #[Route('/clientprog', name: 'app_programme_clientprog', methods: ['GET'])]
+    public function clientprog(ProgrammeRepository $ProgrammeRepository): Response
     {
-        $programmes = $ProgrammeRepository->findByVoyage($id);
         return $this->render('programme/clientprog.html.twig', [
-            'programme' => $programmes,
+            'programme' => $ProgrammeRepository->findAll(),
         ]);
     }
+*/
+#[Route('/clientprog/{voyageId}', name: 'app_programme_clientprog', methods: ['GET'])]
+public function clientprog(int $voyageId,ManagerRegistry $manager): Response
+{
+    $entityManager = $manager->getManager();
 
+    // Retrieve the Voyage entity by its ID
+    $voyage = $entityManager->getRepository(Voyage::class)->find($voyageId);
+
+    // Check if the Voyage exists
+    if (!$voyage) {
+        throw $this->createNotFoundException('Voyage not found');
+    }
+
+    // Retrieve the associated programmes of the voyage
+    $programmes = $voyage->getProgrammes();
+
+    return $this->render('programme/clientprog.html.twig', [
+        'programme' => $programmes,
+    ]);
+}
 
    
 

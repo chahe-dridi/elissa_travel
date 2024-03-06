@@ -1,16 +1,20 @@
 {% extends 'nav_user.html.twig' %}
 {% block body %}
 
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Our Trips</h2>
+            </div>
+        </div>
+    </div>
+</section>
 
-<section class="probootstrap_section bg-light">
-<div class="container">
-<div class="row text-center mb-5 probootstrap-animate">
-<div class="col-md-12">
-<h2 class="display-4 border-bottom probootstrap-section-heading">Our Trips</h2>
-</div>
-</div>
 
 
+<br>
 
 {% for voyage in pagination %}
 <div class="container">
@@ -41,7 +45,7 @@
 
 
 
- <a href="{{ path('app_programme_clientprog', {'id': voyage.id}) }}">Read More</a> <br>
+ <a href="{{ path('app_programme_clientprog', {'voyageId': voyage.id}) }}">Read More</a> <br>
  <a href="{{ path('front_blog_show', {'id': voyage.id}) }}">"comments"</a>
 </div>
 </div>
