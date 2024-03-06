@@ -1,0 +1,7 @@
+verify.captcha: "Please verify the captcha"
+invalid.captcha: "Captcha invalid, please try again"
+timeout.captcha: "The captcha is no longer valid, please try again"
+missinginput.captcha: "Empty secrect key"
+invalidinput.captcha: "Invalid secret key"
+hostname.captcha: "Hostname mismatch"
+badrequest.captcha: "The request could not be completed"

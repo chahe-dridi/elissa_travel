@@ -1,0 +1,37 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Flight</h1>
+        <div class="row">
+            <div class="col-lg-8">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                <th style="width: 30%; background-color: #f0f0f0;" >Id:</th>
+                <td>{{ reservationvol.id }}</td>
+            </tr>
+            <tr>
+                <th style="width: 30%; background-color: #f0f0f0;">Total Price:</th>
+                <td>{{ reservationvol.totalPrice }}</td>
+            </tr>
+
+        </tr>
+        <th style="width: 30%; background-color: #f0f0f0;">Payment Method:</th>
+            <td>{{ reservationvol.getPaymentMethod }}</td>
+
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-secondary">Back to List</a>
+        <a href="{{ path('app_reservation_vol_admin_edit', {'id': reservationvol.id}) }}" class="btn btn-primary">Edit</a>
+    </div>
+
+    {{ include('reservation_vol_admin/_delete_form.html.twig') }}
+</div>
+{% endblock %}

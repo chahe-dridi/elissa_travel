@@ -1,0 +1,123 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+<div style="padding-bottom: 5%;"></div>
+<!-- Row 1 -->
+<div class="row">
+    <div class="col-lg-12 d-flex justify-content-between align-items-center">
+        <div class="button-group">
+            <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+            <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+            <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+            <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
+            <a href="{{ path('reservationvol_stat') }}" class="btn btn-success btn-lg">Show Statistics</a>
+        </div>
+
+        <form id="searchForm" action="#" method="GET">
+            <div>
+                <input type="text" name="search" class="btn btn-outline-secondary" placeholder="Search by User ID or Flight ID">
+            </div>
+        </form>
+
+        <div>
+            <a href="{{ path('app_reservation_vol_admin_new') }}" class="btn btn-outline-secondary">Add New Reservation</a>
+        </div>
+    </div>
+    
+    <h1></h1>
+    <h1></h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User id</th>
+                <th>Flight id</th>
+                <th>Total price</th>
+                <th>Payment method</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody id="reservationTableBody">
+            {% for reservationvol in reservationvols %}
+                <tr class="reservation-row">
+                    <td>{{ reservationvol.id }}</td>
+                    <td>{{ reservationvol.user }}</td>
+                    <td>{{ reservationvol.vol }}</td>
+                    <td>{{ reservationvol.totalPrice }}</td>
+                    <td>{{ reservationvol.getPaymentMethod }}</td>
+                    <td>
+                        <a href="{{ path('app_reservation_vol_admin_show', {'id': reservationvol.id}) }}" class="btn btn-sm btn-info">Show</a>
+                        <a href="{{ path('app_reservation_vol_admin_edit', {'id': reservationvol.id}) }}" class="btn btn-sm btn-info">Edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchForm input[name="search"]').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase().trim();
+            $('#reservationTableBody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+            });
+        });
+    });
+</script>
+
+<div>
+    {{ knp_pagination_render(reservationvols) }} </div>
+
+{% endblock %}
