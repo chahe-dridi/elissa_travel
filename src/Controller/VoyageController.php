@@ -18,8 +18,16 @@ use Knp\Component\Pager\PaginatorInterface;
 class VoyageController extends AbstractController
 {
     #[Route('/', name: 'app_voyage_index', methods: ['GET'])]
-    public function index(VoyageRepository $voyageRepository): Response
+    public function index(VoyageRepository $voyageRepository,Request $request): Response
     {
+        $searchQuery = $request->query->get('search');
+        $voyage = [];
+        if ($searchQuery) {
+            $voyage = $voyageRepository->findByDestination
+            ($searchQuery);
+        } else {
+            $voyage = $voyageRepository->findAll();
+        }
         return $this->render('voyage/index.html.twig', [
             'voyages' => $voyageRepository->findAll(),
         ]);
@@ -27,7 +35,7 @@ class VoyageController extends AbstractController
 
     #[Route('/clientF', name: 'app_voyage_clientF', methods: ['GET'])]
     public function clientF(VoyageRepository $voyageRepository ,PaginatorInterface $paginator ,Request $request ): Response
-    {   
+    {
         $queryBuilder = $voyageRepository->createQueryBuilder('v')
         ->orderBy('v.id', 'ASC');
         $pagination = $paginator->paginate(
@@ -42,39 +50,40 @@ class VoyageController extends AbstractController
     }
 
 
+
     #[Route('/new', name: 'app_voyage_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $voyage = new Voyage();
         $form = $this->createForm(VoyageType::class, $voyage);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-           
-            $imageFile = $form->get('image')->getData(); 
-    
+
+            $imageFile = $form->get('image')->getData();
+
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-               
+
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-    
-               
+
+
                 $imageFile->move(
                     $this->getParameter('voyages_images_directory'),
                     $newFilename
                 );
-    
-                
+
+
                 $voyage->setImageName($newFilename);
             }
-    
+
             $entityManager->persist($voyage);
             $entityManager->flush();
-    
+
             return $this->redirectToRoute('app_voyage_index', [], Response::HTTP_SEE_OTHER);
         }
-    
+
         return $this->renderForm('voyage/new.html.twig', [
             'voyage' => $voyage,
             'form' => $form,

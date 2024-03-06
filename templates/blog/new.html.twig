@@ -1,0 +1,17 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block title %}Create New Blog{% endblock %}
+
+    {% block body %}
+        <div class="container-fluid">
+            <h1>Add your reaction</h1>
+
+            {{ form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.content) }}
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            {{ form_end(form) }}
+        </div>
+    {% endblock %}
+

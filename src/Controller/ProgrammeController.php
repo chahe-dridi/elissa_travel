@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\voyage;
-use App\Repository\VoyageRepository;
+
 use App\Entity\Programme;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
@@ -24,45 +24,38 @@ class ProgrammeController extends AbstractController
     }
 
 
-    #[Route('/clientprog', name: 'app_programme_clientprog', methods: ['GET'])]
-    public function clientprog(ProgrammeRepository $ProgrammeRepository): Response
+    #[Route('/clientprog/{id}', name: 'app_programme_clientprog', methods: ['GET'])]
+    public function clientprog(int $id,ProgrammeRepository $ProgrammeRepository): Response
     {
+        $programmes = $ProgrammeRepository->findByVoyage($id);
         return $this->render('programme/clientprog.html.twig', [
-            'programme' => $ProgrammeRepository->findAll(),
+            'programme' => $programmes,
         ]);
     }
 
 
    
 
-    #[Route('/new/{voyageId}', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, VoyageRepository $voyageRepository, int $voyageId): Response
+    #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $voyage = $voyageRepository->find($voyageId);
-
-        if (!$voyage) {
-            
-            return $this->redirectToRoute('app_voyage_index'); 
-        }
-
         $programme = new Programme();
-        
-        $programme->setVoyage($voyage);
 
         $form = $this->createForm(ProgrammeType::class, $programme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($programme);
-            $entityManager->flush();
+            $voyage = $programme->getVoyage();
+                // Obtenez l'ID du voyage et affectez-le au programme
+                $id = $request->query->get('voyageId');
+                $voyage = $entityManager->getRepository(Voyage::class)->find($id);
+                $programme->setVoyage($voyage);
 
-            
-            
-            return $this->redirectToRoute('app_programme_index', ['id' => $voyageId]);
+                $entityManager->persist($programme);
+                $entityManager->flush();
 
+                return $this->redirectToRoute('app_programme_index', ['id' => $id], Response::HTTP_SEE_OTHER);
         }
-
-        
         return $this->renderForm('programme/new.html.twig', [
             'programme' => $programme,
             'form' => $form,

@@ -1,0 +1,45 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+    <h1>Liste des réservation</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Numberticket</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reservation_voyage in reservation_voyages %}
+            <tr>
+                <td>{{ reservation_voyage.id }}</td>
+                <td>{{ reservation_voyage.numberticket }}</td>
+                <td>{{ reservation_voyage.nom }}</td>
+                <td>{{ reservation_voyage.prenom }}</td>
+                <td>{{ reservation_voyage.email }}</td>
+                <td>
+                    <a href="{{ path('app_reservation_voyage_show', {'id': reservation_voyage.id}) }}">show</a>
+                    <a href="{{ path('app_reservation_voyage_edit', {'id': reservation_voyage.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reservation_voyage_new') }}">Create new</a>
+{% endblock %}
+
+
+
+
+
+

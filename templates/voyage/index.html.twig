@@ -36,8 +36,10 @@
                 <th>Distination</th>
                 <th>Month</th>
                 <th>Year</th>
+                <th>Image</th>
                 <th>actions</th>
                 <th>Program</th>
+                <th>Reactions</th>
             </tr>
         </thead>
         <tbody>
@@ -57,8 +59,11 @@
                     <a href="{{ path('app_voyage_edit', {'id': voyage.id}) }}">edit</a>
                 </td>
                 <td>
-                    
                    <a href="{{ path('app_programme_new', {'voyageId': voyage.id}) }}">Plan trip</a>
+                </td>
+                <td>
+                    <a href="{{ path('front_blog_show', {'id': voyage.id}) }}">comments</a>
+                </td>
             </tr>
         {% else %}
             <tr>

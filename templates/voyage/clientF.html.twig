@@ -35,13 +35,14 @@
    <div class="text-center">
   <div class="voyage-details">
    <strong> On </strong> {{voyage.mois}} {{voyage.annee}}
-   </div> </div>
+   </div> 
 
 
 
 
 
- <a href="{{ path('app_programme_clientprog', {'voyageId': voyage.id}) }}">Read More</a>
+ <a href="{{ path('app_programme_clientprog', {'id': voyage.id}) }}">Read More</a> <br>
+ <a href="{{ path('front_blog_show', {'id': voyage.id}) }}">"comments"</a>
 </div>
 </div>
 </div></div>

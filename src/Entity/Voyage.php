@@ -49,6 +49,10 @@ class Voyage
     #[ORM\Column(type:'string', length: 255, nullable:true)]
     private $imageName;
 
+    #[ORM\OneToOne(targetEntity: Blog::class, inversedBy: 'voyage')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Blog $blog = null;
+
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -189,6 +193,18 @@ public function setAnnee(int $annee): static
     public function setImageName(?string $imageName): self
     {
         $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    public function getBlog(): ?Blog
+    {
+        return $this->blog;
+    }
+
+    public function setBlog(?Blog $blog): static
+    {
+        $this->blog = $blog;
 
         return $this;
     }
