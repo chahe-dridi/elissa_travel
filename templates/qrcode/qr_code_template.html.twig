@@ -1,0 +1,19 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+    <section class="probootstrap_section bg-light">
+        <div class="container">
+            <div class="row text-center mb-5 probootstrap-animate">
+                <div class="col-md-12">
+
+                    <div id="container-fluid">
+                        <img src="{{ qrCode }}" alt="QR Code">
+                    </div>
+                    <a href="{{ path('app_programme_clientprog',{'voyageId': id}) }}">back to programme</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}

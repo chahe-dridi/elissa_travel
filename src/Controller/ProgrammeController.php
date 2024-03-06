@@ -6,8 +6,14 @@ use App\Entity\Voyage;
 use App\Entity\Programme;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +61,7 @@ public function clientprog(int $voyageId,ManagerRegistry $manager): Response
     ]);
 }
 
-   
+
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -82,7 +88,6 @@ public function clientprog(int $voyageId,ManagerRegistry $manager): Response
             'form' => $form,
         ]);
     }
-    
 
 
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]
@@ -92,10 +97,6 @@ public function clientprog(int $voyageId,ManagerRegistry $manager): Response
             'programme' => $programme,
         ]);
     }
-
-
-
-  
 
 
     #[Route('/{id}/edit', name: 'app_programme_edit', methods: ['GET', 'POST'])]
@@ -127,5 +128,46 @@ public function clientprog(int $voyageId,ManagerRegistry $manager): Response
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }
 
-   
+    #[Route('/generate/{id}', name: 'app_programme_generate_qr_code', methods: ['GET'])]
+    public function generateQrCode(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $id = $request->attributes->get('id');
+        $programme = $entityManager->getRepository(Programme::class)->find($id);
+
+        $qrCode = Builder::create()
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data("Programme details :\n - Description :"
+                . $programme->getDescription() . "\n - Date debut :"
+                . $programme->getDatedebut()->format('Y-m-d H:i:s') . "\n - Date Fin :"
+                . $programme->getDatefin()->format('Y-m-d H:i:s') . "\n - Prix : "
+                . $programme->getPrix())
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+            ->logoPath(__DIR__ . '/../../public/assets/qr/qr.png')
+            ->logoResizeToWidth(50)
+            ->logoPunchoutBackground(true)
+            ->labelText('Elissa Travel')
+            ->labelFont(new NotoSans(20))
+            ->labelAlignment(LabelAlignment::Center)
+            ->validateResult(false)
+            ->build();
+
+        // Save it to a file
+        $qrCode->saveToFile('../public/assets/qr/qrcode.png');
+
+        // Generate a data URI to include image data inline (i.e. inside an <img> tag)
+        $dataUri = $qrCode->getDataUri();
+
+        // Render the QR code inside a div
+        return $this->render('qrcode/qr_code_template.html.twig', [
+            'qrCode' => $dataUri,
+            'id' => $request->attributes->get('id')
+        ]);
+    }
+
+
 }

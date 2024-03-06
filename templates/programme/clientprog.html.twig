@@ -16,22 +16,25 @@
 
 
 <div class="row probootstrap-animate">
-<div class="col-md-12">    
+<div class="col-md-12">
   <div class="owl-carousel js-owl-carousel">
 {% for p in programme %}
 
-<div class="probootstrap-slide text-primary font-italic"> 
+<div class="probootstrap-slide text-primary font-italic">
     <a >{{p.description }}
     </a><br>
-  
-  
-  
+
+
+
     <strong> FROM </strong> {{ p.datedebut|date('Y-m-d') }} <strong> TO </strong> {{p.datefin|date('Y-m-d')}}
-  
+
 
 
 <br>
    <strong>prix:</strong> {{p.prix }}  <strong>$</strong>
+    <br>
+    <a href="{{ path('app_programme_generate_qr_code',{'id': p.id}) }}" class="btn btn-dark">generate QrCode</a>
+
 
 
 </div>
@@ -59,7 +62,7 @@
 
 
 
- 
+
 
 
 {% endblock %}
