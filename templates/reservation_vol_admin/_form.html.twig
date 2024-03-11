@@ -1,0 +1,47 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <!-- Total Price field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.total_price, 'Total Price', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">
+            {{ form_widget(form.total_price, {'attr': {'class': 'form-control'}}) }}
+            {% if form.total_price.vars.errors|length > 0 %}
+            {% for error in form.total_price.vars.errors %}     <span class="text-danger">{{ error.message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Payment Method field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.payment_method, 'Payment Method', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">
+            {{ form_widget(form.payment_method, {'attr': {'class': 'form-control'}}) }}
+            {% if form.payment_method.vars.errors|length > 0 %}
+            {% for error in form.payment_method.vars.errors %}     <span class="text-danger">{{ error.message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+   
+    
+    <!-- Vol field -->
+    <div class="form-group row">
+        <div class="col-sm-2">{{ form_label(form.vol, 'Vol', {'label_attr': {'class': 'control-label'}}) }}</div>
+        <div class="col-sm-10">
+            {{ form_widget(form.vol, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.vol) %}
+                {% for error in form_errors(form.vol) %}
+                    <span class="text-danger">{{ error.message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Submit button -->
+    <div class="form-group row">
+        <div class="col-sm-10 offset-sm-2">
+            <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
+{{ form_end(form) }}

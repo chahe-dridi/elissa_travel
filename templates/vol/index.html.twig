@@ -1,0 +1,144 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+<div style="padding-bottom: 5%;"></div>
+
+<div class="row">
+    <div class="col-lg-12 d-flex justify-content-between align-items-center">
+        <div class="button-group">
+            <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+            <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+            <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+            <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
+            <a href="{{ path('app_vol_pdf') }}" class="btn btn-success btn-lg">PDF</a>
+            <a href="{{ path('app_vol_calendar') }}" class="btn btn-success btn-lg">Agenda</a>
+        </div>
+
+        <!-- Search form -->
+        <form style="margin-bottom: ">
+            <div class="input-group">
+                <input id="search-input-airline" class="btn btn-outline-secondary" type="text" class="form-control" placeholder="Search by Airline">
+                <input id="search-input-date" class="btn btn-outline-secondary" type="date" class="form-control" placeholder="Search by Date">
+            </div>
+            
+        </form>
+
+        <!-- Add New Flight link styled like search button -->
+        <div>
+            <a href="{{ path('app_vol_new') }}" class="btn btn-outline-secondary">Add New Flight</a>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-8">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id Flight</th>
+                <th>Admin</th>
+                <th>AirLine</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Heure depart</th>
+                <th>Heure arrivee</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="flightListContainer">
+            {% if vols|length > 0 %}
+                {% for vol in vols %}
+                    <tr class="flight-row">
+                        <td class="flight-id">{{ vol.id }}</td>
+                        <td>{{ vol.user.firstName }} {{ vol.user.lastName  }}</td>
+                        <td class="company-name">{{ vol.compagnieAerienne }}</td>
+                        <td class="departure-airport">{{ vol.getAirportDepart().getName() }}</td>
+                        <td class="arrival-airport">{{ vol.getAirportArrive().getName() }}</td>
+                        <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+                        <td>
+                            <a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-info btn-sm">Show</a>
+                            <a href="{{ path('app_vol_edit', {'id': vol.id}) }}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="10">No records found</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    {{ knp_pagination_render(vols) }}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#search-input-airline, #search-input-date").on("keyup change", function() {
+            var airlineValue = $("#search-input-airline").val().toLowerCase();
+            var dateValue = $("#search-input-date").val().toLowerCase();
+            $(".flight-row").filter(function() {
+                var airlineText = $(this).find(".company-name").text().toLowerCase();
+                var dateText = $(this).find(".departure-date").text().toLowerCase();
+                var matchesAirline = airlineText.includes(airlineValue);
+                var matchesDate = dateText.includes(dateValue);
+                $(this).toggle(matchesAirline && matchesDate);
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock %}

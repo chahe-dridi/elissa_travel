@@ -1,0 +1,17 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-8">
+    {{ include('volclass/_form.html.twig') }}
+
+    <a href="{{ path('app_volclass_index') }}"  class="btn btn-secondary">back to list</a>
+
+
+</div>
+</div>
+</div> 
+{% endblock %}

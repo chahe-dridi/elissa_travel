@@ -1,0 +1,27 @@
+services:
+  victor_prdh_recaptcha_bundle.recaptcha_type:
+    class: VictorPrdh\RecaptchaBundle\Form\ReCaptchaType
+    arguments:
+      $parameterBag: "@parameter_bag"
+    public: true
+    autowire: true
+    tags:
+      - { name: form.type, alias: captcha }
+
+  victor_prdh_recaptcha_bundle.recaptcha_validator:
+    class: VictorPrdh\RecaptchaBundle\Validator\Constraints\IsValidCaptchaValidator
+    arguments:
+      $reCaptcha: "@victor_prdh.recaptcha"
+      $translator: "@translator"
+    public: true
+    autowire: true
+    autoconfigure: true
+    tags: 
+      - { name: validator.is_valid, alias: 'victor_prdh_recaptcha.true'}
+
+  victor_prdh.recaptcha:
+    class: ReCaptcha\ReCaptcha
+    arguments:
+      - '%env(GOOGLE_RECAPTCHA_SECRET_KEY)%'
+    public: true
+  

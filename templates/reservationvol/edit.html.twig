@@ -1,0 +1,42 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+     
+
+
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
+  
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Reservation Flights</h5>
+                        <hr>
+
+
+
+
+    {{ include('reservationvol/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <div class="form-group row">
+        <div class="col-sm-10 offset-sm-2">
+            <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
+    <a href="{{ path('app_reservationvol_index') }}">back to list</a>
+
+    {{ include('reservationvol/_delete_form.html.twig') }}
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+
+{% endblock %}
