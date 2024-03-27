@@ -1,0 +1,59 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block body %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Liste des Réservations</h1>
+        
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Default Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Event</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">Supprimer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in listS %}
+                                <tr>
+                                    <td>{{ p.Event.NomEvent }}</td>
+                                    <td>
+                                        {% if p.User is not null %}
+                                            {{ p.User.firstName ~ ' ' ~ p.User.lastName }}
+                                        {% else %}
+                                            Utilisateur non défini
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('deletereservationEvent', {'id': p.id}) }}" class="btn btn-outline-danger">Supprimer</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End Default Table Example -->
+                    </div>
+                    <div class="text-right mt-3"> <!-- Alignement à droite -->
+                        <a href="{{ path('generate_pdf', {'id': 1}) }}" class="btn btn-sm btn-primary">Télécharger en PDF</a><!-- Bouton de téléchargement PDF en haut -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

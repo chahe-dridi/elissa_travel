@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Prices</title>
+</head>
+<body>
+    <h1>Event Prices</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Total Price of Tickets Sold</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eventPrice in eventPrices %}
+                <tr>
+                    <td>{{ eventPrice.eventName }}</td>
+                    <td>{{ eventPrice.totalPrice }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

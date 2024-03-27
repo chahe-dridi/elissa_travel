@@ -1,0 +1,53 @@
+{% extends 'nav_admin.html.twig' %}
+
+ 
+
+{% block body %}
+
+<div style="padding-bottom: 5%;"></div>
+
+    {# Include FullCalendar stylesheet #}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.css" rel="stylesheet">
+    <style>
+        #calendar {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+ 
+
+    <div id='calendar'></div>
+ 
+ 
+    {# Include FullCalendar JavaScript #}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    {% for vol in vols %}
+                        {
+                            title: '{{ vol.compagnieAerienne }}',
+                            start: '{{ vol.heureDepart|date('Y-m-d') }}T{{ vol.heureDepart|date('H:i:s') }}',
+                            end: '{{ vol.heureArrive|date('Y-m-d') }}T{{ vol.heureArrive|date('H:i:s') }}',
+                            url: '{{ path('app_vol_show', {'id': vol.id}) }}' // Add the URL for vol detail page
+                        },
+                    {% endfor %}
+                ],
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+            calendar.render();
+        });
+    </script>
+
+
+    <div style="text-align: right;">
+        <a href="{{ path('app_vol_index') }}" class="btn btn-outline-secondary">back to list</a>
+   </div>
+{% endblock %}

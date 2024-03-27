@@ -1,0 +1,22 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+   
+        <div class="col-lg-8 d-flex align-items-strech">
+        
+
+    {{ include('vol/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <div style="text-align: right;">
+         <a href="{{ path('app_vol_index') }}" class="btn btn-outline-secondary">back to list</a>
+    </div>
+    {{ include('vol/_delete_form.html.twig') }}
+    
+</div> 
+</div>
+</div>
+
+{% endblock %}

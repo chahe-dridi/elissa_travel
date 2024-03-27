@@ -1,0 +1,47 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Flight</h1>
+        <div class="row">
+            <div class="col-lg-8">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%; background-color: #f0f0f0;">Id</th>
+                        <td>{{ vol.id }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">airline</th>
+                        <td>{{ vol.compagnieAerienne }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Heure Départ</th>
+                        <td>{{ vol.heureDepart ? vol.heureDepart|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Heure Arrivée</th>
+                        <td>{{ vol.heureArrive ? vol.heureArrive|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                
+                     
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f0f0;">Disponible</th>
+                        <td>{{ vol.disponible ? 'Yes' : 'No' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="{{ path('app_vol_index') }}" style="margin-right: 10px;" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_vol_edit', {'id': vol.id}) }}" style="margin-right: 10px;" class="btn btn-primary">Edit</a>
+            {{ include('vol/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}
