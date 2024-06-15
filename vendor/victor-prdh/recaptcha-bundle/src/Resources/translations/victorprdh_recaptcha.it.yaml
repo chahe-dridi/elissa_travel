@@ -1,0 +1,7 @@
+verify.captcha: "Grazie per verificare il captcha"
+invalid.captcha: "Il captcha non è valido, ti preghiamo di riprovare"
+timeout.captcha: "Il captcha non è più valido, ti preghiamo di riprovare"
+missinginput.captcha: "Chiave segreta non inserita"
+invalidinput.captcha: "Chiave segreta non valida"
+hostname.captcha: "Hostname non valido"
+badrequest.captcha: "La richiesta non ha potuto essere completata"

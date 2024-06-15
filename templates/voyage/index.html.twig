@@ -1,0 +1,76 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+
+{% block body %}
+<div class="container-fluid"  style="margin-top: 10px; align-items:center;">
+<div class="row mb-5 probootstrap-animate">
+
+<div class="col-sm" >
+            
+                <a href="{{ path('app_voyage_new') }}" class="btn btn-dark" >Add New Trip</a>
+           
+        </div>
+    
+
+<br>
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-sm-9">
+        {{ form_row(form.searchTerm) }}
+    </div>
+    <div class="col-sm-3">
+        <button type="submit" class="btn btn-dark btn-block">Search</button>
+    </div>
+</div>
+{{ form_end(form) }}
+
+         <div class="col-sm" >
+                    
+         </div>
+            </form>
+</div>
+</div>
+<table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Departure city</th>
+                <th>Distination</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>actions</th>
+                <th>Program</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for voyage in voyages %}
+            <tr>
+                <td>{{ voyage.id }}</td>
+                <td>{{ voyage.villedepart }}</td>
+                  <td>{{ voyage.destination }}</td>
+                <td>{{ voyage.mois }}</td>
+                <td>{{ voyage.annee }}</td>
+          
+          
+
+                <td>
+                    
+                    <a href="{{ path('app_voyage_edit', {'id': voyage.id}) }}">edit</a>
+                </td>
+                <td>
+                   <a href="{{ path('app_programme_new', {'voyageId': voyage.id}) }}">Plan trip</a>
+                </td>
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

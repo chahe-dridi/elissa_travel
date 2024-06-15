@@ -1,0 +1,20 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+
+{% block body %}
+   <div class="container-fluid">
+    <section class="probootstrap-cover overflow-hidden relative" style="background-color: white"  >
+    <div class="overlay"></div>
+  <div class="container">
+  <div class="row align-items-center">
+        <div class="col-md probootstrap-animate text-center">
+            <h1>Edit Trip</h1></div>
+  
+
+    {{ include('voyage/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a class="btn btn-dark" href="{{ path('app_voyage_index') }}">back to list</a>
+
+    {{ include('voyage/_delete_form.html.twig') }}
+{% endblock %}

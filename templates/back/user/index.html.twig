@@ -1,0 +1,90 @@
+{% extends "nav_admin.html.twig" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block title_h1 %}Gestion des utilisateurs{% endblock %}
+
+{% block stylesheets %}
+  <link href="{{ asset("assets_admin/vendor/datatables/dataTables.bootstrap4.min.css") }}" rel="stylesheet">
+{% endblock %}
+
+
+
+{% block body %}
+
+    <div class="card shadow my-4">
+        <div class="card-header py-2 d-flex align-items-center">
+            <a href="{{ path("admin_user_add") }}" class="btn btn-success btn-icon-split ml-auto">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span class="text">Ajouter un utilisateur</span>
+            </a>
+        </div>
+        <div class="card-body">
+           <div class="d-flex">
+            {{ form_start(form) }}
+            {{ form_row(form.searchTerm, {'attr': {'class': 'form-control'}}) }}
+            </br>
+            <button type="submit" class="btn btn-primary">Search</button>
+            {{ form_end(form) }}
+
+        </div>
+        </br>
+        <a href="{{path('app_download')}}" class="btn btn-primary">Download blocked users</a>
+            <a href="{{ path('app_pdf') }}" class="btn btn-primary">Download PDF</a>
+            <div class="table-responsive">
+            
+    {% if users is not empty %}
+                </br>
+        <h2>Search Results</h2>
+                <table class="table table-bordered" id="table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Prénom</th>
+                            <th onclick="sortTable(1)">Nom</th>
+                            <th>Email</th>
+                            <th>Nom d'utilisateur</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.firstName }}</td>
+                            <td>{{ user.lastName }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.roleTitle  }}</td>
+                            <td>{{user.isVerified ? 'Enabled' : 'Disabled'}}
+                            <td>
+                                <a href="{{ path("admin_user_show", {"id": user.id}) }}" class="btn btn-info">
+                                    Show
+                                </a>
+                                
+                        <form method="post" action="{{ path('Status', {'id': user.id}) }}">
+                            <button type="submit" class ="btn btn-info">Toggle Status</button>
+                        </form>
+                    
+                                {% if user.roleTitle == "Utilisateur" %}
+                                    <a href="{{ path("admin_user_edit", {"id": user.id}) }}" class="btn btn-primary">
+                                       Edit
+                                    </a>
+                                    <a href="{{ path("admin_user_delete", {"id": user.id}) }}" class="btn btn-danger">
+                                        Delete
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                   {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

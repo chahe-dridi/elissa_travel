@@ -1,0 +1,48 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+    <h1>Hotel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ hotel.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom de l'Hôtel</th>
+                <td>{{ hotel.nomHotel }}</td>
+            </tr>
+            <tr>
+                <th>Lieu</th>
+                <td>{{ hotel.lieu }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone de l'Hôtel</th>
+                <td>{{ hotel.telHotel }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ hotel.email }}</td>
+            </tr>
+            <tr>
+                <th>Description de l'Hôtel</th>
+                <td>{{ hotel.discHotel }}</td>
+            </tr>
+            <tr>
+                <th>État de l'Hôtel</th>
+                <td>{{ hotel.etatHotel }}</td>
+            </tr>
+            <tr>
+                <th>Nombre de Chambres</th>
+                <td>{{ hotel.nbChambre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_hotel_index') }}">Retour à la liste</a>
+
+    <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}">Modifier</a>
+
+    {{ include('hotel/_delete_form.html.twig') }}
+{% endblock %}

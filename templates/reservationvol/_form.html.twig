@@ -1,0 +1,35 @@
+{# reservationvol/_form.html.twig #}
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+  
+
+{# Render the total price field as a readonly input #}
+{{ form_row(form.total_price, { 'attr': {'readonly': 'readonly'} }) }}
+
+{# Render the vol field as a hidden input #}
+{{ form_widget(form.vol, { 'attr': {'style': 'display: none;'} }) }}
+
+ 
+
+<!-- Payment Method field (select) -->
+<div class="form-group row">
+    <div class="col-sm-2">{{ form_label(form.payment_method, 'Payment Method', {'label_attr': {'class': 'control-label'}}) }}</div>
+    <div class="col-sm-10">
+        {{ form_widget(form.payment_method, {'attr': {'class': 'form-control'}}) }}
+    
+         {% if form.payment_method.vars.errors|length > 0 %}
+        {% for error in form.payment_method.vars.errors %}     <span class="text-danger">{{ error.message }}</span>
+            {% endfor %}
+        {% endif %}
+    
+    </div>
+</div>
+
+<!-- Submit button -->
+<div class="form-group row">
+    <div class="col-sm-10 offset-sm-2">
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+</div>
+
+{{ form_end(form) }}

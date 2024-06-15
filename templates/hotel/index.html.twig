@@ -1,0 +1,108 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+    <style>
+        .container-fluid {
+            margin-top: 64px;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %} 
+
+{% block body %}
+<div class="container-fluid">
+    <div class="col-lg-4">
+        <form action="{{ path('app_hotel_index') }}" method="GET" class="form-inline mb-3">
+            <div class="form-group mr-2">
+                <input type="text" name="search" value="{{ searchQuery }}" placeholder="Search by Hotel Name" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div style="text-align: right;">
+            <a href="{{ path('app_hotel_new') }}" class="btn btn-outline-secondary" style="margin-top: 10px;">Add New Hotel</a>
+            <a href="{{ path('app_reservation_back') }}" class="btn btn-outline-secondary" style="margin-top: 10px;">les reservations</a>
+       
+            <a href="{{ path('hotel_reservation_stat') }}" class="btn btn-outline-secondary">Reservation  Hotel stat</a>
+        </div>
+    </div>
+    <div class="row table-container">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {% for message in app.flashes('notice') %}
+                        <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    {% for message in app.flashes('noticedelete') %}
+                        <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    <h5 class="card-title"></h5>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Id</th>
+                                <th>Image</th>
+                                <th>NomHotel</th>
+                                <th>Lieu</th>
+                                <th>TelHotel</th>
+                                <th>Email</th>
+                                <th>DiscHotel</th>
+                                <th>EtatHotel</th>
+                                <th>NbChambre</th>
+                                <th>Actions</th>    
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hotel in hotels %}
+                                <tr>
+                                    <td>{{ hotel.id }}</td>
+                                    <td>
+                                        {% if hotel.image %}
+                                            <img src="{{ asset('uploads/' ~ hotel.image) }}" alt="{{ hotel.nomHotel }}" class="img-thumbnail" style="max-height: 50px;">
+                                        {% else %}
+                                            No Image
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ hotel.nomHotel }}</td>
+                                    <td>{{ hotel.lieu }}</td>
+                                    <td>{{ hotel.telHotel }}</td>
+                                    <td>{{ hotel.email }}</td>
+                                    <td>{{ hotel.discHotel }}</td>
+                                    <td>{{ hotel.etatHotel }}</td>
+                                    <td>{{ hotel.nbChambre }}</td>
+                                    <td>
+                                        <a href="{{ path('app_hotel_show', {'id': hotel.id}) }}" class="btn btn-sm btn-info" style="margin-bottom: 10px;">Show</a>
+                                        <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}" class="btn btn-sm btn-primary" style="margin-bottom: 10px;">Edit</a>
+                                        <a href="{{ path('app_chambre_index', {'id': hotel.id}) }}" class="btn btn-sm btn-primary" style="margin-bottom: 10px;">chambre</a>
+                                    </td>
+                                </tr>
+                               
+                            {% else %}
+                                <tr>
+                                    <td colspan="11">No records found</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                                                    <div class="navigation.flex.justify-content.mb-8">
+                {{ knp_pagination_render(users) }}
+             </div>    
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

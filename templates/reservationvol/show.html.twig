@@ -1,0 +1,141 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
+  
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-128">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Reservation Flights</h5>
+                        <hr>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Total Price</th>
+                                    <th>Payment Method</th>
+                                    <th>Description</th>
+                                    <th>Class Name</th>
+                                    <th>Departure Time</th>
+                                    <th>Arrival Time</th>
+                                    <th>Departure Airport</th>
+                                    <th>Arrival Airport</th>
+                                    <th>City</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservationvol in reservationvols %}
+                                <tr>
+                                    <td>{{ reservationvol.getTotalPrice() }}</td>
+                                    <td>{{ reservationvol.getPaymentMethod() }}</td>
+                                    <td>{{ reservationvol.getVol().getVolclass().getDescription() }}</td>
+                                    <td>{{ reservationvol.getVol().getVolclass().getClassName() }}</td>
+                                    <td>{{ reservationvol.getVol().getHeureDepart()|date('Y-m-d H:i:s') }}</td>
+                                    <td>{{ reservationvol.getVol().getHeureArrive()|date('Y-m-d H:i:s') }}</td>
+                                    <td>{{ reservationvol.getVol().getairportDepart().getName() }}</td>
+                                    <td>{{ reservationvol.getVol().getairportarrive().getName() }}</td>
+                                    <td>{{ reservationvol.getVol().getairportDepart().getCity() }}</td>
+                                    <td>{{ reservationvol.getVol().getairportDepart().getCountry() }}</td>
+                                    <td><a href="{{ path('app_reservationvol_edit', {'id': reservationvol.id}) }}" class="btn btn-primary">Edit</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <a href="{{ path('app_reservationvol_index') }}" class="btn btn-primary mt-3">Back to Flights</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+<div>
+    {{ knp_pagination_render(reservationvols) }} </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

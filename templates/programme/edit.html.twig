@@ -1,0 +1,20 @@
+{% extends 'nav_admin.html.twig' %}
+
+
+{% block body %}
+    <div class="container-fluid">
+    <section class="probootstrap-cover overflow-hidden relative" style="background-color: white"  >
+    <div class="overlay"></div>
+  <div class="container">
+  <div class="row align-items-center">
+        <div class="col-md probootstrap-animate text-center">
+            <h1> Edit program</h1></div>
+  
+
+
+    {{ include('programme/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a class="btn btn-dark" href="{{ path('app_programme_index') }}">back to list</a>
+
+    {{ include('programme/_delete_form.html.twig') }}
+{% endblock %}

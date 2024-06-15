@@ -1,0 +1,49 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block title %}Hotel Reservation Statistics{% endblock %}
+
+{% block body %}
+<div class="container mt-6">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-18 mb-10">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="card-title mb-4">Hotel Reservation Statistics</h1>
+          <canvas id="myChartHotel" style="height: 300px; width: 100%; margin-bottom: 20px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctxHotel = document.getElementById('myChartHotel').getContext('2d');
+  var myChartHotel = new Chart(ctxHotel, {
+    type: 'bar',
+    data: {
+      labels: [{% for hotelId, reservationCount in reservationsByHotel %}
+                 'Hotel ID: {{ hotelId }}',
+               {% endfor %}],
+      datasets: [{
+        label: 'Number of Reservations',
+        data: [{% for hotelId, reservationCount in reservationsByHotel %}{{ reservationCount }},{% endfor %}],
+        backgroundColor: 'rgba(255, 99, 132, 0.8)',  // Red
+        borderColor: 'rgba(255, 99, 132, 1)',       // Red
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
+{% endblock %}

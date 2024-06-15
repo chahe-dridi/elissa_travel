@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>ReservationVoyage</title>
+
+{% block body %}
+    <h1>ReservationVoyage</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ reservation_voyage.id }}</td>
+            </tr>
+            <tr>
+                <th>Numberticket</th>
+                <td>{{ reservation_voyage.numberticket }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ reservation_voyage.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ reservation_voyage.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ reservation_voyage.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reservation_voyage_index') }}">back to list</a>
+
+    <a href="{{ path('app_reservation_voyage_edit', {'id': reservation_voyage.id}) }}">edit</a>
+
+    {{ include('reservation_voyage/_delete_form.html.twig') }}
+{% endblock %}

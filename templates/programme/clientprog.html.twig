@@ -1,0 +1,68 @@
+{% extends 'nav_user.html.twig' %}
+{% block body %}
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Programs</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<div class="row probootstrap-animate">
+<div class="col-md-12">
+  <div class="owl-carousel js-owl-carousel">
+{% for p in programme %}
+
+<div class="probootstrap-slide text-primary font-italic">
+    <a >{{p.description }}
+    </a><br>
+
+
+
+    <strong> FROM </strong> {{ p.datedebut|date('Y-m-d') }} <strong> TO </strong> {{p.datefin|date('Y-m-d')}}
+
+
+
+<br>
+   <strong>prix:</strong> {{p.prix }}  <strong>$</strong>
+    <br>
+    <a href="{{ path('app_programme_generate_qr_code',{'id': p.id}) }}" class="btn btn-dark">generate QrCode</a>
+
+
+
+</div>
+{% endfor %}</div>
+    <div class="text-center">
+     <a href="{{ path('app_reservation_voyage_new') }}" class="btn btn-dark" >Reservation</a>
+     </div>
+
+
+
+
+</div></div>
+
+</div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

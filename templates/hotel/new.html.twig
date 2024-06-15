@@ -1,0 +1,73 @@
+
+{% extends 'nav_admin.html.twig' %}
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+    <style>
+        .container-fluid {
+            margin-top: 64px;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-back-link,
+        .form-submit-button {vv
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .form-back-link {
+            background-color: #007bff;
+        }
+
+        .form-back-link:hover {
+            background-color: #0056b3;
+        }
+
+        .form-submit-button {
+            background-color: #28a745;
+        }
+
+        .form-submit-button:hover {
+            background-color: #218838;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- Row 1 -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="form-container">
+                    <h1 class="form-title">Create new Hotel</h1>
+
+                    {{ include('hotel/_form.html.twig') }}
+
+                    <a class="form-back-link" href="{{ path('app_hotel_index') }}">Back to List</a>
+                    <button type="submit" class="form-submit-button">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

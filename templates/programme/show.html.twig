@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>Programme</title>
+
+{% block body %}
+    <h1>Programme</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ programme.id }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ programme.description }}</td>
+            </tr>
+            <tr>
+                <th>Datedebut</th>
+                <td>{{ programme.datedebut ? programme.datedebut|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Datefin</th>
+                <td>{{ programme.datefin ? programme.datefin|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ programme.prix }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_programme_index') }}">back to list</a>
+
+    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
+
+    {{ include('programme/_delete_form.html.twig') }}
+{% endblock %}

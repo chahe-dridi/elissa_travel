@@ -1,0 +1,88 @@
+{% extends 'nav_user.html.twig' %}
+
+{% block body %}
+
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50"> Comment Section</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="text-center">
+    <div class="container-fluid">
+        <div class="row">
+            <h3>{{ blog.title }}</h3>
+        </div>
+        
+        <div class="row">
+            {{ blog.content|nl2br }}
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <a href="{{ path('front_blog_like_unlike') }}" id="blog-like" data-entity-id="{{ blog.id }}"
+               data-csrf-token="{{ csrf_token( 'blog' ~ blog.id) }}"
+               data-liked="{{ isBlogAlreadyLiked == true ? '1' : '0' }}"
+               class="btn-like">&nbsp; <i class="far fa-thumbs-up {{ isBlogAlreadyLiked == true ? 'liked' : '' }}">
+                    {{ isBlogAlreadyLiked == true ? 'Unlike' : 'Like' }}
+                </i>
+
+            </a>
+            &nbsp;<ul>
+                <li>
+                    {{ count }}
+                </li>
+                <li>
+                    {{ blog.createdAt|date('Y-m-d H:i:s') }}
+                </li>
+
+            </ul>
+            
+        </div>
+        <a href="{{ path('app_voyage_clientF') }}">back to list</a>
+    </div></div>
+    <style>
+        .btn-like {
+            color: black;
+        }
+
+        .liked {
+            color: royalblue;
+        }
+    </style>
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script>
+        $(document).on('click', "#blog-like", function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            var entityId = $(this).attr('data-entity-id');
+            var csrfToken = $(this).attr('data-csrf-token');
+            var isLiked = $(this).attr('data-liked');
+            if (isLiked === "0") {
+                $(this).attr('data-liked', 1);
+                $('.fa-thumbs-up').addClass('liked').text('Unlike')
+            } else {
+                $(this).attr('data-liked', 0);
+                $('.fa-thumbs-up').removeClass('liked').text('Like')
+            }
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                data: {'entityId': entityId, 'csrfToken': csrfToken},
+                url: url,
+                success: function () {
+                    location.reload();
+                    console.log('Success');
+                },
+                error: function () {
+                    // do something such reset icon like to its initial state
+                    console.log('error')
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

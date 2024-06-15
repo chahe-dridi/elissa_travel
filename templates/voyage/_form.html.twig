@@ -1,0 +1,74 @@
+
+
+{{ form_start(form , {'attr': {'novalidate':'novalidate'} }) }}
+ 
+           <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+      
+
+  
+
+
+
+         <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Month</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+                    {{ form_widget(form.mois, {'attr': {'class': 'form-control border-top-0 border-left-0 border-right-0 rounded-0','placeholder':'Month '}}) }}
+            </label>
+  </div></div>
+            
+
+
+  <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Year</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.annee, {  'attr': {'class': 'form-control'  , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Year ' }}) }}
+  </label>
+  </div></div>
+
+
+
+
+    
+ 
+              
+     <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Ville Depart</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.villedepart, {  'attr': {'class': 'form-control' , 'type' : 'text' , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Departure '}}) }}
+  </label>
+  </div></div>
+
+ 
+       <div class="form-group">
+  <div class="row mb-5">
+  <div class="col-md">
+  <div class="form-group">
+  <label for="id_label_single">Destination</label>
+  <label for="id_label_single" style="width: 60%;">
+ 
+  {{ form_widget(form.destination, {  'attr': {'class': 'form-control' , 'type' : 'text' , 'id':'d_label_single' , 'class' : 'form-control' ,'placeholder':'Destination '}}) }}
+  </label>
+  </div></div>
+
+
+
+  
+   
+    
+<button class="btn btn-dark">{{ button_label|default('Save') }}</button> 
+    
+{{ form_end(form) }}

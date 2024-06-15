@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .invoice-container {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .invoice-header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+        }
+        .invoice-details p {
+            margin: 5px 0;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+        .invoice-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .invoice-table td {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h1>Invoice</h1>
+        </div>
+        <div class="invoice-details">
+            <p><strong>Reservation ID:</strong> {{ reservation_hotel.id }}</p>
+            <p><strong>Date Arrive:</strong> {{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</p>
+            <p><strong>Date Depart:</strong> {{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</p>
+            <p><strong>Email:</strong> {{ reservation_hotel.email }}</p>
+            <p><strong>Nom:</strong> {{ reservation_hotel.nom }}</p>
+            <p><strong>PreNom:</strong> {{ reservation_hotel.preNom }}</p>
+            <p><strong>Destination:</strong> {{ reservation_hotel.Distination }}</p>
+            <p><strong>Chambre:</strong> {{ reservation_hotel.ChambrE }}</p>
+            <p><strong>Prix Total:</strong> {{ reservation_hotel.prixTT }}</p>
+
+            <!-- Add more reservation details here -->
+        </div>
+        
+                <!-- You can add more rows for additional items if needed -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

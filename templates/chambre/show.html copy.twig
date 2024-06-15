@@ -1,0 +1,56 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+    <h1>Hotel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ hotel.id }}</td>
+            </tr>
+            <tr>
+                <th>NomHotel</th>
+                <td>{{ hotel.nomHotel }}</td>
+            </tr>
+            <tr>
+                <th>Lieu</th>
+                <td>{{ hotel.lieu }}</td>
+            </tr>
+            <tr>
+                <th>TelHotel</th>
+                <td>{{ hotel.telHotel }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ hotel.email }}</td>
+            </tr>
+            <tr>
+                <th>DiscHotel</th>
+                <td>{{ hotel.discHotel }}</td>
+            </tr>
+            <tr>
+                <th>DateArr</th>
+                <td>{{ hotel.dateArr ? hotel.dateArr|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateDepart</th>
+                <td>{{ hotel.dateDepart ? hotel.dateDepart|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EtatHotel</th>
+                <td>{{ hotel.etatHotel }}</td>
+            </tr>
+            <tr>
+                <th>NbChambre</th>
+                <td>{{ hotel.nbChambre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_hotel_index') }}">back to list</a>
+
+    <a href="{{ path('app_hotel_edit', {'id': hotel.id}) }}">edit</a>
+
+    {{ include('hotel/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('assets_admin/css/styles.min.css') }}" />
+    <style>
+        .container-fluid {
+            margin-top: 64px;
+        }
+
+        .form-container {
+            max-width: 800px; /* Augmenter la largeur du conteneur du formulaire */
+            margin: 0 auto;
+            padding: 40px; /* Augmenter l'espacement intérieur du conteneur */
+            border: 1px solid #ccc;
+            border-radius: 10px; /* Augmenter le rayon des bords */
+            background-color: #f9f9f9;
+        }
+
+        .form-title {
+            margin-top: 0;
+            margin-bottom: 30px; /* Augmenter l'espacement en dessous du titre */
+            font-size: 28px; /* Augmenter la taille du titre */
+            text-align: center;
+        }
+
+        .form-control {
+            margin-bottom: 20px; /* Espacement entre les contrôles */
+            border-radius: 10px; /* Arrondir les bords des contrôles */
+        }
+
+        .form-check-input {
+            width: auto; /* Réinitialiser la largeur des cases à auto */
+            margin-top: 5px; /* Espacement en haut de chaque case */
+        }
+
+        .form-check-label {
+            margin-left: 10px; /* Espacement entre la case et l'étiquette */
+        }
+
+        .form-back-link,
+        .form-submit-button {
+            display: inline-block;
+            padding: 15px 30px; /* Augmenter la taille des boutons */
+            margin-top: 30px; /* Augmenter l'espacement au-dessus des boutons */
+            border: none;
+            border-radius: 10px; /* Augmenter le rayon des bords */
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .form-back-link {
+            background-color: #007bff;
+        }
+
+        .form-back-link:hover {
+            background-color: #0056b3;
+        }
+
+        .form-submit-button {
+            background-color: #28a745;
+        }
+
+        .form-submit-button:hover {
+            background-color: #218838;
+        }
+
+        .flash-message {
+            margin-bottom: 30px; /* Augmenter l'espacement en dessous des messages flash */
+            padding: 15px; /* Augmenter le rembourrage des messages flash */
+            border-radius: 10px; /* Augmenter le rayon des bords */
+            text-align: center;
+            color: #fff;
+        }
+
+        .flash-message-error {
+            background-color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <title>New Chambre</title>
+
+        <div class="form-container">
+            <h1 class="form-title">Create new Chambre</h1>
+
+            {% for flashError in app.flashes('error') %}
+                <div class="flash-message flash-message-error">
+                    {{ flashError }}
+                </div>
+            {% endfor %}
+
+            {{ include('chambre/_form.html.twig') }}
+
+            <a class="form-back-link" href="{{ path('app_chambre_index', {'id': id}) }}">Back to List</a>
+        </div>
+    </div>
+{% endblock %}

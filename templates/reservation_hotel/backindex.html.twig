@@ -1,0 +1,76 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <div class="col-lg-4">
+        <form action="{{ path('app_hotel_index') }}" method="GET" class="form-inline mb-3">
+            <div class="form-group mr-2">
+               
+        </form>
+        <div style="text-align: right;">
+            
+
+                    <h5 class="card-title"></h5>
+                    <table class="table">
+                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Hotel Name</th>
+                                                <th>Id</th>
+                                                <th>PrixTT</th>
+                                                <th>DateArrive</th>
+                                                <th>DateDepart</th>
+                                                <th>Email</th>
+                                                <th>Nom</th>
+                                                <th>PreNom</th>
+                                                <th>Destination</th>
+                                                <th>Chambre</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for reservation_hotel in reservation_hotels %}
+                                            <tr>
+                                                <td>{{ reservation_hotel.hotel.nomHotel }}</td>
+                                                <td>{{ reservation_hotel.id }}</td>
+                                                <td>{{ reservation_hotel.PrixTT}}</td>
+                                                <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
+                                                <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
+                                                <td>{{ reservation_hotel.email }}</td>
+                                                <td>{{ reservation_hotel.nom }}</td>
+                                                <td>{{ reservation_hotel.preNom }}</td>
+                                                <td>{{ reservation_hotel.Distination }}</td>
+                                                <td>{{ reservation_hotel.ChambrE }}</td>
+                                                <td>
+                                                    <a href="{{ path('app_reservation_afficher', {'id': reservation_hotel.id}) }}" class="btn btn-sm btn-outline-info">show</a>
+                                                    <a href="{{ path('app_reservation_hotel_invoice', {'id': reservation_hotel.id}) }}" class="btn btn-outline-primary">Download Invoice PDF</a>
+                                                   
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="10">No records found</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                     
+
+                                     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+             
+    </section>
+
+    <style>
+        .custom-table th,
+        .custom-table td {
+            color: white; /* Couleur du texte */
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,23 @@
+{# templates/profile/edit.html.twig #}
+
+{% extends "nav_admin.html.twig" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <h1>Edit Profile</h1>
+
+    {% if app.flashes('success') %}
+        <div class="alert alert-success">
+            
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.firstName) }}
+    {{ form_row(form.lastName) }}
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    {{ form_end(form) }}
+{% endblock %}

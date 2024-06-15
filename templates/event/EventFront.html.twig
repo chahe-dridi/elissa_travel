@@ -1,0 +1,176 @@
+{# templates/event/EventFront.html.twig #}
+
+{% extends 'nav_user.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        /* Style pour le formulaire de filtrage */
+        #type_filter_form {
+            margin-bottom: 20px;
+            text-align: center; /* Centrage du formulaire */
+        }
+
+        #type_filter_form label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #type_filter_form select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #type_filter_form button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px; /* Espacement entre les boutons */
+        }
+
+        #type_filter_form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style pour le bouton Back */
+        .back-button-container {
+            margin-top: 20px; /* Augmentation de la marge supérieure */
+            text-align: center; /* Centrage du bouton */
+        }
+
+        .back-button {
+            display: inline-block; /* Affichage en ligne pour centrer le bouton */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');" data-stellar-background-ratio="0.5" id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md">
+                <h2 class="heading mb-2 display-4 font-light probootstrap-animate">Explore The World With Elissa Travel</h2>
+                <p class="lead mb-5 probootstrap-animate">Discover, Celebrate, Repeat - Your Journey, Your Events, Our Passion!</p>
+            </div>
+            <div class="col-md probootstrap-animate">
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <form action="{{ path('EventFront') }}" method="get" id="type_filter_form">
+                            <div class="form-group mr-2">
+                                <label for="type_id" class="mr-2">Filtrer par type d'événement :</label>
+                                <select name="type_id" id="type_id" class="form-control">
+                                    <option value="">Tous les types</option>
+                                    {% for type in types %}
+                                        <option value="{{ type.id }}" {% if type.id == selectedTypeId %}selected{% endif %}>{{ type.nomType }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filtrer</button>
+                            <a href="{{ path('EventFront', {'sort_by_price': 'asc'}) }}" class="btn btn-primary">Trier par prix croissant</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="min-sec">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% for message in app.flashes('noticedelete') %}
+                    <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                    
+                <div class="row justify-content-center">
+                    {% for p in pagination %}
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="ser_110">
+                                        <div class="ser_110_thumb">
+                                            <a>
+                                                <img src="{{ asset('uploads/' ~ p.imageevent) }}" class="img-fluid" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="event-details">
+                                                <strong>Event Name:</strong> {{ p.NomEvent }}
+                                            </div>
+                                            <div class="event-details">
+                                                <strong>Adresse Event:</strong> {{ p.AdresseEvent }}
+                                            </div>
+                                            <div class="event-details">
+                                                <strong>Date Debut Event:</strong> {{ p.datedebutEvent|date('Y-m-d') }}
+                                            </div>
+                                            <div class="event-details">
+                                                <strong>TypeEvenement:</strong> {{ p.TypeEvenement.nomType }}
+                                            </div>
+                                            <div class="event-details">
+                                                <strong>Nbr Tickets Dispo:</strong> {{ p.nbrticketsdispo }}
+                                            </div>
+                                            <div class="event-details">
+                                                <i class="fa fa-bolt"></i> From <strong class="theme-cl">{{ p.prixentre }} DT</strong>
+                                            </div>
+                                            <div class="mt-3">
+                                                {% if p.nbrticketsdispo > 0 %}
+                                                    <a href="{{ path('Addreservation', {'id': p.id}) }}" class="btn btn-outline-info">
+                                                        Addreservation
+                                                    </a>
+                                                {% else %}
+                                                    <button class="btn btn-outline-info" disabled>
+                                                        Addreservation
+                                                    </button>
+                                                    <p class="text-danger mt-2"></p>
+                                                    <div class="alert alert-danger mt-2" role="alert">
+                                                        Ticket non disponible
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Pagination -->
+                <div class="pagination justify-content-center">
+                    <ul class="pagination">
+                        {% if pagination.currentPageNumber != 1 %}
+                            <li class="page-item"><a class="page-link" href="{{ path('EventFront', {'page': pagination.currentPageNumber - 1}) }}">Previous</a></li>
+                        {% endif %}
+                        {% for page in range(1, pagination.pageCount) %}
+                            {% if page != pagination.currentPageNumber %}
+                                <li class="page-item"><a class="page-link" href="{{ path('EventFront', {'page': page}) }}">{{ page }}</a></li>
+                            {% else %}
+                                <li class="page-item active"><span class="page-link">{{ page }}</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if pagination.currentPageNumber != pagination.pageCount %}
+                            <li class="page-item"><a class="page-link" href="{{ path('EventFront', {'page': pagination.currentPageNumber + 1}) }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- Fin Pagination -->
+            </div>
+        </div>
+        <div class="back-button-container">
+            <a href="{{ path('EventFront') }}" class="btn btn-secondary back-button">Back</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

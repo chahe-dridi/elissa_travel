@@ -1,0 +1,3 @@
+<?php //App%255CEntity%255CVoyage%2523getDestination
+
+return [PHP_INT_MAX, []];

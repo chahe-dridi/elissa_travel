@@ -1,0 +1,3 @@
+<?php //App%255CEntity%255CChambre%2523getTypeChambre
+
+return [PHP_INT_MAX, []];

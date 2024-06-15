@@ -1,0 +1,62 @@
+{% extends 'nav_user.html.twig' %}
+{% block body %}
+
+<section class="probootstrap-cover overflow-hidden relative" style="background-image: url('{{ asset('assets/added_image/bg_1.jpg') }}');"  id="section-home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center probootstrap-animate">
+                <h2 class="heading mb50">Our Trips</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<br>
+
+{% for voyage in pagination %}
+<div class="container">
+<div class="row text-center mb-5 probootstrap-animate">
+<div class="col-md-12">
+<div class="media probootstrap-media d-flex align-items-stretch mb-4 probootstrap-animate">
+<div class="probootstrap-media-image" style="background-image">
+<img src="{{ asset('uploads/voyages/voyageClient.jpg') }}" alt="Image de voyage">
+</div>
+
+
+<div class="media-body">
+ 
+
+
+ <div class="text-center">
+  <div class="voyage-details">
+   <strong>Destination:</strong> {{voyage.destination  }}
+   
+   </div></div>
+
+   <div class="text-center">
+  <div class="voyage-details">
+   <strong> On </strong> {{voyage.mois}} {{voyage.annee}}
+   </div> 
+
+
+
+
+
+ <a href="{{ path('app_programme_clientprog', {'voyageId': voyage.id}) }}">Read More</a> <br>
+ <a href="{{ path('front_blog_show', {'id': voyage.id}) }}">"comments"</a>
+</div>
+</div>
+</div></div>
+ 
+ {% endfor %}
+ {{ knp_pagination_render(pagination) }}
+
+
+</div>
+</section>
+
+
+  {% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+
+
+                                    <tr>
+                                        <th>Attribute</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Id</td>
+                                        <td>{{ reservation_hotel.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PrixTT</td>
+                                        <td>{{ reservation_hotel.PrixTT  }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date Arrive</td>
+                                        <td>{{ reservation_hotel.dateArrive ? reservation_hotel.dateArrive|date('Y-m-d') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date Depart</td>
+                                        <td>{{ reservation_hotel.dateDepart ? reservation_hotel.dateDepart|date('Y-m-d') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>{{ reservation_hotel.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nom</td>
+                                        <td>{{ reservation_hotel.nom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PreNom</td>
+                                        <td>{{ reservation_hotel.preNom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distination</td>
+                                        <td>{{ reservation_hotel.Distination }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chambre</td>
+                                        <td>{{ reservation_hotel.ChambrE }}</td>
+                                    </tr>
+                             
+{% endblock %}

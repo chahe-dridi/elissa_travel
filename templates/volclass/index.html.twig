@@ -1,0 +1,122 @@
+{% extends 'nav_admin.html.twig' %}
+
+{% block body %}
+
+<style>
+    /* Pagination styling */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #3498db;
+        border-radius: 20px; /* Rounded border */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #3498db; /* Text color for pagination links */
+        background-color: #f7f7f7; /* Background color for pagination links */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff; /* Text color on hover */
+    }
+
+    .pagination .current {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+
+    .pagination .next, .pagination .last,
+    .pagination .previous, .pagination .first {
+        font-weight: bold;
+    }
+
+    .pagination a[rel="prev"], .pagination a[rel="next"] {
+        text-decoration: none;
+    }
+</style>
+
+<div style="padding-bottom: 5%;"></div>
+<div class="row">
+    <div class="col-lg-12 d-flex justify-content-between align-items-center">
+        <div class="button-group">
+            <a href="{{ path('app_airport_index') }}" class="btn btn-primary">Airports</a>
+            <a href="{{ path('app_vol_index') }}" class="btn btn-primary mr-2">Flights</a>
+            <a href="{{ path('app_volclass_index') }}" class="btn btn-primary mr-2">Flight Classes</a>
+            <a href="{{ path('app_reservation_vol_admin_index') }}" class="btn btn-primary mr-2">Flight Reservation</a>
+        </div>
+
+        <form id="searchForm" action="#" method="GET" style="margin-bottom: 20px;">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by Class Name">
+            </div>
+        </form>
+
+        <div>
+            <a href="{{ path('app_volclass_new') }}" class="btn btn-outline-secondary">Add New Flight Class</a>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Admin</th>
+                    <th>Class Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Ticket Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="flightClassTableBody">
+                {% if volclasses|length > 0 %}
+                    {% for volclass in volclasses %}
+                        <tr class="volclass-row">
+                            <td>{{ volclass.id }}</td>
+                            <td>{{ volclass.user.firstName }} {{ volclass.user.lastName }}</td>
+                            <td class="class-name">{{ volclass.className }}</td>
+                            <td class="class-description">{{ volclass.description }}</td>
+                            <td>{{ volclass.price }} $</td>
+                            <td>{{ volclass.ticketNumber }}</td>
+                            <td>
+                                <a href="{{ path('app_volclass_show', {'id': volclass.id}) }}" class="btn btn-sm btn-info">Show</a>
+                                <a href="{{ path('app_volclass_edit', {'id': volclass.id}) }}" class="btn btn-sm btn-info">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7">No records found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchForm input[name="search"]').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase().trim();
+            $('#flightClassTableBody tr').filter(function() {
+                $(this).toggle($(this).find('.class-name').text().toLowerCase().indexOf(searchTerm) > -1);
+            });
+        });
+    });
+</script>
+<div>
+    {{ knp_pagination_render(volclasses) }} </div>
+{% endblock %}
