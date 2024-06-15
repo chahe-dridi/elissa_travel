@@ -23,7 +23,7 @@ Clone the repository
 
 sh
  
-git clone https://github.com/your-username/elissa-travel.git
+git clone  https://github.com/chahe-dridi/elissa_travel
 Navigate to the project directory
 
 sh
