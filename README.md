@@ -3,6 +3,7 @@ Elissa Travel is a comprehensive travel website built with Symfony 5.4, offering
 
 
 Table of Contents
+
 Installation
 Usage
 Features
@@ -11,6 +12,7 @@ Contributing
 License
 Contact
 Installation
+
 To get a local copy up and running, follow these simple steps:
 
 Prerequisites
